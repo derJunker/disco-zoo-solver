@@ -1,6 +1,8 @@
 package junker.animals;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import junker.board.Coords;
 
@@ -19,12 +21,20 @@ public class AnimalService {
             )
     );
 
-    public static Animal getAnimalByName(String name) {
+    public static Optional<Animal> getAnimalByName(String name) {
         for (Animal animal : animals) {
             if (animal.name().equals(name)) {
-                return animal;
+                return Optional.of(animal);
             }
         }
-        return null; // or throw an exception if preferred
+        return Optional.empty(); // or throw an exception if preferred
+    }
+
+    public static List<Animal> getAnimalsByName(String... names) {
+        List<Animal> result = new ArrayList<>();
+        for (String name : names) {
+            getAnimalByName(name).ifPresent(result::add);
+        }
+        return result;
     }
 }

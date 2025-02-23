@@ -1,21 +1,25 @@
 package junker;
 
+import java.util.HashSet;
 import java.util.List;
 
 import junker.animals.AnimalService;
+import junker.board.AnimalBoardInstance;
+import junker.board.min_cover.BoardCoverCalculator;
 import junker.board.Game;
-import junker.board.probabiltiy.BoardProbabilityCalculator;
-import junker.board.probabiltiy.PermutationService;
-
-import static junker.util.DoubleArrayUtil.arrayAsCoordinatesString;
-import static junker.util.DoubleArrayUtil.mapDoubleArray;
-
+import junker.util.DoubleArrayUtil;
 
 public class Main {
     public static void main(String[] args) {
-        var animal = AnimalService.getAnimalByName("Koala");
-        var game = new Game(List.of(animal));
-        var overlap = PermutationService.calculateOverlap(game);
-        System.out.println(arrayAsCoordinatesString(mapDoubleArray(overlap, set -> set.size())));
+        var animals = AnimalService.getAnimalsByName( "Koala", "Sasquatch");
+        var game = new Game(animals);
+
+        var overlap = BoardCoverCalculator.calculateOverlap(game, animals.get(0));
+        var overlapCount = DoubleArrayUtil.arrayAsCoordinatesString(DoubleArrayUtil.mapDoubleArrayListToSet(overlap,
+                animalBoardInstances -> new HashSet<>(List.of("" + animalBoardInstances.size()))));
+        var overlapSet = DoubleArrayUtil.arrayAsCoordinatesString(DoubleArrayUtil.mapDoubleArrayListToSet(overlap,
+                animalBoardInstances -> new HashSet<>(animalBoardInstances.stream().map(AnimalBoardInstance::toString).toList())));
+        System.out.println("Overlap count:\n" + overlapCount);
+        System.out.println("Overlap set:\n" + overlapSet);
     }
 }

@@ -20,7 +20,7 @@ public class Tile {
         return animalBoardInstance != null;
     }
 
-    public boolean animalInstanceOfType(Animal animal) {
+    public boolean hasAnimalInstanceOfType(Animal animal) {
         if (animalBoardInstance == null) {
             return false;
         }

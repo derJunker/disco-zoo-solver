@@ -5,8 +5,8 @@ import java.util.List;
 import junker.animals.Animal;
 
 public class BoardService {
-    public static void placeAnimal(Tile[][] board, Animal animal, Coords coords, short id) {
-        var instance = new AnimalBoardInstance(animal, id);
+    public static void placeAnimal(Tile[][] board, Animal animal, Coords coords) {
+        var instance = new AnimalBoardInstance(animal, "(" + coords.x() + "," + coords.y() + ")", coords);
         for (Coords coord : animal.pattern()) {
             int x = coords.x() + coord.x();
             int y = coords.y() + coord.y();
@@ -30,7 +30,7 @@ public class BoardService {
         var revealedCoords = new java.util.ArrayList<Coords>();
         for (int i = 0; i < board.length; i++) {
             for (int j = 0; j < board[0].length; j++) {
-                if (board[i][j].animalInstanceOfType(animal) && board[i][j].isRevealed()) {
+                if (board[i][j].hasAnimalInstanceOfType(animal) && board[i][j].isRevealed()) {
                     revealedCoords.add(new Coords(i, j));
                 }
             }

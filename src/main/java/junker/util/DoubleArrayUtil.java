@@ -1,16 +1,32 @@
 package junker.util;
 
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.function.Function;
+
+import junker.board.Coords;
 
 public class DoubleArrayUtil {
 
-    public static <T, V> V[][] mapDoubleArray(T[][] array, Function<T, V> mapper) {
-        V[][] result = (V[][]) new Object[array.length][];
+    public static <T> Set<String>[][] mapDoubleArrayListToSet(List<T>[][] array,
+                                                          Function<List<T>, Set<String>> mapper) {
+        Set<String>[][] result =  new Set[array.length][];
         for (int i = 0; i < array.length; i++) {
-            result[i] = (V[]) new Object[array[i].length];
+            result[i] = (Set<String>[]) new Set[array[i].length];
             for (int j = 0; j < array[i].length; j++) {
                 result[i][j] = mapper.apply(array[i][j]);
+            }
+        }
+        return result;
+    }
+
+    public static <T, V> List<V> flatMapDoubleArrayToList(T[][] array, Function<T, V> mapper) {
+        List<V> result = new ArrayList<>();
+        for (int i = 0; i < array.length; i++) {
+            for (int j = 0; j < array[i].length; j++) {
+                result.add(mapper.apply(array[i][j]));
             }
         }
         return result;

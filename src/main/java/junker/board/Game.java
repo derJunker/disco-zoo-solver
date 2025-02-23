@@ -13,8 +13,6 @@ public class Game {
     private Tile[][] board;
     private final List<Animal> containedAnimals;
 
-    private short idCounter = 0;
-
     public Game(List<Animal> animalsToPlace) {
         board = new Tile[BOARD_SIZE][BOARD_SIZE]; // Assuming a 10x10 board for simplicity
         for (int y = 0; y < board.length; y++) {
@@ -50,7 +48,7 @@ public class Game {
         for (Animal animal : animalsToPlace) {
             Coords coords = PermutationService.getRandomPlacement(board, animal);
             if (coords != null) {
-                BoardService.placeAnimal(board, animal, coords, idCounter++);
+                BoardService.placeAnimal(board, animal, coords);
             } else {
                 throw new IllegalArgumentException("Cannot place animal: " + animal.name());
             }
