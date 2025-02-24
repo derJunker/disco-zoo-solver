@@ -16,6 +16,7 @@ import junker.util.DoubleArrayUtil;
 //  reducing duplicate paths (either manually or with a certain algorithm to choose what to click? idk
 //  make getWhipedBoard only calculate it once per game instance
 //  if still slow add db
+//  ignore discobux
 
 public class Main {
     public static void main(String[] args) {

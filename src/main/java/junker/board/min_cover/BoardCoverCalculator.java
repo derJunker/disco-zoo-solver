@@ -41,31 +41,45 @@ public class BoardCoverCalculator {
                     highestOverlapCoords);
         }
 
+        return clickHighestChanceCoordsAndStepInto(highestOverlapCoords, game, overallOverlap, animalToSearch);
+    }
+
+    private static Set<List<Coords>> clickHighestChanceCoordsAndStepInto(Set<Coords> highestOverlapCoords, Game game, List<AnimalBoardInstance>[][] overallOverlap, Animal animalToSearch) {
         var overallResults = new HashSet<List<Coords>>();
         for (var coords : highestOverlapCoords) {
-            var clonedGame = new Game(game, true);
-            var possibleReturnValue = placeRequiredAnimal(coords, overallOverlap, clonedGame, animalToSearch);
-            if (possibleReturnValue != null) {
-                return possibleReturnValue;
+            var animalToPlace = getAnimalToPlace(overallOverlap, coords, animalToSearch);
+
+            var clonedGames = new ArrayList<Game>();
+            for (Animal animal : animalToPlace) {
+                var clonedGame = new Game(game, true);
+                clonedGames.add(clonedGame);
+                clonedGame.setTile(coords.x(), coords.y(), true, animal);
             }
-            var result = coveringSets(clonedGame, animalToSearch);
-            result = result.stream()
-                    .filter(list -> list.size() < Game.MAX_ATTEMPTS)
-                    .map(list -> {
-                var newList = new ArrayList<>(List.of(coords));
-                newList.addAll(list);
-                return newList;
-            }).collect(Collectors.toSet());
-            overallResults.addAll(result);
+            if (animalToPlace.size() == 1 && Objects.equals(animalToPlace.getFirst(), animalToSearch)) {
+                return new HashSet<>(List.of(List.of(coords)));
+            }
+            // normally clonedGames is just 1. in some very edge cases, the only 2 possible placements are 2 different
+            // animals and not null. Then we need to check both
+            for (int i = 0; i < clonedGames.size(); i++) {
+                var clonedGame = clonedGames.get(i);
+                clonedGame.setTile(coords.x(), coords.y(), true, animalToPlace.get(i));
+                var result = coveringSets(clonedGame, animalToSearch);
+                result = result.stream()
+                        .filter(list -> list.size() < Game.MAX_ATTEMPTS)
+                        .map(list -> {
+                            var newList = new ArrayList<>(List.of(coords));
+                            newList.addAll(list);
+                            return newList;
+                        }).collect(Collectors.toSet());
+                overallResults.addAll(result);
+            }
+
         }
         return overallResults;
     }
 
     private static Set<List<Coords>> placeRequiredAnimal(Coords coords, List<AnimalBoardInstance>[][] overallOverlap, Game clonedGame, Animal animalToSearch) {
-        var possibleTileAnimalsAndNull =
-                overallOverlap[coords.x()][coords.y()].stream().map(instance -> instance == null ? null :
-                        instance.animal()).collect(Collectors.toSet());
-        var animalToPlace = getNecessaryAnimalToPlace(possibleTileAnimalsAndNull, animalToSearch);
+        var animalToPlace = getAnimalToPlace(overallOverlap, coords, animalToSearch);
         if (animalToPlace.size() == 1) {
             if (Objects.equals(animalToPlace.getFirst(), animalToSearch))
                 return new HashSet<>(List.of(List.of(coords)));
@@ -106,6 +120,14 @@ public class BoardCoverCalculator {
         } else {
             return null;
         }
+    }
+
+    private static List<Animal> getAnimalToPlace(List<AnimalBoardInstance>[][] overallOverlap,
+                                             Coords coords, Animal animalToSearch) {
+        var possibleTileAnimalsAndNull =
+                overallOverlap[coords.x()][coords.y()].stream().map(instance -> instance == null ? null :
+                        instance.animal()).collect(Collectors.toSet());
+        return getNecessaryAnimalToPlace(possibleTileAnimalsAndNull, animalToSearch);
     }
 
     private static List<Animal> getNecessaryAnimalToPlace(Set<Animal> possibleTileAnimalsAndNull,
