@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -32,13 +33,28 @@ public class BoardCoverCalculator {
     private static Set<List<Coords>> coveringSets(Game game, Animal animalToSearch) {
         var overallOverlap = calculateOverallOverlap(game.getWipedBoard(), game.getContainedAnimals());
         var overlap = getAnimalOverlap(overallOverlap, animalToSearch);
+        var highestOverlapCoords = getHighestOverlapCoords(overlap);
 
         var remainingUnOverlappedCoords = checkForNoOverlap(overlap);
         if (remainingUnOverlappedCoords != null) {
-            return remainingUnOverlappedCoords;
+            var result = new HashSet<List<Coords>>();
+            for(var coords : remainingUnOverlappedCoords) {
+                var allTilesWithAnimal = animalToSearch.pattern()
+                        .stream()
+                        .map(coord -> new Coords(coords.x() + coord.x(), coords.y() + coord.y()))
+                        .toList();
+                for (Coords fullCoordinates : allTilesWithAnimal) {
+                    if (highestOverlapCoords.contains(fullCoordinates)) {
+                        var solution = new ArrayList<>(remainingUnOverlappedCoords);
+                        solution.remove(coords);
+                        solution.addFirst(fullCoordinates);
+                        result.add(solution);
+                    }
+                }
+            }
+            return result;
         }
 
-        var highestOverlapCoords = getHighestOverlapCoords(overlap);
         var overallResults = new HashSet<List<Coords>>();
         for (var coords : highestOverlapCoords) {
             var clonedGame = new Game(game, true);
@@ -47,6 +63,8 @@ public class BoardCoverCalculator {
                             instance.animal()).collect(Collectors.toSet());
             var animalToPlace = getNecessaryAnimalToPlace(possibleTileAnimalsAndNull, animalToSearch);
             if (animalToPlace.size() == 1) {
+                if (Objects.equals(animalToPlace.getFirst(), animalToSearch))
+                    return new HashSet<>(List.of(List.of(coords)));
                 clonedGame.setTile(coords.x(), coords.y(), true, animalToPlace.getFirst());
             }
             else if (animalToPlace.size() > 1) {
@@ -54,7 +72,7 @@ public class BoardCoverCalculator {
             }
             var result = coveringSets(clonedGame, animalToSearch);
             result = result.stream()
-                    .filter(list -> list.size() < Game.MAX_ATTEMPTS -1)
+                    .filter(list -> list.size() < Game.MAX_ATTEMPTS)
                     .map(list -> {
                 var newList = new ArrayList<>(List.of(coords));
                 newList.addAll(list);
@@ -65,13 +83,12 @@ public class BoardCoverCalculator {
         return overallResults;
     }
 
-    private static Set<List<Coords>> checkForNoOverlap(List<AnimalBoardInstance>[][] overlap) {
+    private static List<Coords> checkForNoOverlap(List<AnimalBoardInstance>[][] overlap) {
         var uniqueInstances = getUniqueInstances(overlap);
         Map<Coords, Set<AnimalBoardInstance>> uniqueOverlap = filter(uniqueInstances,
                 set -> set.size() > 1);
         if (uniqueOverlap.isEmpty()) {
-            var nonOverlappings = getAllNonOverlapping(uniqueInstances);
-            return new HashSet<>(Set.of(nonOverlappings));
+            return getAllNonOverlapping(uniqueInstances);
         } else {
             return null;
         }

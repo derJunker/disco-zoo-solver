@@ -19,17 +19,17 @@ import junker.util.DoubleArrayUtil;
 
 public class Main {
     public static void main(String[] args) {
-        var animals = AnimalService.getAnimalsByName(  "Koala");
+        var animals = AnimalService.getAnimalsByName(  "Sasquatch");
         var game = new Game(animals);
-//        game.setTile(2, 1, true, null);
-//        game.setTile(2, 3, true, null);
-//        game.setTile(3, 0, true, null);
+//        game.setTile(1, 1, true, null);
+//        game.setTile(1, 3, true, null);
 //        game.setTile(3, 1, true, null);
+//        game.setTile(3, 3, true, null);
 //        game.setTile(3, 0, true, null);
 //        game.setTile(1, 0, true, null);
         var minCover = BoardCoverCalculator.minCoveringSets(game, animals.get(0));
         var bestClicks = minCover.stream().map(cover -> cover.getFirst()).collect(Collectors.toSet());
-        System.out.println("best clicks:\n" + bestClicks);
+        System.out.println(bestClicks.size() + " best clicks:\n" + bestClicks);
 
 //        var overlap = BoardCoverCalculator.calculateOverlap(game, animals.get(0));
 //        var overlapCount = DoubleArrayUtil.arrayAsCoordinatesString(DoubleArrayUtil.mapDoubleArrayListToSet(overlap,
