@@ -40,8 +40,8 @@ public class BoardService {
 
     public static Tile[][] cloneBoard(Tile[][] board) {
         Tile[][] clone = new Tile[board.length][board[0].length];
-        for (int y = 0; y < board.length; y++) {
-            for (int x = 0; x < board[0].length; x++) {
+        for (int x = 0; x < board.length; x++) {
+            for (int y = 0; y < board[0].length; y++) {
                 clone[x][y] = new Tile(board[x][y]);
             }
         }

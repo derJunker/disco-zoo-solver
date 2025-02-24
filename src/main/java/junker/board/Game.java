@@ -7,22 +7,14 @@ import junker.animals.Animal;
 import junker.board.probabiltiy.PermutationService;
 import junker.util.DoubleArrayUtil;
 
+import static junker.board.BoardService.cloneBoard;
+
 public class Game {
     public static final int BOARD_SIZE = 5;
     public static final int MAX_ATTEMPTS = 10;
 
     private Tile[][] board;
     private final List<Animal> containedAnimals;
-
-    private static Tile[][] cloneBoard(Tile[][] board) {
-        var clonedBoard = new Tile[board.length][board[0].length];
-        for (int y = 0; y < board.length; y++) {
-            for (int x = 0; x < board[0].length; x++) {
-                clonedBoard[x][y] = new Tile(board[x][y]);
-            }
-        }
-        return clonedBoard;
-    }
 
     private static Tile[][] getWipedBoard(Tile[][] board) {
         Tile[][] wipedBoard = new Tile[board.length][board[0].length];
@@ -72,10 +64,6 @@ public class Game {
         tile.setAnimalBoardInstance(null);
         if (animal != null)
             tile.setAnimalBoardInstance(new AnimalBoardInstance(animal, "", new Coords(-1, -1)));
-    }
-
-    public Float[][] calculateProbabilities() {
-        return null; // TODO: Implement this method
     }
 
     public void printGame() {
