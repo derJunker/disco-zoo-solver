@@ -19,7 +19,7 @@ import junker.util.DoubleArrayUtil;
 
 public class Main {
     public static void main(String[] args) {
-        var animals = AnimalService.getAnimalsByName(  "Sasquatch");
+        var animals = AnimalService.getAnimalsByName(  "Sasquatch", "Koala");
         var game = new Game(animals);
 //        game.setTile(1, 1, true, null);
 //        game.setTile(1, 3, true, null);
@@ -27,7 +27,7 @@ public class Main {
 //        game.setTile(3, 3, true, null);
 //        game.setTile(3, 0, true, null);
 //        game.setTile(1, 0, true, null);
-        var minCover = BoardCoverCalculator.minCoveringSets(game, animals.get(0));
+        var minCover = BoardCoverCalculator.minCoveringSets(game, animals.get(1));
         var bestClicks = minCover.stream().map(cover -> cover.getFirst()).collect(Collectors.toSet());
         System.out.println(bestClicks.size() + " best clicks:\n" + bestClicks);
 

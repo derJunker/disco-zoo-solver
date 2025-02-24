@@ -37,38 +37,16 @@ public class BoardCoverCalculator {
 
         var remainingUnOverlappedCoords = checkForNoOverlap(overlap);
         if (remainingUnOverlappedCoords != null) {
-            var result = new HashSet<List<Coords>>();
-            for(var coords : remainingUnOverlappedCoords) {
-                var allTilesWithAnimal = animalToSearch.pattern()
-                        .stream()
-                        .map(coord -> new Coords(coords.x() + coord.x(), coords.y() + coord.y()))
-                        .toList();
-                for (Coords fullCoordinates : allTilesWithAnimal) {
-                    if (highestOverlapCoords.contains(fullCoordinates)) {
-                        var solution = new ArrayList<>(remainingUnOverlappedCoords);
-                        solution.remove(coords);
-                        solution.addFirst(fullCoordinates);
-                        result.add(solution);
-                    }
-                }
-            }
-            return result;
+            return calcNoOverlapSolutions(remainingUnOverlappedCoords, animalToSearch,
+                    highestOverlapCoords);
         }
 
         var overallResults = new HashSet<List<Coords>>();
         for (var coords : highestOverlapCoords) {
             var clonedGame = new Game(game, true);
-            var possibleTileAnimalsAndNull =
-                    overallOverlap[coords.x()][coords.y()].stream().map(instance -> instance == null ? null :
-                            instance.animal()).collect(Collectors.toSet());
-            var animalToPlace = getNecessaryAnimalToPlace(possibleTileAnimalsAndNull, animalToSearch);
-            if (animalToPlace.size() == 1) {
-                if (Objects.equals(animalToPlace.getFirst(), animalToSearch))
-                    return new HashSet<>(List.of(List.of(coords)));
-                clonedGame.setTile(coords.x(), coords.y(), true, animalToPlace.getFirst());
-            }
-            else if (animalToPlace.size() > 1) {
-                throw new IllegalStateException("Multiple animals to place TODO fix this"); // TODO impl
+            var possibleReturnValue = placeRequiredAnimal(coords, overallOverlap, clonedGame, animalToSearch);
+            if (possibleReturnValue != null) {
+                return possibleReturnValue;
             }
             var result = coveringSets(clonedGame, animalToSearch);
             result = result.stream()
@@ -81,6 +59,42 @@ public class BoardCoverCalculator {
             overallResults.addAll(result);
         }
         return overallResults;
+    }
+
+    private static Set<List<Coords>> placeRequiredAnimal(Coords coords, List<AnimalBoardInstance>[][] overallOverlap, Game clonedGame, Animal animalToSearch) {
+        var possibleTileAnimalsAndNull =
+                overallOverlap[coords.x()][coords.y()].stream().map(instance -> instance == null ? null :
+                        instance.animal()).collect(Collectors.toSet());
+        var animalToPlace = getNecessaryAnimalToPlace(possibleTileAnimalsAndNull, animalToSearch);
+        if (animalToPlace.size() == 1) {
+            if (Objects.equals(animalToPlace.getFirst(), animalToSearch))
+                return new HashSet<>(List.of(List.of(coords)));
+            clonedGame.setTile(coords.x(), coords.y(), true, animalToPlace.getFirst());
+        }
+        else if (animalToPlace.size() > 1) {
+            throw new IllegalStateException("Multiple animals to place TODO fix this"); // TODO impl
+        }
+        return null;
+    }
+
+
+    private static Set<List<Coords>> calcNoOverlapSolutions(List<Coords> remainingUnOverlappedCoords, Animal animalToSearch, Set<Coords> highestOverlapCoords) {
+        var result = new HashSet<List<Coords>>();
+        for(var coords : remainingUnOverlappedCoords) {
+            var allTilesWithAnimal = animalToSearch.pattern()
+                    .stream()
+                    .map(coord -> new Coords(coords.x() + coord.x(), coords.y() + coord.y()))
+                    .toList();
+            for (Coords fullCoordinates : allTilesWithAnimal) {
+                if (highestOverlapCoords.contains(fullCoordinates)) {
+                    var solution = new ArrayList<>(remainingUnOverlappedCoords);
+                    solution.remove(coords);
+                    solution.addFirst(fullCoordinates);
+                    result.add(solution);
+                }
+            }
+        }
+        return result;
     }
 
     private static List<Coords> checkForNoOverlap(List<AnimalBoardInstance>[][] overlap) {
