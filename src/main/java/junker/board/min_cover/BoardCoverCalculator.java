@@ -13,10 +13,12 @@ import junker.board.Coords;
 import junker.board.Game;
 import junker.board.Tile;
 import junker.board.probabiltiy.PermutationService;
+import junker.util.DoubleArrayUtil;
 
 import static junker.util.DoubleArrayUtil.arrayAsCoordinatesString;
 import static junker.util.DoubleArrayUtil.cloneDoubleListArray;
 import static junker.util.DoubleArrayUtil.filter;
+import static junker.util.DoubleArrayUtil.filterListsInDoubleArray;
 
 public class BoardCoverCalculator {
 
@@ -31,7 +33,8 @@ public class BoardCoverCalculator {
     }
 
     private static Set<List<Coords>> coveringSets(Game game, Animal animalToSearch) {
-        var overlap = calculateOverlap(game.getWipedBoard(), game.getContainedAnimals(), animalToSearch);
+        var overallOverlap = calculateOverallOverlap(game.getWipedBoard(), game.getContainedAnimals());
+        var overlap = getAnimalOverlap(overallOverlap, animalToSearch);
         var uniqueInstances = getUniqueInstances(overlap);
         Map<Coords, Set<AnimalBoardInstance>> uniqueOverlap = filter(uniqueInstances,
                 set -> set.size() > 1);
@@ -122,6 +125,29 @@ public class BoardCoverCalculator {
                     if (permutation[x][y].hasAnimalInstanceOfType(animalToSearch)) {
                         overlap[x][y].add(permutation[x][y].getAnimalBoardInstance());
                     }
+                }
+            }
+        }
+        return overlap;
+    }
+
+    private static List<AnimalBoardInstance>[][] getAnimalOverlap(List<AnimalBoardInstance>[][] overlap,
+                                                              Animal animalToSearch) {
+        return filterListsInDoubleArray(overlap,
+                animalInstance -> animalInstance != null && animalInstance.animal().equals(animalToSearch));
+    }
+
+    public static List<AnimalBoardInstance>[][] calculateOverallOverlap(Tile[][] wipedBoard,
+                                                                 List<Animal> containedAnimals) {
+        var boardPermutations = PermutationService.calculateBoardPermutations(wipedBoard, containedAnimals);
+        List<AnimalBoardInstance>[][] overlap = new List[wipedBoard.length][wipedBoard[0].length];
+        System.out.println(boardPermutations.size());
+        for (var permutation : boardPermutations) {
+            for (int y = 0; y < wipedBoard.length; y++) {
+                for (int x = 0; x < wipedBoard[0].length; x++) {
+                    if (overlap[x][y] == null)
+                        overlap[x][y] = new ArrayList<>();
+                    overlap[x][y].add(permutation[x][y].getAnimalBoardInstance());
                 }
             }
         }

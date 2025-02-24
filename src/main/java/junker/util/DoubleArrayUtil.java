@@ -36,6 +36,15 @@ public class DoubleArrayUtil {
         return result;
     }
 
+    public static <T> List<T>[][] filterListsInDoubleArray(List<T>[][] array, Predicate<T> predicate) {
+        for (int y = 0; y < array.length; y++) {
+            for (int x = 0; x < array[y].length; x++) {
+                array[x][y]  = array[x][y].stream().filter(predicate).toList();
+            }
+        }
+        return array;
+    }
+
     public static <T> List<T>[][] cloneDoubleListArray(List<T>[][] doubleListArray) {
         List<T>[][] clone = new List[doubleListArray.length][];
         for (int i = 0; i < doubleListArray.length; i++) {
