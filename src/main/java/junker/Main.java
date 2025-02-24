@@ -2,6 +2,7 @@ package junker;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import junker.animals.AnimalService;
 import junker.board.AnimalBoardInstance;
@@ -18,7 +19,7 @@ import junker.util.DoubleArrayUtil;
 
 public class Main {
     public static void main(String[] args) {
-        var animals = AnimalService.getAnimalsByName( "Koala", "Sasquatch");
+        var animals = AnimalService.getAnimalsByName(  "Koala");
         var game = new Game(animals);
 //        game.setTile(2, 1, true, null);
 //        game.setTile(2, 3, true, null);
@@ -27,7 +28,8 @@ public class Main {
 //        game.setTile(3, 0, true, null);
 //        game.setTile(1, 0, true, null);
         var minCover = BoardCoverCalculator.minCoveringSets(game, animals.get(0));
-        System.out.println("Minimum set cover:\n" + minCover);
+        var bestClicks = minCover.stream().map(cover -> cover.getFirst()).collect(Collectors.toSet());
+        System.out.println("best clicks:\n" + bestClicks);
 
 //        var overlap = BoardCoverCalculator.calculateOverlap(game, animals.get(0));
 //        var overlapCount = DoubleArrayUtil.arrayAsCoordinatesString(DoubleArrayUtil.mapDoubleArrayListToSet(overlap,

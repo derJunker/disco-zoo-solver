@@ -45,7 +45,7 @@ public class Tile {
             if (animalBoardInstance == null) {
                 return "X";
             }
-            return "(" + animalBoardInstance.toString() + ")";
+            return "(" + animalBoardInstance + ")";
         }
     }
 

@@ -26,8 +26,8 @@ public class DoubleArrayUtil {
 
     public static <T> Map<Coords, T> filter(T[][] array, Predicate<T> predicate) {
         Map<Coords, T> result = new HashMap<>();
-        for (int y = 0; y < array.length; y++) {
-            for (int x = 0; x < array[y].length; x++) {
+        for (int x = 0; x < array.length; x++) {
+            for (int y = 0; y < array[0].length; y++) {
                 if (predicate.test(array[x][y])) {
                     result.put(new Coords(x, y), array[x][y]);
                 }
@@ -37,12 +37,18 @@ public class DoubleArrayUtil {
     }
 
     public static <T> List<T>[][] filterListsInDoubleArray(List<T>[][] array, Predicate<T> predicate) {
-        for (int y = 0; y < array.length; y++) {
-            for (int x = 0; x < array[y].length; x++) {
-                array[x][y]  = array[x][y].stream().filter(predicate).toList();
+        List<T>[][] result = new List[array.length][];
+        for (int x = 0; x < array.length; x++) {
+            result[x] = new List[array[x].length];
+            for (int y = 0; y < array[x].length; y++) {
+                if (array[x][y] == null) {
+                    result[x][y] = null;
+                    continue;
+                }
+                result[x][y] = array[x][y].stream().filter(predicate).toList();
             }
         }
-        return array;
+        return result;
     }
 
     public static <T> List<T>[][] cloneDoubleListArray(List<T>[][] doubleListArray) {
@@ -66,37 +72,6 @@ public class DoubleArrayUtil {
         return result;
     }
 
-    public static String arrayAsCoordinatesString(double[][] array) {
-        StringBuilder sb = new StringBuilder();
-        for (int y = 0; y < array.length; y++) {
-            for (int x = 0; x < array[y].length; x++) {
-                sb.append(String.format("%.2f ", array[x][y]));
-            }
-            sb.append("\n");
-        }
-        return sb.toString();
-    }
-
-    public static String arrayAsCoordinatesString(int[][] array) {
-        int maxLength = 0;
-        for (int[] row : array) {
-            for (int value : row) {
-                maxLength = Math.max(maxLength, String.valueOf(value).length());
-            }
-        }
-        String format = "%" + maxLength + "d ";
-        StringBuilder sb = new StringBuilder();
-
-        for (int y = 0; y < array.length; y++) {
-            for (int x = 0; x < array[y].length; x++) {
-                sb.append(String.format(format, array[x][y]));
-            }
-            sb.append("\n");
-        }
-
-        return sb.toString();
-    }
-
     public static String arrayAsCoordinatesString(Object[][] array) {
         int maxLength = 0;
         for (Object[] row : array) {
@@ -106,10 +81,10 @@ public class DoubleArrayUtil {
         }
         String format = "%-" + (maxLength + 1) + "s";
         StringBuilder sb = new StringBuilder();
-        for (int y = 0; y < array.length; y++) {
-            for (int x = 0; x < array[y].length; x++) {
-                String value = array[x][y].toString();
-                String gap = x == array[y].length - 1 ? "" : " ";
+        for (int i = 0; i < array[0].length; i++) {
+            for (int j = 0; j < array.length; j++) {
+                String value = array[j][i].toString();
+                String gap = j == array[i].length - 1 ? "" : " ";
                 sb.append(String.format(format + gap, value));
             }
             sb.append("\n");

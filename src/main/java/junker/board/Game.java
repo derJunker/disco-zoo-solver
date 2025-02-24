@@ -71,7 +71,7 @@ public class Game {
         tile.setRevealed(revealed);
         tile.setAnimalBoardInstance(null);
         if (animal != null)
-            tile.setAnimalBoardInstance(new AnimalBoardInstance(animal, "", new Coords(x, y)));
+            tile.setAnimalBoardInstance(new AnimalBoardInstance(animal, "", new Coords(-1, -1)));
     }
 
     public Float[][] calculateProbabilities() {

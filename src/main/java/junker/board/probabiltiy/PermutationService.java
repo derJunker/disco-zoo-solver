@@ -74,6 +74,9 @@ public class PermutationService {
                         centerIsValid = false;
                         break;
                     }
+                } else {
+                    centerIsValid = false;
+                    break;
                 }
             }
             if (centerIsValid) {
