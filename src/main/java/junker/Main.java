@@ -28,8 +28,7 @@ public class Main {
 //        game.setTile(3, 3, true, null);
 //        game.setTile(3, 0, true, null);
 //        game.setTile(1, 0, true, null);
-        var minCover = BoardCoverCalculator.minCoveringSets(game, animals.get(1));
-        var bestClicks = minCover.stream().map(cover -> cover.getFirst()).collect(Collectors.toSet());
+        var bestClicks = game.getBestClicks(animals.get(1));
         System.out.println(bestClicks.size() + " best clicks:\n" + bestClicks);
     }
 }

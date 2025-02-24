@@ -2,8 +2,11 @@ package junker.board;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import junker.animals.Animal;
+import junker.board.min_cover.BoardCoverCalculator;
 import junker.board.probabiltiy.PermutationService;
 import junker.util.DoubleArrayUtil;
 
@@ -68,6 +71,11 @@ public class Game {
 
     public void printGame() {
         System.out.println(this);
+    }
+
+    public Set<Coords> getBestClicks(Animal animalToSearch) {
+        var minCover = BoardCoverCalculator.minCoveringSets(this, animalToSearch);
+        return minCover.stream().map(List::getFirst).collect(Collectors.toSet());
     }
 
     @Override
