@@ -11,6 +11,7 @@ import junker.animals.Animal;
 import junker.board.AnimalBoardInstance;
 import junker.board.Coords;
 import junker.board.Game;
+import junker.board.Tile;
 import junker.board.probabiltiy.PermutationService;
 
 import static junker.util.DoubleArrayUtil.arrayAsCoordinatesString;
@@ -19,19 +20,18 @@ import static junker.util.DoubleArrayUtil.filter;
 
 public class BoardCoverCalculator {
 
-    public static Set<Set<Coords>> coveringSets(Game game, Animal animalToSearch) {
-        var overlap = calculateOverlap(game, animalToSearch);
-        var coveringSets = coveringSets(overlap);
+    public static Set<List<Coords>> minCoveringSets(Game game, Animal animalToSearch) {
+        var coveringSets = coveringSets(game, animalToSearch);
         return onlyMinSizedSets(coveringSets);
     }
 
-    private static Set<Set<Coords>> onlyMinSizedSets(Set<Set<Coords>> coveringSets) {
-        int minSize = coveringSets.stream().mapToInt(Set::size).min().orElse(0);
-        return coveringSets.stream().filter(set -> set.size() == minSize).collect(Collectors.toSet());
+    private static Set<List<Coords>> onlyMinSizedSets(Set<List<Coords>> coveringSets) {
+        int minSize = coveringSets.stream().mapToInt(List::size).min().orElse(0);
+        return coveringSets.stream().filter(list -> list.size() == minSize).collect(Collectors.toSet());
     }
 
-    private static Set<Set<Coords>> coveringSets(List<AnimalBoardInstance>[][] overlap) {
-
+    private static Set<List<Coords>> coveringSets(Game game, Animal animalToSearch) {
+        var overlap = calculateOverlap(game.getWipedBoard(), game.getContainedAnimals(), animalToSearch);
         var uniqueInstances = getUniqueInstances(overlap);
         Map<Coords, Set<AnimalBoardInstance>> uniqueOverlap = filter(uniqueInstances,
                 set -> set.size() > 1);
@@ -42,22 +42,30 @@ public class BoardCoverCalculator {
 
 
         var highestOverlapCoords = getHighestOverlapCoords(overlap);
-        var overallResults = new HashSet<Set<Coords>>();
+        var overallResults = new HashSet<List<Coords>>();
         for (var coords : highestOverlapCoords) {
-            var clonedOverlap = cloneDoubleListArray(overlap);
-            removeOverlapAt(coords, clonedOverlap);
-            var result = coveringSets(clonedOverlap);
-            result.forEach(set -> set.add(coords));
+            var clonedGame = new Game(game, true);
+            clonedGame.setTile(coords.x(), coords.y(), true, null); // TODO all possible animals and null
+
+            var result = coveringSets(clonedGame, animalToSearch);
+            result = result.stream()
+                    .filter(list -> list.size() < Game.MAX_ATTEMPTS -1)
+                    .map(list -> {
+                var newList = new ArrayList<>(List.of(coords));
+                newList.addAll(list);
+                return newList;
+            }).collect(Collectors.toSet());
             overallResults.addAll(result);
         }
         return overallResults;
     }
 
-    private static Set<Coords> getAllNonOverlapping(Set<AnimalBoardInstance>[][] uniqueInstances) {
+    private static List<Coords> getAllNonOverlapping(Set<AnimalBoardInstance>[][] uniqueInstances) {
         return filter(uniqueInstances, set -> set.size() == 1).values()
                 .stream()
                 .map(set -> set.iterator().next().origin())
-                .collect(Collectors.toSet());
+                .distinct()
+                .toList();
     }
 
     private static Set<AnimalBoardInstance>[][] getUniqueInstances(List<AnimalBoardInstance>[][] overlap) {
@@ -101,13 +109,14 @@ public class BoardCoverCalculator {
         return new HashSet<>(highestOverlapCoords);
     }
 
-    public static List<AnimalBoardInstance>[][] calculateOverlap(Game game, Animal animalToSearch) {
-        var boardPermutations = PermutationService.calculateBoardPermutations(game.getWipedBoard(), game.getContainedAnimals());
-        var board = game.getBoard();
-        List<AnimalBoardInstance>[][] overlap = new List[board.length][board[0].length];
+    public static List<AnimalBoardInstance>[][] calculateOverlap(Tile[][] wipedBoard,
+                                                                 List<Animal> containedAnimals, Animal animalToSearch) {
+        var boardPermutations = PermutationService.calculateBoardPermutations(wipedBoard, containedAnimals);
+        List<AnimalBoardInstance>[][] overlap = new List[wipedBoard.length][wipedBoard[0].length];
+        System.out.println(boardPermutations.size());
         for (var permutation : boardPermutations) {
-            for (int y = 0; y < board.length; y++) {
-                for (int x = 0; x < board[0].length; x++) {
+            for (int y = 0; y < wipedBoard.length; y++) {
+                for (int x = 0; x < wipedBoard[0].length; x++) {
                     if (overlap[x][y] == null)
                         overlap[x][y] = new ArrayList<>();
                     if (permutation[x][y].hasAnimalInstanceOfType(animalToSearch)) {

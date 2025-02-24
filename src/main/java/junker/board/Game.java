@@ -9,9 +9,32 @@ import junker.util.DoubleArrayUtil;
 
 public class Game {
     public static final int BOARD_SIZE = 5;
+    public static final int MAX_ATTEMPTS = 10;
 
     private Tile[][] board;
     private final List<Animal> containedAnimals;
+
+    private static Tile[][] cloneBoard(Tile[][] board) {
+        var clonedBoard = new Tile[board.length][board[0].length];
+        for (int y = 0; y < board.length; y++) {
+            for (int x = 0; x < board[0].length; x++) {
+                clonedBoard[x][y] = new Tile(board[x][y]);
+            }
+        }
+        return clonedBoard;
+    }
+
+    private static Tile[][] getWipedBoard(Tile[][] board) {
+        Tile[][] wipedBoard = new Tile[board.length][board[0].length];
+        for (int y = 0; y < board.length; y++) {
+            for (int x = 0; x < board[0].length; x++) {
+                Tile newTile = new Tile(board[x][y]);
+                newTile.removeHiddenAnimalData();
+                wipedBoard[x][y] = newTile;
+            }
+        }
+        return wipedBoard;
+    }
 
     public Game(List<Animal> animalsToPlace) {
         board = new Tile[BOARD_SIZE][BOARD_SIZE]; // Assuming a 10x10 board for simplicity
@@ -24,6 +47,12 @@ public class Game {
         containedAnimals = new ArrayList<>(animalsToPlace);
     }
 
+    public Game(Game gameToClone, boolean wipe) {
+        var boardToClone = gameToClone.getBoard();
+        this.board = wipe? getWipedBoard(boardToClone) : cloneBoard(boardToClone);
+        this.containedAnimals = new ArrayList<>(gameToClone.containedAnimals);
+    }
+
     public static Game of(Tile[][] board) {
         Game game = new Game(new ArrayList<>());
         game.board = board;
@@ -31,8 +60,10 @@ public class Game {
         return game;
     }
 
+
     public void revealTile(int x, int y) {
-        setTile(x, y, true, board[x][y].getAnimalBoardInstance().animal());
+        var tile = board[x][y];
+        tile.setRevealed(true);
     }
 
     public void setTile(int x, int y, boolean revealed, Animal animal) {
@@ -48,7 +79,7 @@ public class Game {
     }
 
     public void printGame() {
-        System.out.println(DoubleArrayUtil.arrayAsCoordinatesString(board));
+        System.out.println(this);
     }
 
     @Override
@@ -76,14 +107,6 @@ public class Game {
     }
 
     public Tile[][] getWipedBoard() {
-        Tile[][] wipedBoard = new Tile[board.length][board[0].length];
-        for (int y = 0; y < board.length; y++) {
-            for (int x = 0; x < board[0].length; x++) {
-                Tile newTile = new Tile(board[x][y]);
-                newTile.removeHiddenAnimalData();
-                wipedBoard[x][y] = newTile;
-            }
-        }
-        return wipedBoard;
+        return Game.getWipedBoard(board);
     }
 }

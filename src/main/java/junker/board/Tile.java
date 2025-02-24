@@ -35,13 +35,18 @@ public class Tile {
 
     @Override
     public String toString() {
-        if (!isRevealed && animalBoardInstance == null) {
-            return "X";
+
+        if (isRevealed) {
+            if (animalBoardInstance == null) {
+                return "0";
+            }
+            return animalBoardInstance.toString();
+        } else {
+            if (animalBoardInstance == null) {
+                return "X";
+            }
+            return "(" + animalBoardInstance.toString() + ")";
         }
-        if (isRevealed && animalBoardInstance == null) {
-            return "0";
-        }
-        return animalBoardInstance.toString();
     }
 
     public AnimalBoardInstance getAnimalBoardInstance() {
