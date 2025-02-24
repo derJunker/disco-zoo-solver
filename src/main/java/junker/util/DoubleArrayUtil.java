@@ -1,10 +1,12 @@
 package junker.util;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 import junker.board.Coords;
 
@@ -20,6 +22,29 @@ public class DoubleArrayUtil {
             }
         }
         return result;
+    }
+
+    public static <T> Map<Coords, T> filter(T[][] array, Predicate<T> predicate) {
+        Map<Coords, T> result = new HashMap<>();
+        for (int y = 0; y < array.length; y++) {
+            for (int x = 0; x < array[y].length; x++) {
+                if (predicate.test(array[x][y])) {
+                    result.put(new Coords(x, y), array[x][y]);
+                }
+            }
+        }
+        return result;
+    }
+
+    public static <T> List<T>[][] cloneDoubleListArray(List<T>[][] doubleListArray) {
+        List<T>[][] clone = new List[doubleListArray.length][];
+        for (int i = 0; i < doubleListArray.length; i++) {
+            clone[i] = new List[doubleListArray[i].length];
+            for (int j = 0; j < doubleListArray[i].length; j++) {
+                clone[i][j] = new ArrayList<>(doubleListArray[i][j]);
+            }
+        }
+        return clone;
     }
 
     public static <T, V> List<V> flatMapDoubleArrayToList(T[][] array, Function<T, V> mapper) {

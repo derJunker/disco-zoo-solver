@@ -6,7 +6,7 @@ import junker.animals.Animal;
 
 public class BoardService {
     public static void placeAnimal(Tile[][] board, Animal animal, Coords coords) {
-        var instance = new AnimalBoardInstance(animal, "(" + coords.x() + "," + coords.y() + ")", coords);
+        var instance = new AnimalBoardInstance(animal, coords.x() + " " + coords.y(), coords);
         for (Coords coord : animal.pattern()) {
             int x = coords.x() + coord.x();
             int y = coords.y() + coord.y();

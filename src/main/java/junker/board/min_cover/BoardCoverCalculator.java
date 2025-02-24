@@ -3,29 +3,84 @@ package junker.board.min_cover;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import junker.animals.Animal;
 import junker.board.AnimalBoardInstance;
 import junker.board.Coords;
 import junker.board.Game;
-import junker.board.Tile;
 import junker.board.probabiltiy.PermutationService;
+
+import static junker.util.DoubleArrayUtil.arrayAsCoordinatesString;
+import static junker.util.DoubleArrayUtil.cloneDoubleListArray;
+import static junker.util.DoubleArrayUtil.filter;
 
 public class BoardCoverCalculator {
 
-    public static Set<Set<Coords>> minimumSetCover(Game game, Animal animalToSearch) {
+    public static Set<Set<Coords>> coveringSets(Game game, Animal animalToSearch) {
         var overlap = calculateOverlap(game, animalToSearch);
-        return minimumSetCover(game.getBoard(), animalToSearch, overlap);
+        var coveringSets = coveringSets(overlap);
+        return onlyMinSizedSets(coveringSets);
     }
 
-    private static Set<Set<Coords>> minimumSetCover(Tile[][] board, Animal animalToSearch,
-                                                    List<AnimalBoardInstance>[][] overlap) {
-        var highestOverlapCoords = getHighestOverlapCoords(overlap);
-        for (var coords : highestOverlapCoords) {
+    private static Set<Set<Coords>> onlyMinSizedSets(Set<Set<Coords>> coveringSets) {
+        int minSize = coveringSets.stream().mapToInt(Set::size).min().orElse(0);
+        return coveringSets.stream().filter(set -> set.size() == minSize).collect(Collectors.toSet());
+    }
 
+    private static Set<Set<Coords>> coveringSets(List<AnimalBoardInstance>[][] overlap) {
+
+        var uniqueInstances = getUniqueInstances(overlap);
+        Map<Coords, Set<AnimalBoardInstance>> uniqueOverlap = filter(uniqueInstances,
+                set -> set.size() > 1);
+        if (uniqueOverlap.isEmpty()) {
+            var nonOverlappings = getAllNonOverlapping(uniqueInstances);
+            return new HashSet<>(Set.of(nonOverlappings));
         }
-        return null;
+
+
+        var highestOverlapCoords = getHighestOverlapCoords(overlap);
+        var overallResults = new HashSet<Set<Coords>>();
+        for (var coords : highestOverlapCoords) {
+            var clonedOverlap = cloneDoubleListArray(overlap);
+            removeOverlapAt(coords, clonedOverlap);
+            var result = coveringSets(clonedOverlap);
+            result.forEach(set -> set.add(coords));
+            overallResults.addAll(result);
+        }
+        return overallResults;
+    }
+
+    private static Set<Coords> getAllNonOverlapping(Set<AnimalBoardInstance>[][] uniqueInstances) {
+        return filter(uniqueInstances, set -> set.size() == 1).values()
+                .stream()
+                .map(set -> set.iterator().next().origin())
+                .collect(Collectors.toSet());
+    }
+
+    private static Set<AnimalBoardInstance>[][] getUniqueInstances(List<AnimalBoardInstance>[][] overlap) {
+        Set<AnimalBoardInstance>[][] result =  new Set[overlap.length][];
+        for (int i = 0; i < overlap.length; i++) {
+            result[i] = (Set<AnimalBoardInstance>[]) new Set[overlap[i].length];
+            for (int j = 0; j < overlap[i].length; j++) {
+                result[i][j] = new HashSet<>(overlap[i][j]);
+            }
+        }
+        return result;
+    }
+
+    private static void removeOverlapAt(Coords coords, List<AnimalBoardInstance>[][] overlap) {
+        var instances = overlap[coords.x()][coords.y()];
+        overlap[coords.x()][coords.y()] = new ArrayList<>();
+        for (var instance : instances) {
+            for (int y = 0; y < overlap.length; y++) {
+                for (int x = 0; x < overlap[0].length; x++) {
+                    overlap[x][y].remove(instance);
+                }
+            }
+        }
     }
 
 

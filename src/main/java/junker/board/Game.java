@@ -31,6 +31,18 @@ public class Game {
         return game;
     }
 
+    public void revealTile(int x, int y) {
+        setTile(x, y, true, board[x][y].getAnimalBoardInstance().animal());
+    }
+
+    public void setTile(int x, int y, boolean revealed, Animal animal) {
+        var tile = board[x][y];
+        tile.setRevealed(revealed);
+        tile.setAnimalBoardInstance(null);
+        if (animal != null)
+            tile.setAnimalBoardInstance(new AnimalBoardInstance(animal, "", new Coords(x, y)));
+    }
+
     public Float[][] calculateProbabilities() {
         return null; // TODO: Implement this method
     }
