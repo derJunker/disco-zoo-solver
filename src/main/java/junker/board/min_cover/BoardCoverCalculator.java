@@ -58,37 +58,32 @@ public class BoardCoverCalculator {
             if (animalToPlace.size() == 1 && Objects.equals(animalToPlace.getFirst(), animalToSearch)) {
                 return new HashSet<>(List.of(List.of(coords)));
             }
-            // normally clonedGames is just 1. in some very edge cases, the only 2 possible placements are 2 different
-            // animals and not null. Then we need to check both
-            for (int i = 0; i < clonedGames.size(); i++) {
-                var clonedGame = clonedGames.get(i);
-                clonedGame.setTile(coords.x(), coords.y(), true, animalToPlace.get(i));
-                var result = coveringSets(clonedGame, animalToSearch);
-                result = result.stream()
-                        .filter(list -> list.size() < Game.MAX_ATTEMPTS)
-                        .map(list -> {
-                            var newList = new ArrayList<>(List.of(coords));
-                            newList.addAll(list);
-                            return newList;
-                        }).collect(Collectors.toSet());
-                overallResults.addAll(result);
-            }
+            revealTileAndStepInto(clonedGames, coords, animalToPlace, overallResults, animalToSearch);
 
         }
         return overallResults;
     }
 
-    private static Set<List<Coords>> placeRequiredAnimal(Coords coords, List<AnimalBoardInstance>[][] overallOverlap, Game clonedGame, Animal animalToSearch) {
-        var animalToPlace = getAnimalToPlace(overallOverlap, coords, animalToSearch);
-        if (animalToPlace.size() == 1) {
-            if (Objects.equals(animalToPlace.getFirst(), animalToSearch))
-                return new HashSet<>(List.of(List.of(coords)));
-            clonedGame.setTile(coords.x(), coords.y(), true, animalToPlace.getFirst());
+    private static void revealTileAndStepInto(ArrayList<Game> clonedGames, Coords coords,
+                                                           List<Animal> animalsToPlace,
+                                                           HashSet<List<Coords>> overallResults,
+                                                           Animal animalToSearch) {
+        // normally clonedGames is just 1. in some very edge cases, the only 2 possible placements are 2 different
+        // animals and not null. Then we need to check both
+        for (int i = 0; i < clonedGames.size(); i++)
+        {
+            var clonedGame = clonedGames.get(i);
+            clonedGame.setTile(coords.x(), coords.y(), true, animalsToPlace.get(i));
+            var result = coveringSets(clonedGame, animalToSearch);
+            result = result.stream()
+                    .filter(list -> list.size() < junker.board.Game.MAX_ATTEMPTS)
+                    .map(list -> {
+                        var newList = new ArrayList<>(List.of(coords));
+                        newList.addAll(list);
+                        return newList;
+                    }).collect(Collectors.toSet());
+            overallResults.addAll(result);
         }
-        else if (animalToPlace.size() > 1) {
-            throw new IllegalStateException("Multiple animals to place TODO fix this"); // TODO impl
-        }
-        return null;
     }
 
 
@@ -190,7 +185,7 @@ public class BoardCoverCalculator {
                 animalInstance -> animalInstance != null && animalInstance.animal().equals(animalToSearch));
     }
 
-    public static List<AnimalBoardInstance>[][] calculateOverallOverlap(Tile[][] wipedBoard,
+    private static List<AnimalBoardInstance>[][] calculateOverallOverlap(Tile[][] wipedBoard,
                                                                  List<Animal> containedAnimals) {
         var boardPermutations = PermutationService.calculateBoardPermutations(wipedBoard, containedAnimals);
         List<AnimalBoardInstance>[][] overlap = new List[wipedBoard.length][wipedBoard[0].length];

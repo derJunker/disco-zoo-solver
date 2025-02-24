@@ -31,13 +31,5 @@ public class Main {
         var minCover = BoardCoverCalculator.minCoveringSets(game, animals.get(1));
         var bestClicks = minCover.stream().map(cover -> cover.getFirst()).collect(Collectors.toSet());
         System.out.println(bestClicks.size() + " best clicks:\n" + bestClicks);
-
-//        var overlap = BoardCoverCalculator.calculateOverlap(game, animals.get(0));
-//        var overlapCount = DoubleArrayUtil.arrayAsCoordinatesString(DoubleArrayUtil.mapDoubleArrayListToSet(overlap,
-//                animalBoardInstances -> new HashSet<>(List.of("" + animalBoardInstances.size()))));
-//        var overlapSet = DoubleArrayUtil.arrayAsCoordinatesString(DoubleArrayUtil.mapDoubleArrayListToSet(overlap,
-//                animalBoardInstances -> new HashSet<>(animalBoardInstances.stream().map(AnimalBoardInstance::toString).toList())));
-//        System.out.println("Overlap count:\n" + overlapCount);
-//        System.out.println("Overlap set:\n" + overlapSet);
     }
 }
