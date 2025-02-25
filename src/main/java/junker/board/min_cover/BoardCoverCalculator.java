@@ -113,7 +113,27 @@ public class BoardCoverCalculator {
                 AnimalBoardInstance::id));
 
         var allClonedGames = new ArrayList<List<Game>>();
-        Set<Solution> foundSolutions = new HashSet<>();
+        Set<Solution> foundSolutions = checkForMultiClickSolutions(multiClickCollection, game, animalToSearch, allClonedGames);
+        if (!foundSolutions.isEmpty()) {
+            return foundSolutions;
+        }
+
+        var overallResults = new HashSet<Solution>();
+        for (int i = 0; i < multiClickCollection.size(); i++) {
+            var multiClicks = multiClickCollection.get(i);
+            var clonedGames = allClonedGames.get(i);
+            for (var coords : multiClicks) {
+                var fakedClickOrder = new ArrayList<>(List.of(coords));
+                fakedClickOrder.addAll(multiClicks.stream().filter(c -> !c.equals(coords)).toList());
+                stepIntoNextDepth(clonedGames, fakedClickOrder, overallResults, animalToSearch);
+            }
+        }
+        return overallResults;
+    }
+
+    private static Set<Solution> checkForMultiClickSolutions(ArrayList<Set<Coords>> multiClickCollection,
+                                                             Game game, Animal animalToSearch, ArrayList<List<Game>> allClonedGames) {
+        var foundSolutions = new HashSet<Solution>();
         for (var multiClicks : multiClickCollection) {
             var clonedGames = new ArrayList<Game>(List.of(new Game(game, true)));
             var multiClickList = new ArrayList<>(multiClicks);
@@ -144,22 +164,7 @@ public class BoardCoverCalculator {
             }
             allClonedGames.add(clonedGames);
         }
-
-        if (!foundSolutions.isEmpty()) {
-            return foundSolutions;
-        }
-
-        var overallResults = new HashSet<Solution>();
-        for (int i = 0; i < multiClickCollection.size(); i++) {
-            var multiClicks = multiClickCollection.get(i);
-            var clonedGames = allClonedGames.get(i);
-            for (var coords : multiClicks) {
-                var fakedClickOrder = new ArrayList<>(List.of(coords));
-                fakedClickOrder.addAll(multiClicks.stream().filter(c -> !c.equals(coords)).toList());
-                stepIntoNextDepth(clonedGames, fakedClickOrder, overallResults, animalToSearch);
-            }
-        }
-        return overallResults;
+        return foundSolutions;
     }
 
     private static void ifAnimalToPlaceEmptyThrow(List<Animal> animalToPlace, Game game, Coords coords, Set<Coords> multiClicks) {

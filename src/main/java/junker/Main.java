@@ -12,7 +12,7 @@ import junker.board.Game;
 public class Main {
     public static void main(String[] args) {
         Animal.initAnimals();
-        var animals = Animal.findAnimalsByName("Sheep");
+        var animals = Animal.findAnimalsByName("Sasquatch");
         var game = new Game(animals);
 //        game.setTile(1, 1, true, null);
 //        game.setTile(1, 3, true, null);
