@@ -113,6 +113,25 @@ public class PermutationService {
         return true;
     }
 
+    public static <T> List<List<T>> getPermutationOfList(List<T> list) {
+        List<List<T>> result = new ArrayList<>();
+        if (list.isEmpty()) {
+            result.add(new ArrayList<>());
+            return result;
+        }
+        T firstElement = list.get(0);
+        List<T> remainingList = list.subList(1, list.size());
+        List<List<T>> permutations = getPermutationOfList(remainingList);
+        for (List<T> permutation : permutations) {
+            for (int i = 0; i <= permutation.size(); i++) {
+                List<T> newPermutation = new ArrayList<>(permutation);
+                newPermutation.add(i, firstElement);
+                result.add(newPermutation);
+            }
+        }
+        return result;
+    }
+
 
 
 }

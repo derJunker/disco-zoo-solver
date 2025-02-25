@@ -4,7 +4,6 @@ import junker.animals.AnimalService;
 import junker.board.Game;
 
 // TODO Optimizations:
-//  Independent Sets for highest overlaps and then immediately clicking all of them
 //  Check at the start if there is only one highest spot. if so then dont go through all the recursive calls
 //  Maybe limit the multiclick only if there are more than X highest spots
 //  Multiple threads
@@ -15,7 +14,7 @@ import junker.board.Game;
 
 public class Main {
     public static void main(String[] args) {
-        var animals = AnimalService.getAnimalsByName(  "Koala", "Sasquatch");
+        var animals = AnimalService.getAnimalsByName(  "Koala");
         var game = new Game(animals);
 //        game.setTile(1, 1, true, null);
 //        game.setTile(1, 3, true, null);
@@ -24,6 +23,6 @@ public class Main {
 //        game.setTile(3, 0, true, null);
 //        game.setTile(1, 0, true, null);
         var bestClicks = game.getBestClicks(animals.get(0));
-        System.out.println(bestClicks.size() + " best clicks:\n" + bestClicks);
+        System.out.println(bestClicks.size() + " best Solutions:\n" + bestClicks);
     }
 }

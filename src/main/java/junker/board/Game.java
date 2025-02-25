@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 import junker.animals.Animal;
 import junker.board.min_cover.BoardCoverCalculator;
+import junker.board.min_cover.Solution;
 import junker.board.probabiltiy.PermutationService;
 import junker.util.DoubleArrayUtil;
 
@@ -75,7 +76,11 @@ public class Game {
 
     public Set<Coords> getBestClicks(Animal animalToSearch) {
         var minCover = BoardCoverCalculator.minCoveringSets(this, animalToSearch);
-        return minCover.stream().map(List::getFirst).collect(Collectors.toSet());
+        return minCover.stream().map(sol -> sol.clicks().getFirst()).collect(Collectors.toSet());
+    }
+
+    public Set<Solution> getBestSolutions(Animal animalToSearch) {
+        return BoardCoverCalculator.minCoveringSets(this, animalToSearch);
     }
 
     @Override
