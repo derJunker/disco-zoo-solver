@@ -1,6 +1,6 @@
 package junker;
 
-import junker.animals.AnimalService;
+import junker.animals.Animal;
 import junker.board.Game;
 
 // TODO Optimizations:
@@ -11,7 +11,8 @@ import junker.board.Game;
 
 public class Main {
     public static void main(String[] args) {
-        var animals = AnimalService.getAnimalsByName(  "Sasquatch", "Koala");
+        Animal.initAnimals();
+        var animals = Animal.findAnimalsByName("Sheep");
         var game = new Game(animals);
 //        game.setTile(1, 1, true, null);
 //        game.setTile(1, 3, true, null);
