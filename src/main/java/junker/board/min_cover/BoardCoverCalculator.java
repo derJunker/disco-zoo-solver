@@ -49,9 +49,9 @@ public class BoardCoverCalculator {
         var overallOverlap = calculateOverallOverlap(game.getWipedBoard(), game.getContainedAnimals());
         var overlap = getAnimalOverlap(overallOverlap, animalToSearch);
         var maxOverlap = 0;
-        for (int x = 0; x < overlap.length; x++) {
+        for (List<AnimalBoardInstance>[] lists : overlap) {
             for (int y = 0; y < overlap[0].length; y++) {
-                var currentOverlap = new HashSet<>(overlap[x][y]).size();
+                var currentOverlap = new HashSet<>(lists[y]).size();
                 if (currentOverlap > maxOverlap) {
                     maxOverlap = currentOverlap;
                 }
