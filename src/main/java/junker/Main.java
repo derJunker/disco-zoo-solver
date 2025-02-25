@@ -1,14 +1,7 @@
 package junker;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import junker.animals.AnimalService;
-import junker.board.AnimalBoardInstance;
-import junker.board.min_cover.BoardCoverCalculator;
 import junker.board.Game;
-import junker.util.DoubleArrayUtil;
 
 // TODO Optimizations:
 //  Independent Sets for highest overlaps and then immediately clicking all of them
