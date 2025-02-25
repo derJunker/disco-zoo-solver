@@ -14,7 +14,6 @@ import junker.board.Coords;
 import junker.board.Game;
 import junker.board.Tile;
 import junker.board.probabiltiy.PermutationService;
-import junker.util.DoubleArrayUtil;
 
 import static junker.board.probabiltiy.PermutationService.getPermutationOfList;
 import static junker.util.DoubleArrayUtil.filter;
@@ -23,8 +22,15 @@ import static junker.util.DoubleArrayUtil.filterListsInDoubleArray;
 
 public class BoardCoverCalculator {
 
-    public static Set<Solution> minCoveringSets(Game game, Animal animalToSearch) {
-        var coveringSets = coveringSets(game, animalToSearch);
+    public static Set<Solution> minCoveringSets(Game game, Animal animalToSearch, boolean forceFullSolution) {
+        var overallOverlap = calculateOverallOverlap(game.getWipedBoard(), game.getContainedAnimals());
+        var overlap = getAnimalOverlap(overallOverlap, animalToSearch);
+        var highestOverlapCoords = getHighestOverlapCoords(overlap);
+
+        if (highestOverlapCoords.size() <= 1 || forceFullSolution)
+            return Set.of(new Solution(new ArrayList<>(highestOverlapCoords), new Game(game, true)));
+
+        var coveringSets = coveringSets(game, animalToSearch, overlap, highestOverlapCoords);
         var minSizedSets = onlyMinSizedSets(coveringSets);
         return onlyBestSolutions(minSizedSets, animalToSearch);
     }
@@ -76,6 +82,20 @@ public class BoardCoverCalculator {
         var highestOverlapCoords = getHighestOverlapCoords(overlap);
 
 
+        var remainingUnOverlappedCoords = checkForNoOverlap(overlap);
+        if (remainingUnOverlappedCoords != null) {
+            return calcNoOverlapSolutions(remainingUnOverlappedCoords, animalToSearch,
+                    highestOverlapCoords, game);
+        }
+
+        return clickHighestChanceCoordsAndStepInto(highestOverlapCoords, game, animalToSearch, overlap);
+    }
+
+    /**
+     * if overlap etc. is already computed
+     */
+    private static Set<Solution> coveringSets(Game game, Animal animalToSearch,
+                                              List<AnimalBoardInstance>[][] overlap, Set<Coords> highestOverlapCoords) {
         var remainingUnOverlappedCoords = checkForNoOverlap(overlap);
         if (remainingUnOverlappedCoords != null) {
             return calcNoOverlapSolutions(remainingUnOverlappedCoords, animalToSearch,

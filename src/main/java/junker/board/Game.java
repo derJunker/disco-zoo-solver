@@ -75,12 +75,12 @@ public class Game {
     }
 
     public Set<Coords> getBestClicks(Animal animalToSearch) {
-        var minCover = BoardCoverCalculator.minCoveringSets(this, animalToSearch);
+        var minCover = BoardCoverCalculator.minCoveringSets(this, animalToSearch, false);
         return minCover.stream().map(sol -> sol.clicks().getFirst()).collect(Collectors.toSet());
     }
 
     public Set<Solution> getBestSolutions(Animal animalToSearch) {
-        return BoardCoverCalculator.minCoveringSets(this, animalToSearch);
+        return BoardCoverCalculator.minCoveringSets(this, animalToSearch, true);
     }
 
     @Override
