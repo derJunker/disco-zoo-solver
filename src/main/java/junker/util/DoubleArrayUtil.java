@@ -36,6 +36,19 @@ public class DoubleArrayUtil {
         return result;
     }
 
+    public static <T> Map<Coords, T> filterByIndex(T[][] array, Predicate<Coords> predicate) {
+        Map<Coords, T> result = new HashMap<>();
+        for (int x = 0; x < array.length; x++) {
+            for (int y = 0; y < array[0].length; y++) {
+                var coords = new Coords(x, y);
+                if (predicate.test(coords)) {
+                    result.put(coords, array[x][y]);
+                }
+            }
+        }
+        return result;
+    }
+
     public static <T> List<T>[][] filterListsInDoubleArray(List<T>[][] array, Predicate<T> predicate) {
         List<T>[][] result = new List[array.length][];
         for (int x = 0; x < array.length; x++) {

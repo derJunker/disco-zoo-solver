@@ -1,42 +1,50 @@
 package junker.board.min_cover;
 
 import java.util.*;
+import java.util.function.Function;
 
 import junker.board.Coords;
 
 public class IndependentSetsCalculator {
 
     /**
-     * Returns all maximal independent subsets of coordinates from the given 2D array.
-     * Two cells (with their associated sets) are independent if their sets share no common element.
-     * Each maximal independent subset is represented as a set of Coords.
+     * Returns all maximal independent subsets of Coords from the given map.
+     * Each coordinate is associated with a list of items of type T. For each coordinate,
+     * we compute the set of string ids (via idMapper) from its items. Two coordinates conflict
+     * if their id sets share at least one common id. A maximal independent subset is a set of
+     * coordinates that are pairwise non-conflicting (i.e. their id sets are pairwise disjoint)
+     * and maximal with respect to this property.
      *
-     * @param ids a 2D array of sets of strings
+     * @param <T>      the type of items stored at each coordinate
+     * @param items    a map from Coords to a List of T
+     * @param idMapper a function that maps an item T to its string id
      * @return a set of maximal independent subsets, each represented as a set of Coords
      */
-    public static Set<Set<Coords>> calculateMaxIndependentSubSets(Set<String>[][] ids) {
-        int rows = ids.length;
-        if (rows == 0) {
-            return Collections.emptySet();
-        }
-        int cols = ids[0].length;
-        int total = rows * cols;
+    public static <T> Set<Set<Coords>> calculateMaxIndependentSubSets(
+            Map<Coords, List<T>> items,
+            Function<T, String> idMapper) {
 
-        // Flatten the 2D array into a list of Coords and a corresponding list of sets.
-        List<Coords> coordsList = new ArrayList<>(total);
-        List<Set<String>> setList = new ArrayList<>(total);
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < cols; j++) {
-                coordsList.add(new Coords(i, j));
-                setList.add(ids[i][j]);
+        // Extract the list of coordinates.
+        List<Coords> coordsList = new ArrayList<>(items.keySet());
+        int total = coordsList.size();
+
+        // For each coordinate, compute the set of ids present in its associated list.
+        List<Set<String>> idSets = new ArrayList<>(total);
+        for (Coords coord : coordsList) {
+            List<T> itemList = items.get(coord);
+            Set<String> ids = new HashSet<>();
+            for (T item : itemList) {
+                ids.add(idMapper.apply(item));
             }
+            idSets.add(ids);
         }
 
-        // Build a conflict matrix: conflict[i][j] is true if setList.get(i) and setList.get(j) share any element.
+        // Build a conflict matrix:
+        // conflict[i][j] is true if the id set at coordsList[i] and coordsList[j] share any common id.
         boolean[][] conflict = new boolean[total][total];
         for (int i = 0; i < total; i++) {
             for (int j = i + 1; j < total; j++) {
-                if (!Collections.disjoint(setList.get(i), setList.get(j))) {
+                if (!Collections.disjoint(idSets.get(i), idSets.get(j))) {
                     conflict[i][j] = true;
                     conflict[j][i] = true;
                 }
@@ -44,7 +52,7 @@ public class IndependentSetsCalculator {
         }
 
         // Build the complement graph:
-        // Two vertices (cells) are connected in the complement if their sets are disjoint.
+        // In the complement graph, two coordinates are adjacent if their id sets are disjoint.
         boolean[][] complement = new boolean[total][total];
         for (int i = 0; i < total; i++) {
             for (int j = 0; j < total; j++) {
@@ -54,8 +62,8 @@ public class IndependentSetsCalculator {
             }
         }
 
-        // Use Bron–Kerbosch to find all maximal cliques in the complement graph,
-        // which correspond to maximal independent sets of cells.
+        // Use Bron–Kerbosch algorithm with pivoting to find all maximal cliques in the complement graph.
+        // Each maximal clique corresponds to a maximal independent subset of coordinates.
         Set<Set<Integer>> maximalCliquesIndices = new HashSet<>();
         Set<Integer> R = new HashSet<>();
         Set<Integer> P = new HashSet<>();
@@ -65,31 +73,32 @@ public class IndependentSetsCalculator {
         }
         bronKerbosch(R, P, X, complement, maximalCliquesIndices);
 
-        // Convert the cliques (indices) back to sets of Coords.
-        Set<Set<Coords>> maximalCliquesCoords = new HashSet<>();
-        for (Set<Integer> clique : maximalCliquesIndices) {
-            Set<Coords> coordsClique = new HashSet<>();
-            for (Integer idx : clique) {
-                coordsClique.add(coordsList.get(idx));
+        // Map cliques (indices) back to coordinates.
+        Set<Set<Coords>> result = new HashSet<>();
+        for (Set<Integer> cliqueIndices : maximalCliquesIndices) {
+            Set<Coords> clique = new HashSet<>();
+            for (Integer idx : cliqueIndices) {
+                clique.add(coordsList.get(idx));
             }
-            maximalCliquesCoords.add(coordsClique);
+            result.add(clique);
         }
-        return maximalCliquesCoords;
+
+        return result;
     }
 
     /**
-     * Recursive Bron–Kerbosch algorithm with pivoting.
+     * Recursive Bron–Kerbosch algorithm with pivoting to enumerate all maximal cliques.
      *
-     * @param R current clique
-     * @param P prospective vertices that can be added to R
-     * @param X vertices already processed (should be excluded)
-     * @param graph the complement graph represented as an adjacency matrix
-     * @param cliques set to collect all maximal cliques found
+     * @param R       current clique (set of vertex indices)
+     * @param P       prospective vertices (indices) that can be added to R
+     * @param X       vertices already processed (indices) that should be excluded
+     * @param graph   the complement graph represented as an adjacency matrix
+     * @param cliques set to accumulate all maximal cliques (each clique is a set of indices)
      */
     private static void bronKerbosch(Set<Integer> R, Set<Integer> P, Set<Integer> X,
                                      boolean[][] graph, Set<Set<Integer>> cliques) {
         if (P.isEmpty() && X.isEmpty()) {
-            // Found a maximal clique.
+            // R is a maximal clique.
             cliques.add(new HashSet<>(R));
             return;
         }
@@ -99,7 +108,7 @@ public class IndependentSetsCalculator {
         unionPX.addAll(X);
         Integer pivot = unionPX.iterator().next();
 
-        // Only consider vertices in P that are not neighbors of the pivot.
+        // Consider only vertices in P that are not neighbors of the pivot.
         Set<Integer> candidates = new HashSet<>(P);
         for (int v = 0; v < graph.length; v++) {
             if (graph[pivot][v]) {
@@ -130,6 +139,53 @@ public class IndependentSetsCalculator {
             bronKerbosch(newR, newP, newX, graph, cliques);
             P.remove(v);
             X.add(v);
+        }
+    }
+
+    // Example usage.
+    public static void main(String[] args) {
+        // For demonstration, suppose we have a simple class:
+        class Item {
+            private final String id;
+            private final String description;
+
+            public Item(String id, String description) {
+                this.id = id;
+                this.description = description;
+            }
+
+            public String getId() {
+                return id;
+            }
+
+            @Override
+            public String toString() {
+                return "Item(" + id + ", " + description + ")";
+            }
+        }
+
+        // Construct a Map<Coords, List<Item>>.
+        // For example, at coordinate (0,0) we have two items,
+        // at (0,1) one item, at (1,0) two items, and at (1,1) one item.
+        Map<Coords, List<Item>> items = new HashMap<>();
+        items.put(new Coords(0, 0), Arrays.asList(new Item("a", "A1"), new Item("b", "B1")));
+        items.put(new Coords(0, 1), Arrays.asList(new Item("b", "B2")));
+        items.put(new Coords(1, 0), Arrays.asList(new Item("c", "C1"), new Item("d", "D1")));
+        items.put(new Coords(1, 1), Arrays.asList(new Item("a", "A2")));
+
+        // In this example:
+        // - (0,0) has ids {"a", "b"}
+        // - (0,1) has id {"b"}
+        // - (1,0) has ids {"c", "d"}
+        // - (1,1) has id {"a"}
+        // Two coordinates conflict if their id sets overlap.
+        // So (0,0) conflicts with (0,1) (they share "b") and with (1,1) (they share "a").
+        // The Bron–Kerbosch algorithm will find all maximal sets of coordinates that are pairwise disjoint by id.
+
+        Set<Set<Coords>> result = calculateMaxIndependentSubSets(items, Item::getId);
+        System.out.println("Maximal independent subsets (by Coords):");
+        for (Set<Coords> subset : result) {
+            System.out.println(subset);
         }
     }
 }

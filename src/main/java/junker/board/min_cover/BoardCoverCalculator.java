@@ -16,6 +16,7 @@ import junker.board.Tile;
 import junker.board.probabiltiy.PermutationService;
 
 import static junker.util.DoubleArrayUtil.filter;
+import static junker.util.DoubleArrayUtil.filterByIndex;
 import static junker.util.DoubleArrayUtil.filterListsInDoubleArray;
 
 public class BoardCoverCalculator {
@@ -41,44 +42,88 @@ public class BoardCoverCalculator {
                     highestOverlapCoords);
         }
 
-        return clickHighestChanceCoordsAndStepInto(highestOverlapCoords, game, overallOverlap, animalToSearch);
+        return clickHighestChanceCoordsAndStepInto(highestOverlapCoords, game, overallOverlap, animalToSearch, overlap);
     }
 
-    private static Set<List<Coords>> clickHighestChanceCoordsAndStepInto(Set<Coords> highestOverlapCoords, Game game, List<AnimalBoardInstance>[][] overallOverlap, Animal animalToSearch) {
+    private static Set<List<Coords>> clickHighestChanceCoordsAndStepInto(Set<Coords> highestOverlapCoords, Game game,
+                                                                         List<AnimalBoardInstance>[][] overallOverlap
+            , Animal animalToSearch, List<AnimalBoardInstance>[][] overlap) {
+
+        Map<Coords, List<AnimalBoardInstance>> tilesWithHighestOverlaps = filterByIndex(overlap,
+                highestOverlapCoords::contains);
+        var multiClickCollection = new ArrayList<>(IndependentSetsCalculator.calculateMaxIndependentSubSets(tilesWithHighestOverlaps,
+                AnimalBoardInstance::id));
+
+        var allClonedGames = new ArrayList<List<Game>>();
+        Set<List<Coords>> foundSolutions = new HashSet<>();
+        for (var multiClicks : multiClickCollection) {
+            var clonedGames = new ArrayList<Game>(List.of(new Game(game, true)));
+            var multiClickList = new ArrayList<>(multiClicks);
+            for (var coords : multiClickList) {
+                var newClonedGames = new ArrayList<Game>();
+                for (var clonedGame : clonedGames) {
+                    var newOverallOverlap = calculateOverallOverlap(clonedGame.getBoard(), clonedGame.getContainedAnimals());
+                    var animalToPlace = getAnimalToPlace(newOverallOverlap, coords, animalToSearch);
+                    if (animalToPlace.size() == 1 && Objects.equals(animalToPlace.getFirst(), animalToSearch)) {
+                        var solutions = new ArrayList<List<Coords>>();
+                        var solutionFirstClicks = multiClickList.subList(0, multiClickList.indexOf(coords) + 1);
+                        for (var solutionFirstClick : solutionFirstClicks) {
+                            var solutionPermutation = new ArrayList<>(List.of(solutionFirstClick));
+                            solutionPermutation.addAll(multiClickList.stream().filter(c -> !c.equals(solutionFirstClick)).toList());
+                            solutions.add(solutionPermutation);
+                        }
+                        foundSolutions.addAll(solutions);
+                        continue;
+                    }
+                    ifAnimalToPlaceEmptyThrow(animalToPlace, game, coords, multiClicks);
+                    for (var animal : animalToPlace) {
+                        var newClonedGame = new Game(clonedGame, true);
+                        newClonedGame.setTile(coords.x(), coords.y(), true, animal);
+                        newClonedGames.add(newClonedGame);
+                    }
+                }
+                clonedGames = newClonedGames;
+            }
+            allClonedGames.add(clonedGames);
+        }
+
+        if (!foundSolutions.isEmpty()) {
+            return foundSolutions;
+        }
+
         var overallResults = new HashSet<List<Coords>>();
-        for (var coords : highestOverlapCoords) {
-            var animalToPlace = getAnimalToPlace(overallOverlap, coords, animalToSearch);
-
-            var clonedGames = new ArrayList<Game>();
-            for (Animal animal : animalToPlace) {
-                var clonedGame = new Game(game, true);
-                clonedGames.add(clonedGame);
-                clonedGame.setTile(coords.x(), coords.y(), true, animal);
+        for (int i = 0; i < multiClickCollection.size(); i++) {
+            var multiClicks = multiClickCollection.get(i);
+            var clonedGames = allClonedGames.get(i);
+            for (var coords : multiClicks) {
+                var fakedClickOrder = new ArrayList<>(List.of(coords));
+                fakedClickOrder.addAll(multiClicks.stream().filter(c -> !c.equals(coords)).toList());
+                stepIntoNextDepth(clonedGames, fakedClickOrder, overallResults, animalToSearch);
             }
-            if (animalToPlace.size() == 1 && Objects.equals(animalToPlace.getFirst(), animalToSearch)) {
-                return new HashSet<>(List.of(List.of(coords)));
-            }
-            revealTileAndStepInto(clonedGames, coords, animalToPlace, overallResults, animalToSearch);
-
         }
         return overallResults;
     }
 
-    private static void revealTileAndStepInto(ArrayList<Game> clonedGames, Coords coords,
-                                                           List<Animal> animalsToPlace,
-                                                           HashSet<List<Coords>> overallResults,
-                                                           Animal animalToSearch) {
-        // normally clonedGames is just 1. in some very edge cases, the only 2 possible placements are 2 different
-        // animals and not null. Then we need to check both
-        for (int i = 0; i < clonedGames.size(); i++)
-        {
-            var clonedGame = clonedGames.get(i);
-            clonedGame.setTile(coords.x(), coords.y(), true, animalsToPlace.get(i));
+    private static void ifAnimalToPlaceEmptyThrow(List<Animal> animalToPlace, Game game, Coords coords, Set<Coords> multiClicks) {
+        if (animalToPlace.isEmpty()) {
+            System.out.println("current multiclick: " + multiClicks);
+            game.printGame();
+            throw new IllegalStateException("No animal to place at " + coords + ". In coverCalculation");
+        }
+    }
+
+
+    // TODO maybe make the list created in here return instead of modifying the overallResults
+    private static void stepIntoNextDepth(List<Game> clonedGames, List<Coords> prevCoords,
+                                          HashSet<List<Coords>> overallResults,
+                                          Animal animalToSearch) {
+        for (Game clonedGame : clonedGames) {
+//            clonedGame.printGame();
             var result = coveringSets(clonedGame, animalToSearch);
             result = result.stream()
-                    .filter(list -> list.size() < junker.board.Game.MAX_ATTEMPTS)
+                    .filter(list -> list.size() < Game.MAX_ATTEMPTS)
                     .map(list -> {
-                        var newList = new ArrayList<>(List.of(coords));
+                        var newList = new ArrayList<>(prevCoords);
                         newList.addAll(list);
                         return newList;
                     }).collect(Collectors.toSet());

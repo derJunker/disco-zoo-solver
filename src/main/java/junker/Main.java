@@ -5,6 +5,8 @@ import junker.board.Game;
 
 // TODO Optimizations:
 //  Independent Sets for highest overlaps and then immediately clicking all of them
+//  Check at the start if there is only one highest spot. if so then dont go through all the recursive calls
+//  Maybe limit the multiclick only if there are more than X highest spots
 //  Multiple threads
 //  reducing duplicate paths (either manually or with a certain algorithm to choose what to click? idk
 //  make getWhipedBoard only calculate it once per game instance
@@ -13,7 +15,7 @@ import junker.board.Game;
 
 public class Main {
     public static void main(String[] args) {
-        var animals = AnimalService.getAnimalsByName(  "Sasquatch", "Koala");
+        var animals = AnimalService.getAnimalsByName(  "Koala", "Sasquatch");
         var game = new Game(animals);
 //        game.setTile(1, 1, true, null);
 //        game.setTile(1, 3, true, null);
@@ -21,7 +23,7 @@ public class Main {
 //        game.setTile(3, 3, true, null);
 //        game.setTile(3, 0, true, null);
 //        game.setTile(1, 0, true, null);
-        var bestClicks = game.getBestClicks(animals.get(1));
+        var bestClicks = game.getBestClicks(animals.get(0));
         System.out.println(bestClicks.size() + " best clicks:\n" + bestClicks);
     }
 }
