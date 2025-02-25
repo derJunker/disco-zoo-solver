@@ -7,8 +7,6 @@ import junker.board.Game;
 //  Maybe limit the multiclick only if there are more than X highest spots
 //  Multiple threads
 //  reducing duplicate paths (either manually or with a certain algorithm to choose what to click? idk
-//  make getWhipedBoard only calculate it once per game instance
-//  if still slow add db
 //  ignore discobux
 
 public class Main {
