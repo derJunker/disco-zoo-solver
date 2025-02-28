@@ -30,10 +30,12 @@ public class PermutationService {
             var newBoard = BoardService.cloneBoard(board);
             BoardService.placeAnimal(newBoard, animals.getFirst(), placement);
             var newAnimals = animals.subList(1, animals.size());
-            var newPermutations = calculateBoardPermutations(newBoard, newAnimals);
-            if (newPermutations.isEmpty()) {
+            if (newAnimals.isEmpty()) {
                 permutations.add(newBoard);
-            } else {
+                continue;
+            }
+            var newPermutations = calculateBoardPermutations(newBoard, newAnimals);
+            if (!newPermutations.isEmpty()) {
                 permutations.addAll(newPermutations);
             }
         }

@@ -16,7 +16,7 @@ import junker.board.Game;
 import junker.board.Tile;
 import junker.board.probabiltiy.PermutationService;
 
-import static junker.board.probabiltiy.PermutationService.getPermutationOfList;
+import static junker.util.DoubleArrayUtil.allNotEmptyListsAreOfEqualLength;
 import static junker.util.DoubleArrayUtil.filter;
 import static junker.util.DoubleArrayUtil.filterByIndex;
 import static junker.util.DoubleArrayUtil.filterListsInDoubleArray;
@@ -254,7 +254,8 @@ public class BoardCoverCalculator {
         var uniqueInstances = getUniqueInstances(overlap);
         Map<Coords, Set<AnimalBoardInstance>> uniqueOverlap = filter(uniqueInstances,
                 set -> set.size() > 1);
-        if (uniqueOverlap.isEmpty()) {
+        // Check if all the overlaps have equal value
+        if (uniqueOverlap.isEmpty() && allNotEmptyListsAreOfEqualLength(overlap)) {
             return getAllNonOverlapping(uniqueInstances);
         } else {
             return null;

@@ -24,6 +24,22 @@ public class DoubleArrayUtil {
         return result;
     }
 
+    public static <T> boolean allNotEmptyListsAreOfEqualLength(List<T>[][] array) {
+        var equalOverlapSize = -1;
+        for (int x = 0; x < array.length; x++) {
+            for (int y = 0; y < array[0].length; y++) {
+                if (!array[x][y].isEmpty()) {
+                    if (equalOverlapSize == -1) {
+                        equalOverlapSize = array[x][y].size();
+                    } else if (array[x][y].size() != equalOverlapSize) {
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
     public static <T> Map<Coords, T> filter(T[][] array, Predicate<T> predicate) {
         Map<Coords, T> result = new HashMap<>();
         for (int x = 0; x < array.length; x++) {
