@@ -26,18 +26,6 @@ public class BoardService {
         return animals;
     }
 
-    public static List<Coords> getRevealedCoordsForAnimal(Tile[][] board, Animal animal) {
-        var revealedCoords = new java.util.ArrayList<Coords>();
-        for (int i = 0; i < board.length; i++) {
-            for (int j = 0; j < board[0].length; j++) {
-                if (board[i][j].hasAnimalInstanceOfType(animal) && board[i][j].isRevealed()) {
-                    revealedCoords.add(new Coords(i, j));
-                }
-            }
-        }
-        return revealedCoords;
-    }
-
     public static Tile[][] cloneBoard(Tile[][] board) {
         Tile[][] clone = new Tile[board.length][board[0].length];
         for (int x = 0; x < board.length; x++) {

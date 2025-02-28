@@ -3,6 +3,7 @@ package junker.animals;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 import junker.board.Coords;
 
@@ -26,12 +27,13 @@ public record Animal(
     }
 
     public static List<Animal> findAnimalsByName(String... names) {
-        var animals = new ArrayList<Animal>();
-        for (Animal animal : ALL_ANIMALS) {
-            if (Arrays.stream(names).anyMatch(animal.name::equalsIgnoreCase)) {
-                animals.add(animal);
-            }
-        }
+        var animals = Arrays.stream(names)
+                .map(name -> ALL_ANIMALS.stream()
+                        .filter(animal -> animal.name().equalsIgnoreCase(name))
+                        .findFirst()
+                        .orElse(null))
+                .filter(Objects::nonNull)
+                .toList();
         return animals;
     }
 

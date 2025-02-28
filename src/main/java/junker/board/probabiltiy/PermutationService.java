@@ -58,23 +58,15 @@ public class PermutationService {
 
     private static List<Coords> getPossiblePlacementsForRevealedAnimal(Tile[][] board, Animal animalToPlace, int x,
                                                                        int y) {
-        List<Coords> possiblePlacements = new java.util.ArrayList<>();
-        addPossiblePlacements(animalToPlace, x, y, board, possiblePlacements);
+        List<Coords> possiblePlacements = addPossiblePlacements(animalToPlace, x, y, board);
 
-        var allRevealedCoords = BoardService.getRevealedCoordsForAnimal(board, animalToPlace);
-        return possiblePlacements.stream().filter(possibleCoords -> {
-            for (var revealedCoord : allRevealedCoords) {
-                if (revealedCoord.equals(possibleCoords)) {
-                    return false;
-                }
-            }
-            return true;
-        }).toList();
+        return possiblePlacements;
 
     }
 
-    private static void addPossiblePlacements(Animal animalToPlace, int x, int y, Tile[][] board, List<Coords> possiblePlacements) {
+    private static List<Coords> addPossiblePlacements(Animal animalToPlace, int x, int y, Tile[][] board) {
         var pattern = animalToPlace.pattern();
+        var possiblePlacements = new ArrayList<Coords>();
         for (var revealedSpot : pattern) {
             boolean centerIsValid = true;
             var center = new Coords(x - revealedSpot.x(), y - revealedSpot.y());
@@ -98,6 +90,7 @@ public class PermutationService {
                 possiblePlacements.add(center);
             }
         }
+        return possiblePlacements;
     }
 
 

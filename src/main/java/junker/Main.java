@@ -12,15 +12,15 @@ import junker.board.Game;
 public class Main {
     public static void main(String[] args) {
         Animal.initAnimals();
-        var animals = Animal.findAnimalsByName("Sasquatch");
+        var animals = Animal.findAnimalsByName("Sewer Turtle", "Opossum");
         var game = new Game(animals);
-//        game.setTile(1, 1, true, null);
+        game.setTile(3, 1, true, animals.getFirst());
 //        game.setTile(1, 3, true, null);
 //        game.setTile(3, 1, true, null);
 //        game.setTile(3, 3, true, null);
 //        game.setTile(3, 0, true, null);
 //        game.setTile(1, 0, true, null);
-        var bestClicks = game.getBestClicks(animals.get(0));
+        var bestClicks = game.getBestSolutions(animals.getFirst());
         System.out.println(bestClicks.size() + " best Solutions:\n" + bestClicks);
     }
 }
