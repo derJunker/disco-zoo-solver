@@ -13,7 +13,7 @@ import junker.board.Game;
 public class Main {
     public static void main(String[] args) {
         Animal.initAnimals();
-        var animals = Animal.findAnimalsByName("Sasquatch");
+        var animals = Animal.findAnimalsByName("Koala");
         var game = new Game(animals);
 //        game.setTile(3, 1, true, animals.getFirst());
 //        game.setTile(4, 0, true, null);
@@ -22,7 +22,7 @@ public class Main {
 //        game.setTile(4, 3, true, null);
 //        game.setTile(4, 4, true, null);
 //        game.setTile(1, 0, true, null);
-        var bestClicks = game.getBestClicks(animals.getFirst());
+        var bestClicks = game.getBestSolutions(animals.getFirst());
         System.out.println(bestClicks.size() + " best Solutions:\n" + bestClicks);
     }
 }
