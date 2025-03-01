@@ -33,7 +33,7 @@ public class BoardCoverCalculator {
 
         var tracker = new MinSolutionTracker();
         var coveringSets = coveringSets(game, animalToSearch, overlap, highestOverlapCoords, tracker);
-        System.out.println("rejection counter: " + tracker.rejectionCounter);
+        System.out.printf("stopped calculating early for %.2f%% rejection rate%n", ((double) tracker.rejectionCounter / tracker.totalCounter) * 100);
         return onlyMinSizedSets(coveringSets);
     }
 
@@ -110,6 +110,7 @@ public class BoardCoverCalculator {
                                                              List<Coords> prevCoords, MinSolutionTracker tracker) {
         var foundSolutions = new HashSet<Solution>();
         for (var multiClicks : multiClickCollection) {
+            tracker.totalCounter++;
             if (multiClicks.size() + prevCoords.size() > tracker.minSolutionSize) {
                 tracker.rejectionCounter++;
                 continue;
@@ -198,6 +199,7 @@ public class BoardCoverCalculator {
     , MinSolutionTracker tracker) {
         var remainingUndiscoveredCoords =
                 new ArrayList<>(remainingUnOverlappedStartCoords.values().stream().map(List::getFirst).toList());
+        tracker.totalCounter++;
         if (prevCoords.size() + remainingUnOverlappedStartCoords.keySet().size() > tracker.minSolutionSize) {
             tracker.rejectionCounter++;
             return Set.of();
@@ -359,11 +361,11 @@ public class BoardCoverCalculator {
 
     private static class MinSolutionTracker {
         int minSolutionSize = Integer.MAX_VALUE;
+        int totalCounter = 0;
         int rejectionCounter = 0;
 
         void update (int size) {
             if (size < minSolutionSize) {
-                System.out.println("found new min solution size: " + size);
                 minSolutionSize = size;
             }
         }
