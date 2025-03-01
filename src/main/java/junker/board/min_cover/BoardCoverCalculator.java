@@ -83,10 +83,10 @@ public class BoardCoverCalculator {
         var highestOverlapCoords = getHighestOverlapCoords(overlap);
 
 
-        var overlapSolutions = calculateNoOverlapSolutionsIfPresent(overlap, animalToSearch, highestOverlapCoords,
+        var noOverlapSolutions = calculateNoOverlapSolutionsIfPresent(overlap, animalToSearch, highestOverlapCoords,
                 game);
-        if (overlapSolutions != null) {
-            return overlapSolutions;
+        if (noOverlapSolutions != null) {
+            return noOverlapSolutions;
         }
 
         return clickHighestChanceCoordsAndStepInto(highestOverlapCoords, game, animalToSearch, overlap);
@@ -184,7 +184,7 @@ public class BoardCoverCalculator {
         for (Game clonedGame : clonedGames) {
             var result = coveringSets(clonedGame, animalToSearch);
             result = result.stream()
-                    .filter(solution -> solution.clicks().size() < Game.MAX_ATTEMPTS)
+                    .filter(solution -> solution.clicks().size() < Game.MAX_ATTEMPTS + animalToSearch.pattern().size())
                     .map(solution -> {
                         var newList = new ArrayList<>(prevCoords);
                         newList.addAll(solution.clicks());
