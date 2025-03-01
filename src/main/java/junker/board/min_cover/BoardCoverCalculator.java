@@ -31,7 +31,9 @@ public class BoardCoverCalculator {
         if (highestOverlapCoords.size() <= 1 && !forceFullSolution)
             return Set.of(new Solution(new ArrayList<>(highestOverlapCoords), new Game(game, true)));
 
-        var coveringSets = coveringSets(game, animalToSearch, overlap, highestOverlapCoords);
+        var tracker = new MinSolutionTracker();
+        var coveringSets = coveringSets(game, animalToSearch, overlap, highestOverlapCoords, tracker);
+        System.out.println("rejection counter: " + tracker.rejectionCounter);
         return onlyMinSizedSets(coveringSets);
     }
 
@@ -41,38 +43,40 @@ public class BoardCoverCalculator {
         return coveringSolutions.stream().filter(sol -> sol.clicks().size() == minSize).collect(Collectors.toSet());
     }
 
-    private static Set<Solution> coveringSets(Game game, Animal animalToSearch, List<Coords> prevCoords) {
+    private static Set<Solution> coveringSets(Game game, Animal animalToSearch, List<Coords> prevCoords, MinSolutionTracker tracker) {
         var overallOverlap = calculateOverallOverlap(game.getWipedBoard(), game.getContainedAnimals());
         var overlap = getAnimalOverlap(overallOverlap, animalToSearch);
         var highestOverlapCoords = getHighestOverlapCoords(overlap);
 
 
         var noOverlapSolutions = calculateNoOverlapSolutionsIfPresent(overlap, animalToSearch, highestOverlapCoords,
-                game, prevCoords);
+                game, prevCoords, tracker);
         if (noOverlapSolutions != null) {
             return noOverlapSolutions;
         }
 
-        return clickHighestChanceCoordsAndStepInto(highestOverlapCoords, game, animalToSearch, overlap, prevCoords);
+        return clickHighestChanceCoordsAndStepInto(highestOverlapCoords, game, animalToSearch, overlap, prevCoords, tracker);
     }
 
     /**
      * if overlap etc. is already computed
      */
     private static Set<Solution> coveringSets(Game game, Animal animalToSearch,
-                                              List<AnimalBoardInstance>[][] overlap, Set<Coords> highestOverlapCoords) {
+                                              List<AnimalBoardInstance>[][] overlap, Set<Coords> highestOverlapCoords
+            , MinSolutionTracker tracker) {
         var overlapSolutions = calculateNoOverlapSolutionsIfPresent(overlap, animalToSearch, highestOverlapCoords,
-                game, List.of());
+                game, List.of(), tracker);
         if (overlapSolutions != null) {
             return overlapSolutions;
         }
 
-        return clickHighestChanceCoordsAndStepInto(highestOverlapCoords, game, animalToSearch, overlap, List.of());
+        return clickHighestChanceCoordsAndStepInto(highestOverlapCoords, game, animalToSearch, overlap, List.of(), tracker);
     }
 
     private static Set<Solution> clickHighestChanceCoordsAndStepInto(Set<Coords> highestOverlapCoords, Game game,
                                                                      Animal animalToSearch,
-                                                                     List<AnimalBoardInstance>[][] overlap, List<Coords> prevCoords) {
+                                                                     List<AnimalBoardInstance>[][] overlap,
+                                                                     List<Coords> prevCoords, MinSolutionTracker tracker) {
 
         Map<Coords, List<AnimalBoardInstance>> tilesWithHighestOverlaps = filterByIndex(overlap,
                 highestOverlapCoords::contains);
@@ -81,7 +85,7 @@ public class BoardCoverCalculator {
 
         var allClonedGames = new ArrayList<List<Game>>();
         Set<Solution> foundSolutions = checkForMultiClickSolutions(multiClickCollection, game, animalToSearch,
-                allClonedGames, prevCoords);
+                allClonedGames, prevCoords, tracker);
         if (!foundSolutions.isEmpty()) {
             return foundSolutions;
         }
@@ -94,7 +98,7 @@ public class BoardCoverCalculator {
                 var fakedClickOrder = new ArrayList<>(prevCoords);
                 fakedClickOrder.add(coords);
                 fakedClickOrder.addAll(multiClicks.stream().filter(c -> !c.equals(coords)).toList());
-                stepIntoNextDepth(clonedGames, fakedClickOrder, overallResults, animalToSearch);
+                stepIntoNextDepth(clonedGames, fakedClickOrder, overallResults, animalToSearch, tracker);
             }
         }
         return overallResults;
@@ -102,9 +106,14 @@ public class BoardCoverCalculator {
 
     private static Set<Solution> checkForMultiClickSolutions(ArrayList<Set<Coords>> multiClickCollection,
                                                              Game game, Animal animalToSearch,
-                                                             ArrayList<List<Game>> allClonedGames, List<Coords> prevCoords) {
+                                                             ArrayList<List<Game>> allClonedGames,
+                                                             List<Coords> prevCoords, MinSolutionTracker tracker) {
         var foundSolutions = new HashSet<Solution>();
         for (var multiClicks : multiClickCollection) {
+            if (multiClicks.size() + prevCoords.size() > tracker.minSolutionSize) {
+                tracker.rejectionCounter++;
+                continue;
+            }
             var clonedGames = new ArrayList<Game>(List.of(new Game(game, true)));
             var multiClickList = new ArrayList<>(multiClicks);
             for (var coords : multiClickList) {
@@ -138,8 +147,10 @@ public class BoardCoverCalculator {
                         foundSolutions.addAll(solutions.stream().map(clicks -> {
                             var fullClicks = new ArrayList<>(prevCoords);
                             fullClicks.addAll(clicks);
+                            tracker.update(fullClicks.size());
                             return new Solution(fullClicks, clonedGame);
-                        }).collect(Collectors.toSet()));
+                        })
+                        .collect(Collectors.toSet()));
                     continue;
                 }
                 clonedGames = newClonedGames;
@@ -161,20 +172,21 @@ public class BoardCoverCalculator {
     // TODO maybe make the list created in here return instead of modifying the overallResults
     private static void stepIntoNextDepth(List<Game> clonedGames, List<Coords> prevCoords,
                                           Set<Solution> overallResults,
-                                          Animal animalToSearch) {
+                                          Animal animalToSearch, MinSolutionTracker tracker) {
         for (Game clonedGame : clonedGames) {
-            var result = coveringSets(clonedGame, animalToSearch, prevCoords);
+            var result = coveringSets(clonedGame, animalToSearch, prevCoords, tracker);
             overallResults.addAll(result);
         }
     }
 
     private static Set<Solution> calculateNoOverlapSolutionsIfPresent(List<AnimalBoardInstance>[][] overlap,
                                                                       Animal animalToSearch,
-                                                                      Set<Coords> highestOverlapCoords, Game game, List<Coords> prevCoords) {
+                                                                      Set<Coords> highestOverlapCoords, Game game,
+                                                                      List<Coords> prevCoords, MinSolutionTracker tracker) {
         var remainingUnOverlappedStartCoords = checkForNoOverlap(overlap);
         if (remainingUnOverlappedStartCoords != null) {
             return calcNoOverlapSolutions(remainingUnOverlappedStartCoords, animalToSearch,
-                    highestOverlapCoords, game, prevCoords);
+                    highestOverlapCoords, game, prevCoords, tracker);
         }
         return null;
     }
@@ -182,9 +194,14 @@ public class BoardCoverCalculator {
 
     private static Set<Solution> calcNoOverlapSolutions(Map<Coords, List<Coords>> remainingUnOverlappedStartCoords,
                                                         Animal animalToSearch,
-                                                        Set<Coords> highestOverlapCoords, Game game, List<Coords> prevCoords) {
+                                                        Set<Coords> highestOverlapCoords, Game game, List<Coords> prevCoords
+    , MinSolutionTracker tracker) {
         var remainingUndiscoveredCoords =
                 new ArrayList<>(remainingUnOverlappedStartCoords.values().stream().map(List::getFirst).toList());
+        if (prevCoords.size() + remainingUnOverlappedStartCoords.keySet().size() > tracker.minSolutionSize) {
+            tracker.rejectionCounter++;
+            return Set.of();
+        }
         var highOverlapClicks = new ArrayList<Coords>();
         var lowerOverlapClicks = new ArrayList<Coords>();
         remainingUndiscoveredCoords.forEach(coords -> {
@@ -194,7 +211,6 @@ public class BoardCoverCalculator {
                 lowerOverlapClicks.add(coords);
             }
         });
-
         var result = new HashSet<Solution>();
         for (var firstClick : highOverlapClicks) {
             var perm = new ArrayList<>(highOverlapClicks);
@@ -212,6 +228,7 @@ public class BoardCoverCalculator {
                         var solutionFirstClicks = perm.subList(0, perm.indexOf(click) + 1);
                         var clicks = new ArrayList<>(prevCoords);
                         clicks.addAll(solutionFirstClicks);
+                        tracker.update(clicks.size());
                         result.add(new Solution(clicks, clonedGame));
                         continue;
                     }
@@ -338,5 +355,17 @@ public class BoardCoverCalculator {
             }
         }
         return overlap;
+    }
+
+    private static class MinSolutionTracker {
+        int minSolutionSize = Integer.MAX_VALUE;
+        int rejectionCounter = 0;
+
+        void update (int size) {
+            if (size < minSolutionSize) {
+                System.out.println("found new min solution size: " + size);
+                minSolutionSize = size;
+            }
+        }
     }
 }
