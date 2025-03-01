@@ -25,7 +25,7 @@ public class Main {
 //        game.setTile(4, 3, true, null);
 //        game.setTile(4, 4, true, null);
 //        game.setTile(1, 0, true, null);
-        var bestClicks = game.getBestClicks(animals.getFirst());
+        var bestClicks = game.getBestSolutions(animals.getFirst());
         System.out.println(bestClicks.size() + " best Solutions:\n" + bestClicks);
     }
 }
