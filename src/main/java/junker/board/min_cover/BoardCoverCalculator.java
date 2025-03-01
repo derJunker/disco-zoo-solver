@@ -37,6 +37,39 @@ public class BoardCoverCalculator {
         return onlyMinSizedSets(coveringSets);
     }
 
+    public static Set<AnimalBoardInstance> uniqueInstances(List<AnimalBoardInstance>[][] overlap) {
+        Set<AnimalBoardInstance> uniqueInstances = new HashSet<>();
+        for (int i = 0; i < overlap.length; i++) {
+            for (int j = 0; j < overlap[i].length; j++) {
+                uniqueInstances.addAll(overlap[i][j]);
+            }
+        }
+        return uniqueInstances;
+    }
+    public static List<AnimalBoardInstance>[][] getAnimalOverlap(List<AnimalBoardInstance>[][] overlap,
+                                                                 Animal animalToSearch) {
+        return filterListsInDoubleArray(overlap,
+                animalInstance -> animalInstance != null && animalInstance.animal().equals(animalToSearch));
+    }
+
+    public static List<AnimalBoardInstance>[][] calculateOverallOverlap(Tile[][] wipedBoard,
+                                                                        List<Animal> containedAnimals) {
+        var boardPermutations = PermutationService.calculateBoardPermutations(wipedBoard, containedAnimals);
+        List<AnimalBoardInstance>[][] overlap = new List[wipedBoard.length][wipedBoard[0].length];
+        for (var permutation : boardPermutations) {
+            for (int x = 0; x < wipedBoard.length; x++) {
+                for (int y = 0; y < wipedBoard[0].length; y++) {
+                    if (overlap[x][y] == null)
+                        overlap[x][y] = new ArrayList<>();
+                    if (wipedBoard[x][y].isRevealed())
+                        continue;
+                    overlap[x][y].add(permutation[x][y].getAnimalBoardInstance());
+                }
+            }
+        }
+        return overlap;
+    }
+
     private static Set<Solution> onlyMinSizedSets(Set<Solution> coveringSolutions) {
         var coveringClicks = coveringSolutions.stream().map(Solution::clicks).collect(Collectors.toSet());
         int minSize = coveringClicks.stream().mapToInt(List::size).min().orElse(0);
@@ -308,15 +341,6 @@ public class BoardCoverCalculator {
         return result;
     }
 
-    public static Set<AnimalBoardInstance> uniqueInstances(List<AnimalBoardInstance>[][] overlap) {
-        Set<AnimalBoardInstance> uniqueInstances = new HashSet<>();
-        for (int i = 0; i < overlap.length; i++) {
-            for (int j = 0; j < overlap[i].length; j++) {
-               uniqueInstances.addAll(overlap[i][j]);
-            }
-        }
-        return uniqueInstances;
-    }
 
     private static Set<Coords> getHighestOverlapCoords(List<AnimalBoardInstance>[][] overlap) {
         int highestOverlap = 0;
@@ -335,29 +359,6 @@ public class BoardCoverCalculator {
         return new HashSet<>(highestOverlapCoords);
     }
 
-    public static List<AnimalBoardInstance>[][] getAnimalOverlap(List<AnimalBoardInstance>[][] overlap,
-                                                                 Animal animalToSearch) {
-        return filterListsInDoubleArray(overlap,
-                animalInstance -> animalInstance != null && animalInstance.animal().equals(animalToSearch));
-    }
-
-    public static List<AnimalBoardInstance>[][] calculateOverallOverlap(Tile[][] wipedBoard,
-                                                                 List<Animal> containedAnimals) {
-        var boardPermutations = PermutationService.calculateBoardPermutations(wipedBoard, containedAnimals);
-        List<AnimalBoardInstance>[][] overlap = new List[wipedBoard.length][wipedBoard[0].length];
-        for (var permutation : boardPermutations) {
-            for (int x = 0; x < wipedBoard.length; x++) {
-                for (int y = 0; y < wipedBoard[0].length; y++) {
-                    if (overlap[x][y] == null)
-                        overlap[x][y] = new ArrayList<>();
-                    if (wipedBoard[x][y].isRevealed())
-                        continue;
-                    overlap[x][y].add(permutation[x][y].getAnimalBoardInstance());
-                }
-            }
-        }
-        return overlap;
-    }
 
     private static class MinSolutionTracker {
         int minSolutionSize = Integer.MAX_VALUE;
