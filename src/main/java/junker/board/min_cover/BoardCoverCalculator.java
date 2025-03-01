@@ -32,23 +32,7 @@ public class BoardCoverCalculator {
             return Set.of(new Solution(new ArrayList<>(highestOverlapCoords), new Game(game, true)));
 
         var coveringSets = coveringSets(game, animalToSearch, overlap, highestOverlapCoords);
-        var minSizedSets = onlyMinSizedSets(coveringSets);
-        return onlyBestSolutions(minSizedSets, animalToSearch);
-    }
-
-    private static Set<Solution> onlyBestSolutions(Set<Solution> minSizedSets, Animal animalToSearch) {
-        var maxSolvedTileCount = 0;
-        var bestSolutions = new HashSet<Solution>();
-        for (var solution : minSizedSets) {
-            var solvedTileCount = solution.solvedGame().getSolvedTileCount(animalToSearch);
-            if (solvedTileCount > maxSolvedTileCount) {
-                maxSolvedTileCount = solvedTileCount;
-            }
-            if (solvedTileCount == maxSolvedTileCount) {
-                bestSolutions.add(solution);
-            }
-        }
-        return bestSolutions;
+        return onlyMinSizedSets(coveringSets);
     }
 
     private static Set<Solution> onlyMinSizedSets(Set<Solution> coveringSolutions) {
@@ -150,29 +134,6 @@ public class BoardCoverCalculator {
                     continue;
                 }
                 clonedGames = newClonedGames;
-//                var newClonedGames = new ArrayList<Game>();
-//                for (var clonedGame : clonedGames) {
-//                    var newOverallOverlap = calculateOverallOverlap(clonedGame.getBoard(), clonedGame.getContainedAnimals());
-//                    var animalsToPlace = getAnimalToPlace(newOverallOverlap, coords, animalToSearch);
-//                    if (animalsToPlace.size() == 1 && Objects.equals(animalsToPlace.getFirst(), animalToSearch)) {
-//                        var solutions = new ArrayList<List<Coords>>();
-//                        var solutionFirstClicks = multiClickList.subList(0, multiClickList.indexOf(coords) + 1);
-//                        for (var solutionFirstClick : solutionFirstClicks) {
-//                            var solutionPermutation = new ArrayList<>(List.of(solutionFirstClick));
-//                            solutionPermutation.addAll(multiClickList.stream().filter(c -> !c.equals(solutionFirstClick)).toList());
-//                            solutions.add(solutionPermutation);
-//                        }
-//                        foundSolutions.addAll(solutions.stream().map(clicks -> new Solution(clicks, clonedGame)).collect(Collectors.toSet()));
-//                        continue;
-//                    }
-//                    ifAnimalToPlaceEmptyThrow(animalsToPlace, game, coords, multiClicks);
-//                    for (var animal : animalsToPlace) {
-//                        var newClonedGame = new Game(clonedGame, true);
-//                        newClonedGame.setTile(coords.x(), coords.y(), true, animal);
-//                        newClonedGames.add(newClonedGame);
-//                    }
-//                }
-//                clonedGames = newClonedGames;
             }
             allClonedGames.add(clonedGames);
         }
@@ -195,7 +156,7 @@ public class BoardCoverCalculator {
         for (Game clonedGame : clonedGames) {
             var result = coveringSets(clonedGame, animalToSearch);
             result = result.stream()
-                    .filter(solution -> solution.clicks().size() < Game.MAX_ATTEMPTS + animalToSearch.pattern().size())
+//                    .filter(solution -> solution.clicks().size() < Game.MAX_ATTEMPTS + animalToSearch.pattern().size())
                     .map(solution -> {
                         var newList = new ArrayList<>(prevCoords);
                         newList.addAll(solution.clicks());
