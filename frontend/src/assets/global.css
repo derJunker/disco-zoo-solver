@@ -1,0 +1,101 @@
+:root {
+
+    --wood-color-dark: #A05A14;
+    --background-color: #60C266;
+
+    /* Text styling */
+    --text-color: #ffffff;
+    --text-shadow: 1px 2px 3px rgba(0, 0, 0, 0.7);
+    --font-family: "Silkscreen";
+    --font-size: 1rem;
+
+    /* Border widths */
+    --border-small: 2px;
+    --border-medium: 5px;
+    --border-large: 8px;
+
+    --border-dark-opacity: 0.5;
+    --border-light-opacity: 0.3;
+
+    --border-radius: 0.35rem;
+
+    --btn-shadow: 4px 4px 10px rgba(0, 0, 0, 0.2);
+
+
+    /* Highlight color */
+    --highlight-color: #ffcc00;
+}
+
+.btn {
+    border-radius: var(--border-radius);
+    padding: 1rem 1.25rem;
+    box-shadow:inset 0px 0px 0px var(--border-small) rgba(0, 0, 0, var(--border-dark-opacity)), var(--btn-shadow);
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.275), rgba(0, 0, 0, 0));
+}
+
+.btn-action-good {
+    background-color: #7CD61C;
+}
+
+.btn-action-bad {
+    background-color: #D7261C;
+}
+
+.btn-action-neutral-1 {
+    background-color: #FF8913;
+}
+
+.btn-action-neutral-2 {
+    background-color: #00A6F0;
+}
+
+.btn-action-neutral-3 {
+    background-color: #A822CF;
+}
+
+.btn-action-info {
+    background-color: #E7650D;
+}
+
+.rounded {
+    border-radius: var(--border-radius);
+}
+
+body * {
+    font-family: var(--font-family), sans-serif;
+    font-size: var(--font-size);
+
+    font-weight: normal;
+    text-shadow: var(--text-shadow);
+    color: var(--text-color);
+}
+
+h1 {
+    font-size: 1.5rem;
+}
+
+body {
+    background-color: var(--background-color);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-align: center;
+    margin-top: 0;
+}
+
+.router-link-active, .highlighted {
+    box-shadow:inset 0px 0px 0px var(--border-medium) var(--highlight-color);
+}
+
+.router-link-active.btn, .highlighted.btn {
+    box-shadow:inset 0px 0px 0px var(--border-medium) var(--highlight-color), var(--btn-shadow);
+}
+
+.dock-top {
+    border-radius: 0 0 var(--border-radius) var(--border-radius);
+    border-top: none;
+}
+
+.dock-bottom {
+    border-radius: var(--border-radius) var(--border-radius) 0 0;
+}
+
