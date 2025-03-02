@@ -1,6 +1,7 @@
 :root {
 
     --wood-color-dark: #A05A14;
+    --wood-color-light: #C76B02;
     --background-color: #60C266;
 
     /* Text styling */
@@ -8,6 +9,7 @@
     --text-shadow: 1px 2px 3px rgba(0, 0, 0, 0.7);
     --font-family: "Silkscreen";
     --font-size: 1rem;
+    --font-size-larger: 1.2rem;
 
     /* Border widths */
     --border-small: 2px;
@@ -31,6 +33,11 @@
     padding: 1rem 1.25rem;
     box-shadow:inset 0px 0px 0px var(--border-small) rgba(0, 0, 0, var(--border-dark-opacity)), var(--btn-shadow);
     background: linear-gradient(to top, rgba(0, 0, 0, 0.275), rgba(0, 0, 0, 0));
+}
+
+.btn-header {
+    padding: 1.25rem 1.5rem;
+    font-size: var(--font-size-larger);
 }
 
 .btn-action-good {
@@ -97,5 +104,6 @@ body {
 
 .dock-bottom {
     border-radius: var(--border-radius) var(--border-radius) 0 0;
+    border-bottom: none;
 }
 
