@@ -13,8 +13,8 @@
 
     /* Border widths */
     --border-small: 2px;
-    --border-medium: 5px;
-    --border-large: 8px;
+    --border-medium: 4px;
+    --border-large: 6px;
 
     --border-dark-opacity: 0.5;
     --border-light-opacity: 0.3;
@@ -26,6 +26,11 @@
 
     /* Highlight color */
     --highlight-color: #ffcc00;
+
+    /* region colors */
+    --farm-primary: #81BD2F;
+    --farm-dark: #497018;
+    --farm-light: #628E34;
 }
 
 .btn {
@@ -33,6 +38,18 @@
     padding: 1rem 1.25rem;
     box-shadow:inset 0px 0px 0px var(--border-small) rgba(0, 0, 0, var(--border-dark-opacity)), var(--btn-shadow);
     background: linear-gradient(to top, rgba(0, 0, 0, 0.275), rgba(0, 0, 0, 0));
+}
+
+.border-small {
+    border: var(--border-small) solid rgba(0, 0, 0, var(--border-dark-opacity));
+}
+
+.border-medium {
+    border: var(--border-medium) solid rgba(0, 0, 0, var(--border-dark-opacity));
+}
+
+.border-large {
+    border: var(--border-large) solid rgba(0, 0, 0, var(--border-dark-opacity));
 }
 
 .btn-header {
@@ -86,7 +103,7 @@ body {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-align: center;
-    margin-top: 0;
+    margin: 0;
 }
 
 .router-link-active, .highlighted {
@@ -99,11 +116,19 @@ body {
 
 .dock-top {
     border-radius: 0 0 var(--border-radius) var(--border-radius);
-    border-top: none;
+    border-top: none !important;
 }
 
 .dock-bottom {
     border-radius: var(--border-radius) var(--border-radius) 0 0;
-    border-bottom: none;
+    border-bottom: none !important;
+}
+
+.config-board {
+    padding: .5rem 1rem .7rem 1rem;
+    background-color: var(--wood-color-dark);
+    border: var(--border-large);
+    box-shadow: var(--btn-shadow);
+    border: var(--border-large) solid rgba(255, 255, 255, var(--border-light-opacity));
 }
 
