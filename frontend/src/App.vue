@@ -1,34 +1,20 @@
 <template>
   <nav>
     <router-link to="/">Home</router-link> |
+    <router-link to="/reconstruct">Reconstruct</router-link> |
+    <router-link to="/accuracy">Accuracy</router-link> |
+    <router-link to="/battle">Battle</router-link> |
+    <router-link to="/stats">Stats</router-link> |
     <router-link to="/about">About</router-link>
   </nav>
-  <div>{{msg}}</div>
   <router-view/>
 
 </template>
 
 <script>
-import axios from 'axios'
-
 export default {
   name: 'App',
-  data() {
-    return {
-      msg: null
-    }
-  },
 
-  async created() {
-    await this.getTest()
-  },
-
-  methods: {
-    async getTest() {
-      let resp = await axios.get(this.$baseUrl + "/test")
-      this.msg = resp.data
-    }
-  }
 }
 </script>
 
