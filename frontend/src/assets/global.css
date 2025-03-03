@@ -38,6 +38,7 @@
     padding: 1rem 1.25rem;
     box-shadow:inset 0px 0px 0px var(--border-small) rgba(0, 0, 0, var(--border-dark-opacity)), var(--btn-shadow);
     background: linear-gradient(to top, rgba(0, 0, 0, 0.275), rgba(0, 0, 0, 0));
+    user-select: none;
 }
 
 .border-small {
