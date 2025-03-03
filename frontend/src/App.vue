@@ -1,6 +1,6 @@
 <template>
   <div id="app-content">
-    <header class="rounded config-board dock-top">
+    <header class="rounded config-board dock-top btn-shadow">
       <h1 id="logo" @click="clickedLogo">Disco Zoo Solver</h1>
       <nav>
         <router-link class="btn btn-header btn-action-neutral-1" style="text-decoration: none; color: inherit;"
@@ -21,9 +21,9 @@
       </nav>
     </header>
     <router-view id="router-view"/>
+    <a id="something-1" class="btn btn-action-bad dock-bottom">Something</a>
+    <a id="something-2" class="btn btn-action-neutral-2 dock-bottom">Something</a>
     <footer class="dock-bottom">
-      <a id="something-1" class="btn btn-action-bad dock-bottom">Something</a>
-      <a id="something-2" class="btn btn-action-neutral-2 dock-bottom">Something</a>
       <a :href="$baseUrl + '/pages/impressum.html'">Impressum / Contact</a>
       <div>
         <a :href="$baseUrl + '/pages/privacy-policy-de.html'">Datenschutzerklärung</a>
@@ -32,22 +32,6 @@
       </div>
     </footer>
   </div>
-<!--  <div id="test-app">-->
-<!--    <div id="test-header">-->
-<!--      header-->
-<!--    </div>-->
-<!--    <div id="test-router-view">-->
-<!--      <div id="board-view">-->
-<!--        board view-->
-<!--      </div>-->
-<!--      <div id="sidebar">-->
-<!--        sidebar-->
-<!--      </div>-->
-<!--    </div>-->
-<!--    <div id="test-footer">-->
-<!--      footer-->
-<!--    </div>-->
-<!--  </div>-->
 </template>
 
 <script>
@@ -87,7 +71,7 @@ footer {
   position: sticky;
   bottom: 0;
   max-height: 10vh;
-  z-index: -1;
+  z-index: 0;
 }
 
 #something-1 {
@@ -109,6 +93,7 @@ footer {
 
   cursor: pointer;
   user-select: none;
+  z-index: 12;
 }
 
 #logo {

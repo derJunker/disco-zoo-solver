@@ -43,6 +43,10 @@
     cursor: pointer;
 }
 
+.btn-shadow {
+    box-shadow: var(--btn-shadow);
+}
+
 .border-small {
     border: var(--border-small) solid rgba(0, 0, 0, var(--border-dark-opacity));
 }
@@ -135,7 +139,6 @@ body {
     padding: .5rem 1rem .7rem 1rem;
     background-color: var(--wood-color-dark);
     border: var(--border-large);
-    box-shadow: var(--btn-shadow);
     border: var(--border-large) solid rgba(255, 255, 255, var(--border-light-opacity));
 }
 
