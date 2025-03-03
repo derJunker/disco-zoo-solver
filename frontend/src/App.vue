@@ -84,6 +84,9 @@ footer {
   background-color: var(--wood-color-light);
   box-shadow: var(--btn-shadow);
   border: var(--border-large) solid rgba(255, 255, 255, var(--border-light-opacity));
+  position: sticky;
+  bottom: 0;
+  max-height: 10vh;
 }
 
 #something-1 {

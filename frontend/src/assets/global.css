@@ -8,8 +8,8 @@
     --text-color: #ffffff;
     --text-shadow: 1px 2px 3px rgba(0, 0, 0, 0.7);
     --font-family: "Silkscreen";
-    --font-size: 1rem;
-    --font-size-larger: 1.2rem;
+    --font-size: .8rem;
+    --font-size-larger: 1rem;
 
     /* Border widths */
     --border-small: 2px;
