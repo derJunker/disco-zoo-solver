@@ -2,7 +2,7 @@
   <div :class="'dropdown btn btn-action-neutral-2 ' + (isOpen? 'dock-bottom' : '')" @click="isOpen = !isOpen"
        :style="'min-width:'  +
   getLongestItemSize()/1.2 + 'rem'">
-    <span id="selectedItem" @click="isOpen = !isOpen">
+    <span id="selectedItem">
       {{ itemMapper(selectedItem) }}
     </span>
     <svg viewBox="0 0 1030 638" width="10">
@@ -59,14 +59,20 @@ export default {
       if (!this.items || this.items.length === 0)
         return 0
       return this.items.reduce((a, b) => this.itemMapper(a).length > this.itemMapper(b).length ? a : b).length
+    },
+
+    onClickSomewhere() {
+      this.isOpen = !this.isOpen;
+      console.log('clicked somewhere')
     }
   },
   data () {
     return {
       selectedItem: this.defaultValue,
-      isOpen: true
+      isOpen: false
     }
-  }
+  },
+
 }
 </script>
 
@@ -101,5 +107,6 @@ export default {
   justify-content: space-between;
   cursor: pointer;
   padding: .5rem;
+  user-select: none;
 }
 </style>

@@ -115,6 +115,7 @@ footer {
   margin: 0;
   user-select: none;
   cursor: pointer;
+  font-size: 2.25rem;
 }
 
 nav {

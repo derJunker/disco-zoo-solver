@@ -10,6 +10,7 @@
     --font-family: "Silkscreen";
     --font-size: .8rem;
     --font-size-larger: 1rem;
+    --font-size-large: 1.25rem;
 
     /* Border widths */
     --border-small: 2px;
@@ -97,7 +98,11 @@ body * {
 }
 
 h1 {
-    font-size: 1.5rem;
+    font-size: var(--font-size-large);
+}
+
+h2 {
+    font-size: var(--font-size-larger);
 }
 
 body {
