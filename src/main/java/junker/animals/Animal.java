@@ -17,6 +17,10 @@ public record Animal(
 ) {
     public static List<Animal> ALL_ANIMALS = new ArrayList<>();
 
+    static {
+        initAnimals();
+    }
+
     public Animal {
         ALL_ANIMALS.add(this);
     }
