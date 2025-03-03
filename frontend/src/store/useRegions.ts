@@ -5,9 +5,10 @@ export const useRegions = defineStore('regions', () => {
     const api = useApi();
     let cachedRegions: string[] | null = null;
 
-    async function getAllRegions(): Promise<string[]> {
+    async function getAllRegions(allowAny = true): Promise<string[]> {
+        let allRegions: string[] = []
         if (cachedRegions) {
-            return cachedRegions;
+            allRegions = cachedRegions;
         }
 
         const resp = await api.fetchUrl("/regions");
@@ -16,7 +17,11 @@ export const useRegions = defineStore('regions', () => {
         }
 
         cachedRegions = await resp.json();
-        return cachedRegions!;
+        allRegions = cachedRegions!;
+        if (!allowAny) {
+            allRegions = allRegions.filter((region) => region.toLowerCase() !== "any");
+        }
+        return allRegions;
     }
 
     return {getAllRegions}

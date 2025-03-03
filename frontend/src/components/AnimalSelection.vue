@@ -32,7 +32,7 @@ export default defineComponent({
     };
   },
   async created() {
-    this.possibleRegions = await regionStore.getAllRegions();
+    this.possibleRegions = await regionStore.getAllRegions(false);
     await this.onRegionChange(this.possibleRegions[0]);
   },
   watch: {
@@ -42,14 +42,8 @@ export default defineComponent({
     },
   },
   methods: {
-    async onRegionChange(newVal: string) {
-      this.regionAnimals = await animalStore.getAnimalsOfRegion(newVal)
-    },
-
-    animalToStringMapper(animal: Animal) {
-      if (animal)
-        return animal.name;
-      return "";
+    async onRegionChange(newRegion: string) {
+      this.regionAnimals = await animalStore.getAnimalsOfRegion(newRegion)
     },
   }
 });
