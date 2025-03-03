@@ -87,6 +87,7 @@ footer {
   position: sticky;
   bottom: 0;
   max-height: 10vh;
+  z-index: -1;
 }
 
 #something-1 {

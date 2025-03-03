@@ -4,7 +4,7 @@
       <div id="reconstruction-board" class="dock-bottom dock-top border-small">
 
       </div>
-      <AnimalSelection region="farm" id="animal-selection"/>
+      <AnimalSelection id="animal-selection"/>
     </div>
   </div>
 </template>
