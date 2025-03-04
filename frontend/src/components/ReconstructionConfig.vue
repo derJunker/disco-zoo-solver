@@ -4,7 +4,7 @@
     <div class="first-row">
       <DropdownSelect :items="possibleRegions"
       @item-selected="(val : string | null) => selectedRegion = val?val : ''"/>
-      <ToggleSelect title="Timeless" selected-color-class="timeless" @selected="onTimelessChange" :default-value="false"/>
+      <ToggleSelect title="Timeless" selected-color-class="timeless" @selected="onTimelessChange" :default-value="selectedTimeless"/>
     </div>
     <div id="animal-selection">
       <div>
@@ -130,12 +130,19 @@ export default defineComponent({
       this.epicAnimal = this.regionAnimals.filter(animal => animal.rarity.toLowerCase() === 'epic').pop()!;
       this.timelessAnimal = this.regionAnimals.filter(animal => animal.rarity.toLowerCase() === 'timeless').pop()!;
       this.timebux = this.regionAnimals.filter(animal => animal.rarity.toLowerCase() === 'bux');
+
+      this.selectedAnimals = [];
+      this.selectedTimeless = false;
+      this.$emit('selected-animals-changed', this.selectedAnimals);
     },
 
     onTimelessChange(newVal: boolean) {
       this.selectedTimeless = newVal;
       if (!newVal)
-        this.selectedAnimals = this.selectedAnimals.filter(animal => animal !== this.timelessAnimal);
+        if (this.selectedAnimals.includes(this.timelessAnimal!)) {
+          this.selectedAnimals = this.selectedAnimals.filter(animal => animal !== this.timelessAnimal);
+          this.$emit('selected-animals-changed', this.selectedAnimals);
+        }
     },
 
     onClickAnimal(animal: Animal) {

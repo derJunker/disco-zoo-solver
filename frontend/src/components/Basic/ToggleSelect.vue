@@ -40,6 +40,13 @@ export default defineComponent({
       this.selected = !this.selected
       this.$emit('selected', this.selected)
     }
+  },
+
+  watch: {
+    defaultValue(newVal) {
+      this.selected = newVal
+      this.$emit('selected', this.selected)
+    }
   }
 })
 </script>

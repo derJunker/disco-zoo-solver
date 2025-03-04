@@ -4,7 +4,7 @@ Content-Type: application/json
 [
   {
     "name": "Cow",
-    "rarity": "COMMON",
+    "rarity": "RARE",
     "pattern": [
       { "x": 0, "y": 0 },
       { "x": 1, "y": 0 },
