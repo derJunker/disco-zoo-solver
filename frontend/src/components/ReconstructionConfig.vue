@@ -57,7 +57,7 @@
       </div>
       <div>
         <div id="bux-animals-title">
-          Timebux:
+          Discobux:
         </div>
         <div id="bux-animals">
           <span v-for="animal in timebux" :key="animal.id" :class="'btn bux-animal ' +

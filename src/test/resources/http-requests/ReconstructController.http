@@ -1,0 +1,15 @@
+POST http://localhost:9090/api/reconstruct/start
+Content-Type: application/json
+
+[
+  {
+    "name": "Cow",
+    "rarity": "COMMON",
+    "pattern": [
+      { "x": 0, "y": 0 },
+      { "x": 1, "y": 0 },
+      { "x": 2, "y": 0 }
+    ],
+    "region": "FARM"
+  }
+]
