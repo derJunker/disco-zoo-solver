@@ -5,7 +5,7 @@ export interface Game {
     containedAnimals: Animal[],
 }
 
-interface Tile {
+export interface Tile {
     animalBoardInstance: {
         animal: Animal,
     },

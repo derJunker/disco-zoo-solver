@@ -1,9 +1,9 @@
 <template>
-  <div id="disco-board" class="rounded" :style="'background-color: ' + regionColors.dark">
-    <div v-for="row in 5" :key="row" class="disco-row">
-      <div v-for="col in 5" :key="col" class="disco-cell" :style="'background-color: ' + regionColors.light">
-        <span class="picture">
-          Ani
+  <div id="disco-board" class="rounded" :style="'background-color: ' + regionColors.dark" v-if="game">
+    <div v-for="(row, x) in game.board" :key="row" class="disco-row">
+      <div v-for="(tile, y) in row" :key="tile" class="disco-cell" :style="'background-color: ' + regionColors.primary">
+        <span class="picture" @click="$emit('tile-click', {x, y})">
+          {{ getTileRepr(tile) }}
         </span>
       </div>
     </div>
@@ -11,7 +11,7 @@
 </template>
 <script lang="ts">
 import {defineComponent} from 'vue'
-import {Game} from "@/types/Game";
+import {Game, Tile} from "@/types/Game";
 
 
 export default defineComponent ({
@@ -25,6 +25,18 @@ export default defineComponent ({
       type: Object,
       required: true
     }
+  },
+  methods: {
+    getTileRepr(tile: Tile) {
+      if (tile.revealed) {
+        if(tile.animalBoardInstance)
+          return tile.animalBoardInstance.animal.name.substring(0,2)
+      } else {
+        if(tile.animalBoardInstance)
+          return '?'
+      }
+      return ''
+    }
   }
 })
 </script>
@@ -32,13 +44,14 @@ export default defineComponent ({
 #disco-board {
   aspect-ratio: 1;
   width: 75%;
+  max-width: 100%;
   margin: auto;
   border: var(--border-small) solid rgba(0, 0, 0, var(--border-dark-opacity));
   display: grid;
   grid-template-rows: repeat(5, 1fr);
   grid-template-columns: repeat(5, 1fr);
   align-content: center;
-  gap: .25rem;
+  gap: .2rem;
   padding: .25rem;
 }
 .disco-row {
