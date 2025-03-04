@@ -21,10 +21,6 @@ public record Animal(
         initAnimals();
     }
 
-    public Animal {
-        ALL_ANIMALS.add(this);
-    }
-
     @Override
     public String toString() {
         return name.substring(0, 1);
@@ -49,140 +45,138 @@ public record Animal(
     }
 
     public static void initAnimals() {
-        Region region = Region.ANY;
-        new Animal( "Discobux", Rarity.BUX, List.of(coords(0, 0)), region);
-        new Animal("Discobux 2", Rarity.BUX, List.of(coords(0, 0)), region);
+        ALL_ANIMALS.addAll(List.of(
+            new Animal( "Discobux", Rarity.BUX, List.of(coords(0, 0)), Region.ANY),
+            new Animal("Discobux 2", Rarity.BUX, List.of(coords(0, 0)), Region.ANY),
 
-        region = Region.FARM;
-        new Animal("Sheep", Rarity.COMMON, List.of(coords(0, 0), coords(1, 0), coords(2, 0), coords(3, 0)),
-                region);
-        new Animal("Rabbit", Rarity.COMMON, List.of(coords(0, 0), coords(0, 1), coords(0, 2), coords(0, 3)),
-                region);
-        new Animal("Pig", Rarity.COMMON, List.of(coords(0, 0), coords(0, 1), coords(1, 1), coords(1, 0)), region);
-        new Animal("Horse", Rarity.RARE, List.of(coords(0, 0), coords(0, 1), coords(0, 2)), region);
-        new Animal("Cow", Rarity.RARE, List.of(coords(0, 0), coords(1, 0), coords(2, 0)), region);
-        new Animal("Unicorn", Rarity.EPIC, List.of(coords(0, 0), coords(1, 1), coords(2, 1)), region);
-        new Animal("Chicken", Rarity.TIMELESS, List.of(coords(0, 0), coords(1, -1), coords(2, -2)), region);
+            new Animal("Sheep", Rarity.COMMON, List.of(coords(0, 0), coords(1, 0), coords(2, 0), coords(3, 0)),
+                    Region.FARM),
+            new Animal("Rabbit", Rarity.COMMON, List.of(coords(0, 0), coords(0, 1), coords(0, 2), coords(0, 3)),
+                    Region.FARM),
+            new Animal("Pig", Rarity.COMMON, List.of(coords(0, 0), coords(0, 1), coords(1, 1), coords(1, 0)), Region.FARM),
+            new Animal("Horse", Rarity.RARE, List.of(coords(0, 0), coords(0, 1), coords(0, 2)), Region.FARM),
+            new Animal("Cow", Rarity.RARE, List.of(coords(0, 0), coords(1, 0), coords(2, 0)), Region.FARM),
+            new Animal("Unicorn", Rarity.EPIC, List.of(coords(0, 0), coords(1, 1), coords(2, 1)), Region.FARM),
+            new Animal("Chicken", Rarity.TIMELESS, List.of(coords(0, 0), coords(1, -1), coords(2, -2)), Region.FARM),
 
-        region = Region.OUTBACK;
-        new Animal("Kangaroo", Rarity.COMMON, List.of(coords(0, 0), coords(1, 1), coords(2, 2), coords(3, 3)),
-                region);
-        new Animal("Crocodile", Rarity.COMMON, List.of(coords(0, 0), coords(1, 0), coords(2, 0), coords(3, 0)),
-                region);
-        new Animal("Platypus", Rarity.COMMON, List.of(coords(0, 0), coords(1, 0), coords(1, 1), coords(2, 1)),
-                region);
-        new Animal("Koala", Rarity.RARE, List.of(coords(0, 0), coords(1, 1), coords(1, 0)), region);
-        new Animal("Cockatoo", Rarity.RARE, List.of(coords(0, 0), coords(1, 1), coords(1, 2)), region);
-        new Animal("Tiddalik", Rarity.EPIC, List.of(coords(0, 0), coords(1, -1), coords(2, 0)), region);
-        new Animal("Echidna", Rarity.TIMELESS, List.of(coords(0, 0), coords(1, 0), coords(2, -1)), region);
+            new Animal("Kangaroo", Rarity.COMMON, List.of(coords(0, 0), coords(1, 1), coords(2, 2), coords(3, 3)),
+                    Region.OUTBACK),
+            new Animal("Crocodile", Rarity.COMMON, List.of(coords(0, 0), coords(1, 0), coords(2, 0), coords(3, 0)),
+                    Region.OUTBACK),
+            new Animal("Platypus", Rarity.COMMON, List.of(coords(0, 0), coords(1, 0), coords(1, 1), coords(2, 1)),
+                    Region.OUTBACK),
+            new Animal("Koala", Rarity.RARE, List.of(coords(0, 0), coords(1, 1), coords(1, 0)), Region.OUTBACK),
+            new Animal("Cockatoo", Rarity.RARE, List.of(coords(0, 0), coords(1, 1), coords(1, 2)), Region.OUTBACK),
+            new Animal("Tiddalik", Rarity.EPIC, List.of(coords(0, 0), coords(1, -1), coords(2, 0)), Region.OUTBACK),
+            new Animal("Echidna", Rarity.TIMELESS, List.of(coords(0, 0), coords(1, 0), coords(2, -1)), Region.OUTBACK),
 
-        region = Region.SAVANNA;
-        new Animal("Zebra", Rarity.COMMON, List.of(coords(-1, 0), coords(1, 0), coords(0, -1), coords(0, 1)),
-                region);
-        new Animal("Hippo", Rarity.COMMON, List.of(coords(-1, -1), coords(-1, 1), coords(1, -1), coords(1, 1)),
-                region);
-        new Animal("Giraffe", Rarity.COMMON, List.of(coords(0, 0), coords(0, 1), coords(0, 2), coords(0, 3)),
-                region);
-        new Animal("Lion", Rarity.RARE, List.of(coords(0, 0), coords(1, 0), coords(2, 0)), region);
-        new Animal("Elephant", Rarity.RARE, List.of(coords(0, 0), coords(0, 1), coords(1, 0)), region);
-        new Animal("Gryphon", Rarity.EPIC, List.of(coords(0, 0), coords(1, 1), coords(2, 0)), region);
-        new Animal("Rhino", Rarity.TIMELESS, List.of(coords(0, 0), coords(1, -1), coords(1, 1)), region);
+            new Animal("Zebra", Rarity.COMMON, List.of(coords(-1, 0), coords(1, 0), coords(0, -1), coords(0, 1)),
+                    Region.SAVANNA),
+            new Animal("Hippo", Rarity.COMMON, List.of(coords(-1, -1), coords(-1, 1), coords(1, -1), coords(1, 1)),
+                    Region.SAVANNA),
+            new Animal("Giraffe", Rarity.COMMON, List.of(coords(0, 0), coords(0, 1), coords(0, 2), coords(0, 3)),
+                    Region.SAVANNA),
+            new Animal("Lion", Rarity.RARE, List.of(coords(0, 0), coords(1, 0), coords(2, 0)), Region.SAVANNA),
+            new Animal("Elephant", Rarity.RARE, List.of(coords(0, 0), coords(0, 1), coords(1, 0)), Region.SAVANNA),
+            new Animal("Gryphon", Rarity.EPIC, List.of(coords(0, 0), coords(1, 1), coords(2, 0)), Region.SAVANNA),
+            new Animal("Rhino", Rarity.TIMELESS, List.of(coords(0, 0), coords(1, -1), coords(1, 1)), Region.SAVANNA),
 
-        region = Region.NORTHERN;
-        new Animal("Skunk", Rarity.COMMON, List.of(coords(0, 0), coords(1, 0), coords(1, -1), coords(2, -1)),
-                region);
-        new Animal("Bear", Rarity.COMMON, List.of(coords(0, 0), coords(1, 0), coords(1, 1), coords(1, 2)), region);
-        new Animal("Beaver", Rarity.COMMON, List.of(coords(0, 0), coords(1, 0), coords(2, -1), coords(2, 1)),
-                region);
-        new Animal("Fox", Rarity.RARE, List.of(coords(0, 0), coords(1, 0), coords(2, 1)), region);
-        new Animal("Moose", Rarity.RARE, List.of(coords(0, 0), coords(1, 1), coords(2, 0)), region);
-        new Animal("Sasquatch", Rarity.EPIC, List.of(coords(0, 0), coords(0, 1)), region);
-        new Animal("Otter", Rarity.TIMELESS, List.of(coords(0, 0), coords(0, 1), coords(1, 1)), region);
+            new Animal("Skunk", Rarity.COMMON, List.of(coords(0, 0), coords(1, 0), coords(1, -1), coords(2, -1)),
+                    Region.NORTHERN),
+            new Animal("Bear", Rarity.COMMON, List.of(coords(0, 0), coords(1, 0), coords(1, 1), coords(1, 2)),
+                    Region.NORTHERN),
+            new Animal("Beaver", Rarity.COMMON, List.of(coords(0, 0), coords(1, 0), coords(2, -1), coords(2, 1)),
+                    Region.NORTHERN),
+            new Animal("Fox", Rarity.RARE, List.of(coords(0, 0), coords(1, 0), coords(2, 1)), Region.NORTHERN),
+            new Animal("Moose", Rarity.RARE, List.of(coords(0, 0), coords(1, 1), coords(2, 0)), Region.NORTHERN),
+            new Animal("Sasquatch", Rarity.EPIC, List.of(coords(0, 0), coords(0, 1)), Region.NORTHERN),
+            new Animal("Otter", Rarity.TIMELESS, List.of(coords(0, 0), coords(0, 1), coords(1, 1)), Region.NORTHERN),
 
-        region = Region.POLAR;
-        new Animal("Penguin", Rarity.COMMON, List.of(coords(0, 0), coords(0, 1), coords(-1, 2), coords(1, 2)), region);
-        new Animal("Seal", Rarity.COMMON, List.of(coords(0, 0), coords(1, 1), coords(2, 2), coords(3, 1)), region);
-        new Animal("Muskox", Rarity.COMMON, List.of(coords(0, 0), coords(0, 1), coords(1, 0), coords(2, 1)), region);
-        new Animal("Polar Bear", Rarity.RARE, List.of(coords(0, 0), coords(2, 0), coords(2, 1)), region);
-        new Animal("Walrus", Rarity.RARE, List.of(coords(0, 0), coords(1, 1), coords(2, 1)), region);
-        new Animal("Yeti", Rarity.EPIC, List.of(coords(0, 0), coords(0, 2)), region);
-        new Animal("Snowy Owl", Rarity.TIMELESS, List.of(coords(0, 0), coords(1, 0), coords(1, 1)), region);
+            new Animal("Penguin", Rarity.COMMON, List.of(coords(0, 0), coords(0, 1), coords(-1, 2), coords(1, 2)),
+                    Region.POLAR),
+            new Animal("Seal", Rarity.COMMON, List.of(coords(0, 0), coords(1, 1), coords(2, 2), coords(3, 1)),
+                    Region.POLAR),
+            new Animal("Muskox", Rarity.COMMON, List.of(coords(0, 0), coords(0, 1), coords(1, 0), coords(2, 1)),
+                    Region.POLAR),
+            new Animal("Polar Bear", Rarity.RARE, List.of(coords(0, 0), coords(2, 0), coords(2, 1)), Region.POLAR),
+            new Animal("Walrus", Rarity.RARE, List.of(coords(0, 0), coords(1, 1), coords(2, 1)), Region.POLAR),
+            new Animal("Yeti", Rarity.EPIC, List.of(coords(0, 0), coords(0, 2)), Region.POLAR),
+            new Animal("Snowy Owl", Rarity.TIMELESS, List.of(coords(0, 0), coords(1, 0), coords(1, 1)), Region.POLAR),
 
-        region = Region.JUNGLE;
-        new Animal("Monkey", Rarity.COMMON, List.of(coords(0, 0), coords(1, 1), coords(2, 0), coords(3, 1)), region);
-        new Animal("Toucan", Rarity.COMMON, List.of(coords(0, 0), coords(-1, 1), coords(0, 2), coords(0, 3)), region);
-        new Animal("Gorilla", Rarity.COMMON, List.of(coords(0, 0), coords(0, 1), coords(2, 0), coords(2, 1)), region);
-        new Animal("Panda", Rarity.RARE, List.of(coords(0, 0), coords(2, -1), coords(2, 1)), region);
-        new Animal("Tiger", Rarity.RARE, List.of(coords(0, 0), coords(2, 0), coords(3, 0)), region);
-        new Animal("Phoenix", Rarity.EPIC, List.of(coords(0, 0), coords(2, 2)), region);
-        new Animal("Lemur", Rarity.TIMELESS, List.of(coords(0, 0), coords(-1, 1), coords(-1, -1)), region);
+            new Animal("Monkey", Rarity.COMMON, List.of(coords(0, 0), coords(1, 1), coords(2, 0), coords(3, 1)),
+                    Region.JUNGLE),
+            new Animal("Toucan", Rarity.COMMON, List.of(coords(0, 0), coords(-1, 1), coords(0, 2), coords(0, 3)),
+                    Region.JUNGLE),
+            new Animal("Gorilla", Rarity.COMMON, List.of(coords(0, 0), coords(0, 1), coords(2, 0), coords(2, 1)),
+                    Region.JUNGLE),
+            new Animal("Panda", Rarity.RARE, List.of(coords(0, 0), coords(2, -1), coords(2, 1)), Region.JUNGLE),
+            new Animal("Tiger", Rarity.RARE, List.of(coords(0, 0), coords(2, 0), coords(3, 0)), Region.JUNGLE),
+            new Animal("Phoenix", Rarity.EPIC, List.of(coords(0, 0), coords(2, 2)), Region.JUNGLE),
+            new Animal("Lemur", Rarity.TIMELESS, List.of(coords(0, 0), coords(-1, 1), coords(-1, -1)), Region.JUNGLE),
 
-        region = Region.JURASSIC;
-        new Animal("Diplodocus", Rarity.COMMON, List.of(coords(0, 0), coords(1, 1), coords(1, 2), coords(2, 1)),
-                region);
-        new Animal("Raptor", Rarity.COMMON, List.of(coords(0, 0), coords(1, 0), coords(1, 1), coords(2, 2)),
-                region);
-        new Animal("Stegosaurus", Rarity.COMMON, List.of(coords(0, 0), coords(1, -1), coords(2, -1), coords(3, 0))
-        , region);
-        new Animal("Triceratops", Rarity.RARE, List.of(coords(0, 0), coords(2, 1), coords(0, 2)), region);
-        new Animal("T-Rex", Rarity.RARE, List.of(coords(0, 0), coords(0, 2), coords(1, 2)), region);
-        new Animal("Dragon", Rarity.EPIC, List.of(coords(0, 0), coords(2, 1)), region);
-        new Animal("Ankylo", Rarity.TIMELESS, List.of(coords(0, 0), coords(2, -1), coords(2, 0)), region);
+            new Animal("Diplodocus", Rarity.COMMON, List.of(coords(0, 0), coords(1, 1), coords(1, 2), coords(2, 1)),
+                    Region.JURASSIC),
+            new Animal("Raptor", Rarity.COMMON, List.of(coords(0, 0), coords(1, 0), coords(1, 1), coords(2, 2)),
+                    Region.JURASSIC),
+            new Animal("Stegosaurus", Rarity.COMMON, List.of(coords(0, 0), coords(1, -1), coords(2, -1), coords(3, 0))
+            , Region.JURASSIC),
+            new Animal("Triceratops", Rarity.RARE, List.of(coords(0, 0), coords(2, 1), coords(0, 2)), Region.JURASSIC),
+            new Animal("T-Rex", Rarity.RARE, List.of(coords(0, 0), coords(0, 2), coords(1, 2)), Region.JURASSIC),
+            new Animal("Dragon", Rarity.EPIC, List.of(coords(0, 0), coords(2, 1)), Region.JURASSIC),
+            new Animal("Ankylo", Rarity.TIMELESS, List.of(coords(0, 0), coords(2, -1), coords(2, 0)), Region.JURASSIC),
 
-        region = Region.ICE_AGE;
-        new Animal("Wooly Rhino", Rarity.COMMON, List.of(coords(0, 0), coords(2, -1), coords(3, 0), coords(1, 1))
-        , region);
-        new Animal("Giant Sloth", Rarity.COMMON, List.of(coords(0, 0), coords(0, 2), coords(2, 1), coords(2, 2))
-                , region);
-        new Animal("Dire Wolf", Rarity.COMMON, List.of(coords(0, 0), coords(1, -1), coords(1, 1), coords(3, 0)),
-                region);
-        new Animal("Saber Tooth", Rarity.RARE, List.of(coords(0, 0), coords(1, 2), coords(2, 1)), region);
-        new Animal("Mammoth", Rarity.RARE, List.of(coords(0, 0), coords(1, -1), coords(2, 1)), region);
-        new Animal("Akhlut", Rarity.EPIC, List.of(coords(0, 0), coords(2, -1), coords(2, 1)), region);
-        new Animal("Yukon Camel", Rarity.TIMELESS, List.of(coords(0, 0), coords(2, -1), coords(3, 1)), region);
+            new Animal("Wooly Rhino", Rarity.COMMON, List.of(coords(0, 0), coords(2, -1), coords(3, 0), coords(1, 1))
+            , Region.ICE_AGE),
+            new Animal("Giant Sloth", Rarity.COMMON, List.of(coords(0, 0), coords(0, 2), coords(2, 1), coords(2, 2))
+                    , Region.ICE_AGE),
+            new Animal("Dire Wolf", Rarity.COMMON, List.of(coords(0, 0), coords(1, -1), coords(1, 1), coords(3, 0)),
+                    Region.ICE_AGE),
+            new Animal("Saber Tooth", Rarity.RARE, List.of(coords(0, 0), coords(1, 2), coords(2, 1)), Region.ICE_AGE),
+            new Animal("Mammoth", Rarity.RARE, List.of(coords(0, 0), coords(1, -1), coords(2, 1)), Region.ICE_AGE),
+            new Animal("Akhlut", Rarity.EPIC, List.of(coords(0, 0), coords(2, -1), coords(2, 1)), Region.ICE_AGE),
+            new Animal("Yukon Camel", Rarity.TIMELESS, List.of(coords(0, 0), coords(2, -1), coords(3, 1)), Region.ICE_AGE),
 
-        region = Region.CITY;
-        new Animal("Raccoon", Rarity.COMMON, List.of(coords(0, 0), coords(0, 1), coords(2, 0), coords(3, 1)),
-                region);
-        new Animal("Pigeon", Rarity.COMMON, List.of(coords(0, 0), coords(1, 1),  coords(1, 2), coords(2, 2)),
-                region);
-        new Animal("Rat", Rarity.COMMON, List.of(coords(0, 0), coords(1, 0), coords(1, 1), coords(3, 1)), region);
-        new Animal("Squirrel", Rarity.RARE, List.of(coords(0, 0), coords(1, 1), coords(2, -1)), region);
-        new Animal("Opossum", Rarity.RARE, List.of(coords(0, 0), coords(0, 1), coords(2, 1)), region);
-        new Animal("Sewer Turtle", Rarity.EPIC, List.of(coords(0, 0), coords(1, 0)), region);
-        new Animal("Chipmunk", Rarity.TIMELESS, List.of(coords(0, 0), coords(1, -1), coords(3, 0)), region);
+            new Animal("Raccoon", Rarity.COMMON, List.of(coords(0, 0), coords(0, 1), coords(2, 0), coords(3, 1)),
+                    Region.CITY),
+            new Animal("Pigeon", Rarity.COMMON, List.of(coords(0, 0), coords(1, 1),  coords(1, 2), coords(2, 2)),
+                    Region.CITY),
+            new Animal("Rat", Rarity.COMMON, List.of(coords(0, 0), coords(1, 0), coords(1, 1), coords(3, 1)), Region.CITY),
+            new Animal("Squirrel", Rarity.RARE, List.of(coords(0, 0), coords(1, 1), coords(2, -1)), Region.CITY),
+            new Animal("Opossum", Rarity.RARE, List.of(coords(0, 0), coords(0, 1), coords(2, 1)), Region.CITY),
+            new Animal("Sewer Turtle", Rarity.EPIC, List.of(coords(0, 0), coords(1, 0)), Region.CITY),
+            new Animal("Chipmunk", Rarity.TIMELESS, List.of(coords(0, 0), coords(1, -1), coords(3, 0)), Region.CITY),
 
-        region = Region.MOUNTAIN;
-        new Animal("Goat", Rarity.COMMON, List.of(coords(0, 0), coords(0, 1), coords(1, 1), coords(2, 1)), region);
-        new Animal("Cougar", Rarity.COMMON, List.of(coords(0, 0), coords(1, 1),  coords(0, 2), coords(2, 2)),
-                region);
-        new Animal("Elk", Rarity.COMMON, List.of(coords(0, 0), coords(1, 1), coords(2, 1), coords(2, 0)), region);
-        new Animal("Eagle", Rarity.RARE, List.of(coords(0, 0), coords(0, 1), coords(1, 2)), region);
-        new Animal("Coyote", Rarity.RARE, List.of(coords(0, 0), coords(1, 0), coords(2, 1)), region);
-        new Animal("Aatxe", Rarity.EPIC, List.of(coords(0, 0), coords(2, -1)), region);
-        new Animal("Pika", Rarity.TIMELESS, List.of(coords(0, 0), coords(2, 0), coords(2, 1)), region);
+            new Animal("Goat", Rarity.COMMON, List.of(coords(0, 0), coords(0, 1), coords(1, 1), coords(2, 1)),
+                    Region.MOUNTAIN),
+            new Animal("Cougar", Rarity.COMMON, List.of(coords(0, 0), coords(1, 1),  coords(0, 2), coords(2, 2)),
+                    Region.MOUNTAIN),
+            new Animal("Elk", Rarity.COMMON, List.of(coords(0, 0), coords(1, 1), coords(2, 1), coords(2, 0)),
+                    Region.MOUNTAIN),
+            new Animal("Eagle", Rarity.RARE, List.of(coords(0, 0), coords(0, 1), coords(1, 2)), Region.MOUNTAIN),
+            new Animal("Coyote", Rarity.RARE, List.of(coords(0, 0), coords(1, 0), coords(2, 1)), Region.MOUNTAIN),
+            new Animal("Aatxe", Rarity.EPIC, List.of(coords(0, 0), coords(2, -1)), Region.MOUNTAIN),
+            new Animal("Pika", Rarity.TIMELESS, List.of(coords(0, 0), coords(2, 0), coords(2, 1)), Region.MOUNTAIN),
 
-        region = Region.MOON;
-        new Animal("Tribble", Rarity.COMMON, List.of(coords(0, 0), coords(-1, 1), coords(0, 1), coords(1, 1)),
-                region);
-        new Animal("Lunar Tick", Rarity.COMMON, List.of(coords(0, 0), coords(-1, 1),  coords(1, 1), coords(0, -2))
-        , region);
-        new Animal("Moonkey", Rarity.COMMON, List.of(coords(0, 0), coords(0, 1), coords(2, 1), coords(2, 2)),
-                region);
-        new Animal("Luna Moth", Rarity.RARE, List.of(coords(0, 0), coords(1, 2), coords(2, 0)), region);
-        new Animal("Moonicorn", Rarity.RARE, List.of(coords(0, 0), coords(0, 1), coords(1, 1)), region);
-        new Animal("Jade Rabbit", Rarity.EPIC, List.of(coords(0, 0), coords(1, 2)), region);
-        new Animal("Babmoon", Rarity.TIMELESS, List.of(coords(0, 0), coords(-1, 2), coords(1, 1)), region);
+            new Animal("Tribble", Rarity.COMMON, List.of(coords(0, 0), coords(-1, 1), coords(0, 1), coords(1, 1)),
+                    Region.MOON),
+            new Animal("Lunar Tick", Rarity.COMMON, List.of(coords(0, 0), coords(-1, 1),  coords(1, 1), coords(0, -2))
+            , Region.MOON),
+            new Animal("Moonkey", Rarity.COMMON, List.of(coords(0, 0), coords(0, 1), coords(2, 1), coords(2, 2)),
+                    Region.MOON),
+            new Animal("Luna Moth", Rarity.RARE, List.of(coords(0, 0), coords(1, 2), coords(2, 0)), Region.MOON),
+            new Animal("Moonicorn", Rarity.RARE, List.of(coords(0, 0), coords(0, 1), coords(1, 1)), Region.MOON),
+            new Animal("Jade Rabbit", Rarity.EPIC, List.of(coords(0, 0), coords(1, 2)), Region.MOON),
+            new Animal("Babmoon", Rarity.TIMELESS, List.of(coords(0, 0), coords(-1, 2), coords(1, 1)), Region.MOON),
 
-        region = Region.MARS;
-        new Animal("Marsmot", Rarity.COMMON, List.of(coords(0, 0), coords(1, 0), coords(1, -1), coords(1, -2)),
-                region);
-        new Animal("Marsmoset", Rarity.COMMON, List.of(coords(0, 0), coords(1, 2),  coords(2, 0), coords(2, 1)),
-                region);
-        new Animal("Rock", Rarity.COMMON, List.of(coords(0, 0), coords(0, 1), coords(1, 1), coords(1, 0)), region);
-        new Animal("Rover", Rarity.RARE, List.of(coords(0, 0), coords(1, -1), coords(2, 0)), region);
-        new Animal("Martian", Rarity.RARE, List.of(coords(0, 0), coords(1, 1), coords(2, 0)), region);
-        new Animal("Marsmallow", Rarity.EPIC, List.of(coords(0, 0), coords(0, 2)), region);
-        new Animal("Marsten", Rarity.TIMELESS, List.of(coords(0, 0), coords(2, 0), coords(3, 1)), region);
+            new Animal("Marsmot", Rarity.COMMON, List.of(coords(0, 0), coords(1, 0), coords(1, -1), coords(1, -2)),
+                    Region.MARS),
+            new Animal("Marsmoset", Rarity.COMMON, List.of(coords(0, 0), coords(1, 2),  coords(2, 0), coords(2, 1)),
+                    Region.MARS),
+            new Animal("Rock", Rarity.COMMON, List.of(coords(0, 0), coords(0, 1), coords(1, 1), coords(1, 0)), Region.MARS),
+            new Animal("Rover", Rarity.RARE, List.of(coords(0, 0), coords(1, -1), coords(2, 0)), Region.MARS),
+            new Animal("Martian", Rarity.RARE, List.of(coords(0, 0), coords(1, 1), coords(2, 0)), Region.MARS),
+            new Animal("Marsmallow", Rarity.EPIC, List.of(coords(0, 0), coords(0, 2)), Region.MARS),
+            new Animal("Marsten", Rarity.TIMELESS, List.of(coords(0, 0), coords(2, 0), coords(3, 1)), Region.MARS)
+        ));
     }
 }

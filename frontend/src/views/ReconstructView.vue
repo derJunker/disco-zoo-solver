@@ -1,11 +1,14 @@
 <template>
   <div>
     <div id="reconstruct-view-content">
-      <reconstruction-board id="reconstruction-board" :selected-animals="selectedAnimals" :selected-region="selectedRegion"/>
-      <reconstruction-config id="animal-selection" @selected-animals-changed="(val : Animal[]) => selectedAnimals = val"
+      <reconstruction-board id="reconstruction-board" :selected-animals="selectedAnimals"
+                            :selected-region="selectedRegion" :game="game"/>
+      <reconstruction-config v-if="!game" id="animal-selection" @selected-animals-changed="(val : Animal[]) =>
+      selectedAnimals =
+      val"
                              @region-changed="(val : string) =>
       selectedRegion = val"
-                             @start="stop"/>
+                             @start="start"/>
     </div>
   </div>
 </template>
@@ -14,19 +17,26 @@ import {defineComponent} from "vue";
 import ReconstructionBoard from "@/components/ReconstructionBoard.vue";
 import ReconstructionConfig from "@/components/ReconstructionConfig.vue";
 import {Animal} from "@/types/Animal";
+import {useGame} from "@/store/useGame";
+import {Game} from "@/types/Game";
+
+let gameStore = useGame();
 
 export default defineComponent ({
   components: {ReconstructionConfig, ReconstructionBoard},
   methods: {
-
+    async start() {
+      this.game = await gameStore.startReconstruct(this.selectedAnimals)
+    }
   },
 
   data() {
     return {
       selectedAnimals: [] as Animal[],
-      selectedRegion: '' as string
+      selectedRegion: '' as string,
+      game: null as Game | null,
     }
-  }
+  },
 })
 </script>
 

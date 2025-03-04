@@ -1,14 +1,14 @@
 export function getRegionColors(region: string): { primary: string, dark: string, light: string } {
     if (!region)
         return {
-            "primary": "white",
-            "dark": "black",
-            "light": "grey",
+            primary: "white",
+            dark: "black",
+            light: "grey",
         }
     const formattedRegion = region.toLowerCase().replace(" ", "-")
     return {
-        "primary": "var(--" + formattedRegion + "-primary)",
-        "dark": "var(--" + formattedRegion + "-dark)",
-        "light": "var(--" + formattedRegion + "-light)",
+        primary: "var(--" + formattedRegion + "-primary)",
+        dark: "var(--" + formattedRegion + "-dark)",
+        light: "var(--" + formattedRegion + "-light)",
     }
 }

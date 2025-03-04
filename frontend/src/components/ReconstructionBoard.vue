@@ -12,8 +12,10 @@ import {defineComponent} from 'vue'
 import BoardAnimalDisplay from "@/components/BoardAnimalDisplay.vue";
 import DiscoBoard from "@/components/DiscoBoard.vue";
 import BoardInfoDisplay from "@/components/BoardInfoDisplay.vue";
-import {Animal} from "@/types/Animal";
 import {getRegionColors} from "@/util/region-colors";
+
+import {Animal} from "@/types/Animal";
+import {Game} from "@/types/Game";
 
 
 export default defineComponent({
@@ -26,6 +28,11 @@ export default defineComponent({
     },
     selectedAnimals: {
       type: Array as () => Animal[],
+      required: true
+    },
+
+    game: {
+      type: Object as () => Game,
       required: true
     }
   },

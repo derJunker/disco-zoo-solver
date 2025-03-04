@@ -10,7 +10,6 @@ import junker.animals.Animal;
 import junker.board.min_cover.BoardCoverCalculator;
 import junker.board.min_cover.Solution;
 import junker.board.probabiltiy.PermutationService;
-import junker.util.DoubleArrayUtil;
 
 import static junker.board.BoardService.cloneBoard;
 import static junker.board.min_cover.BoardCoverCalculator.calculateOverallOverlap;
@@ -98,7 +97,7 @@ public class Game {
     }
 
     public int getSolvedTileCount(Animal animalToSearch) {
-        var overallOverlap = calculateOverallOverlap(getWipedBoard(), containedAnimals);
+        var overallOverlap = calculateOverallOverlap(calcWipedBoard(), containedAnimals);
         var overlap = getAnimalOverlap(overallOverlap, animalToSearch);
         var occuringInstances = uniqueInstances(overlap);
         if (occuringInstances.isEmpty()) {
@@ -137,7 +136,7 @@ public class Game {
         return board;
     }
 
-    public Tile[][] getWipedBoard() {
+    public Tile[][] calcWipedBoard() {
         return Game.getWipedBoard(board);
     }
 }

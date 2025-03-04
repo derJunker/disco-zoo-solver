@@ -24,7 +24,7 @@ import static junker.util.DoubleArrayUtil.filterListsInDoubleArray;
 public class BoardCoverCalculator {
 
     public static Set<Solution> minCoveringSets(Game game, Animal animalToSearch, boolean forceFullSolution) {
-        var overallOverlap = calculateOverallOverlap(game.getWipedBoard(), game.getContainedAnimals());
+        var overallOverlap = calculateOverallOverlap(game.calcWipedBoard(), game.getContainedAnimals());
         var overlap = getAnimalOverlap(overallOverlap, animalToSearch);
         var highestOverlapCoords = getHighestOverlapCoords(overlap);
 
@@ -77,7 +77,7 @@ public class BoardCoverCalculator {
     }
 
     private static Set<Solution> coveringSets(Game game, Animal animalToSearch, List<Coords> prevCoords, MinSolutionTracker tracker) {
-        var overallOverlap = calculateOverallOverlap(game.getWipedBoard(), game.getContainedAnimals());
+        var overallOverlap = calculateOverallOverlap(game.calcWipedBoard(), game.getContainedAnimals());
         var overlap = getAnimalOverlap(overallOverlap, animalToSearch);
         var highestOverlapCoords = getHighestOverlapCoords(overlap);
 

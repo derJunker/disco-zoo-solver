@@ -21,8 +21,9 @@
 <script lang="ts">
 import {Animal} from "@/types/Animal";
 import {getRegionColors} from "@/util/region-colors";
+import {defineComponent} from "vue";
 
-export default {
+export default defineComponent ({
   name: 'BoardAnimalDisplay',
   props: {
     region: {
@@ -51,7 +52,7 @@ export default {
         this.regionColors = getRegionColors(this.region);
     },
   }
-}
+})
 </script>
 <style scoped>
 #animal-container {
