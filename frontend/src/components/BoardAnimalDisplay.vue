@@ -62,7 +62,6 @@ export default {
   justify-items: center;
   max-width: 100%;
   height: 95%;
-  border: none !important;
 }
 
 .animal-display {

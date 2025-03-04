@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div id="disco-board">
     Board
   </div>
 </template>
@@ -9,4 +9,7 @@ export default {
 }
 </script>
 <style scoped>
+#disco-board {
+  border: black 2px dashed;
+}
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div id="board-info-display">
     board info
   </div>
 </template>
@@ -9,5 +9,7 @@ export default {
 }
 </script>
 <style scoped>
-
+#board-info-display {
+  border: black 2px dashed;
+}
 </style>

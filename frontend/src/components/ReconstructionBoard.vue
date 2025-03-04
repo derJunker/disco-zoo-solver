@@ -57,8 +57,4 @@ export default defineComponent({
   grid-template-rows: 3fr 10fr 1fr;
   gap: .5rem;
 }
-
-#reconstruction-board > * {
-  border: black 2px solid;
-}
 </style>
