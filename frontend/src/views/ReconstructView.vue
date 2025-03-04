@@ -1,15 +1,14 @@
 <template>
   <div>
     <div id="reconstruct-view-content">
-      <div id="reconstruction-board" class="dock-bottom dock-top border-small">
-
-      </div>
+      <ReconstructionBoard id="reconstruction-board"/>
       <reconstruction-config id="animal-selection"/>
     </div>
   </div>
 </template>
 <script setup lang="ts">
 import ReconstructionConfig from "@/components/ReconstructionConfig.vue";
+import ReconstructionBoard from "@/components/ReconstructionBoard.vue";
 </script>
 
 <style scoped>
@@ -21,7 +20,6 @@ import ReconstructionConfig from "@/components/ReconstructionConfig.vue";
 
 #reconstruction-board {
   grid-column: 2;
-  background: var(--farm-light);
   height: 100%;
 }
 

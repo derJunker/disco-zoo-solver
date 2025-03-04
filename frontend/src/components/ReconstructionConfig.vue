@@ -145,6 +145,7 @@ export default defineComponent({
           this.selectedAnimals.shift();
         this.selectedAnimals.push(animal);
       }
+      this.$emit('selected-animals-changed', this.selectedAnimals);
     },
 
     clicked_start() {

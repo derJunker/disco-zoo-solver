@@ -56,6 +56,7 @@ header {
   justify-content: space-between;
   align-items: center;
   margin: 0 1rem 0 1rem;
+  grid-row: 1;
 }
 
 footer {
@@ -68,10 +69,10 @@ footer {
   background-color: var(--wood-color-light);
   box-shadow: var(--btn-shadow);
   border: var(--border-large) solid rgba(255, 255, 255, var(--border-light-opacity));
-  position: sticky;
-  bottom: 0;
   max-height: 10vh;
   z-index: 0;
+
+  grid-row: 3;
 }
 
 #something-1 {
