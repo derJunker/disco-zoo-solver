@@ -1,5 +1,5 @@
 <template>
-  <div :class="'dropdown btn btn-action-neutral-2 ' + (isOpen? 'dock-bottom' : '')" @click="isOpen = !isOpen"
+  <span :class="'dropdown btn btn-action-neutral-2 ' + (isOpen? 'dock-bottom' : '')" @click="isOpen = !isOpen"
        :style="'min-width:'  +
   getLongestItemSize()/1.2 + 'rem'">
     <span id="selectedItem">
@@ -14,7 +14,7 @@
         {{ itemMapper(item) }}
       </div>
     </div>
-  </div>
+  </span>
 </template>
 
 <script>
@@ -60,11 +60,6 @@ export default {
         return 0
       return this.items.reduce((a, b) => this.itemMapper(a).length > this.itemMapper(b).length ? a : b).length
     },
-
-    onClickSomewhere() {
-      this.isOpen = !this.isOpen;
-      console.log('clicked somewhere')
-    }
   },
   data () {
     return {

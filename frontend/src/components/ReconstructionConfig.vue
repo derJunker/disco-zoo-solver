@@ -1,9 +1,11 @@
 <template>
   <div class="config-board dock-bottom">
     <div id="title">Select Animals</div>
-    <div
-        id="select-region"><DropdownSelect :items="possibleRegions"
-                                           @item-selected="(val : string | null) => selectedRegion = val?val : ''"/></div>
+    <div class="first-row">
+      <DropdownSelect :items="possibleRegions"
+      @item-selected="(val : string | null) => selectedRegion = val?val : ''"/>
+      <ToggleSelect title="Timeless" selected-color-class="timeless" @selected="onTimelessChange" :default-value="false"/>
+    </div>
   </div>
 </template>
 
@@ -13,22 +15,26 @@ import {Animal} from "@/types/Animal";
 import {useAnimals} from "@/store/useAnimals";
 import Dropdown from "@/components/Basic/Dropdown.vue";
 import {useRegions} from "@/store/useRegions";
+import ToggleSelect from "@/components/Basic/ToggleSelect.vue";
 
 const animalStore = useAnimals();
 const regionStore = useRegions();
 
 export default defineComponent({
   name: 'reconstruction-config',
-  components: {DropdownSelect: Dropdown},
+  components: {ToggleSelect, DropdownSelect: Dropdown},
   props: {
 
   },
   data() {
     return {
+      possibleRegions: [] as string[],
+      selectedRegion: '',
+
       selectedAnimals : [] as string[],
       regionAnimals : [] as Animal[],
-      possibleRegions: [] as string[],
-      selectedRegion: ''
+
+      selectedTimeless : false,
     };
   },
   async created() {
@@ -45,12 +51,21 @@ export default defineComponent({
     async onRegionChange(newRegion: string) {
       this.regionAnimals = await animalStore.getAnimalsOfRegion(newRegion)
     },
+
+    onTimelessChange(newVal: boolean) {
+      this.selectedTimeless = newVal;
+    }
   }
 });
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+.first-row {
+  display: flex;
+  justify-content: space-between;
+}
+
 .config-board > * {
   margin-bottom: 1rem;
 }

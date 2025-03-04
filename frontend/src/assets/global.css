@@ -29,6 +29,13 @@
     /* Highlight color */
     --highlight-color: #ffcc00;
 
+    /* Rarity colors */
+    --rarity-common: #7FFF6C;
+    --rarity-rare: #9CD7FD;
+    --rarity-epic: #FFA593;
+    --rarity-timeless: #EBD227;
+    --rarity-bux: #9FF5FF;
+
     /* region colors */
     --farm-primary: #81BD2F;
     --farm-dark: #497018;
@@ -37,7 +44,7 @@
 
 .btn {
     border-radius: var(--border-radius);
-    padding: 1rem 1.25rem;
+    padding: .4rem 0.75rem;
     box-shadow:inset 0px 0px 0px var(--border-small) rgba(0, 0, 0, var(--border-dark-opacity)), var(--btn-shadow);
     background: linear-gradient(to top, rgba(0, 0, 0, 0.275), rgba(0, 0, 0, 0));
     cursor: pointer;
@@ -140,5 +147,18 @@ body {
     background-color: var(--wood-color-dark);
     border: var(--border-large);
     border: var(--border-large) solid rgba(255, 255, 255, var(--border-light-opacity));
+}
+
+.timeless {
+    background-color: var(--rarity-timeless);
+}
+.epic {
+    background-color: var(--rarity-epic);
+}
+.rare {
+    background-color: var(--rarity-rare);
+}
+.common {
+    background-color: var(--rarity-common);
 }
 
