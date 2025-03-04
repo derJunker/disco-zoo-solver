@@ -18,7 +18,7 @@ const animalStore = useAnimals();
 const regionStore = useRegions();
 
 export default defineComponent({
-  name: 'AnimalSelection',
+  name: 'reconstruction-config',
   components: {DropdownSelect: Dropdown},
   props: {
 

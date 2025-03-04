@@ -4,19 +4,15 @@
       <div id="reconstruction-board" class="dock-bottom dock-top border-small">
 
       </div>
-      <AnimalSelection id="animal-selection"/>
+      <reconstruction-config id="animal-selection"/>
     </div>
   </div>
 </template>
 <script setup lang="ts">
-import AnimalSelection from "@/components/AnimalSelection.vue";
+import ReconstructionConfig from "@/components/ReconstructionConfig.vue";
 </script>
 
 <style scoped>
-AnimalSelection {
-  background: red;
-}
-
 #reconstruct-view-content {
   display: grid;
   grid-template-columns: 5fr 7fr 5fr;
