@@ -101,6 +101,7 @@ footer {
   user-select: none;
   cursor: pointer;
   font-size: 2.25rem;
+  text-wrap: nowrap;
 }
 
 nav {

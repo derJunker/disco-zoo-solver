@@ -35,6 +35,10 @@ public enum Region {
         return Arrays.stream(Region.values()).filter(region -> region.repr.equalsIgnoreCase(repr)).findFirst().orElse(null);
     }
 
+    public static List<String> getRegionReprs() {
+        return Region.exclusiveValues().stream().map(region -> region.repr).toList();
+    }
+
     public static List<Region> exclusiveValues() {
         var list = new ArrayList<>(Arrays.asList(values()));
         list.remove(ANY);

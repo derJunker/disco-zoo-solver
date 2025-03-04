@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 @CrossOrigin
 public class RegionController {
     @GetMapping
-    public Region[] getRegions() {
-        return Region.values();
+    public List<String> getRegions() {
+        return Region.getRegionReprs();
     }
 }

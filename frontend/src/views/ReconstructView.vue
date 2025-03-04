@@ -28,7 +28,7 @@ import ReconstructionConfig from "@/components/ReconstructionConfig.vue";
 #animal-selection {
   margin-right: 2rem;
   margin-left: 2rem;
-  height: 50%;
+  height: 55%;
   align-self: end;
 }
 </style>
