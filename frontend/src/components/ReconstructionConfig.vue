@@ -123,6 +123,7 @@ export default defineComponent({
   methods: {
     async onRegionChange(newRegion: string) {
       this.regionAnimals = await animalStore.getAnimalsOfRegion(newRegion)
+      this.$emit('region-changed', newRegion);
 
       this.commonAnimals = this.regionAnimals.filter(animal => animal.rarity.toLowerCase() === 'common');
       this.rareAnimals = this.regionAnimals.filter(animal => animal.rarity.toLowerCase() === 'rare');

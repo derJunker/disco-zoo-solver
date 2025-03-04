@@ -40,6 +40,50 @@
     --farm-primary: #81BD2F;
     --farm-dark: #497018;
     --farm-light: #628E34;
+
+    --outback-primary: #D7261C;
+    --outback-dark: #6F0F0D;
+    --outback-light: #A8221A;
+
+    --savanna-primary: #FF8913;
+    --savanna-dark: #A64F0A;
+    --savanna-light: #C06D0D;
+
+    --northern-primary: #00A6F0;
+    --northern-dark: #005C8A;
+    --northern-light: #0079B5;
+
+    --polar-primary: #A822CF;
+    --polar-dark: #6F0F7A;
+    --polar-light: #8A1E9A;
+
+    --jungle-primary: #7CD61C;
+    --jungle-dark: #497F0D;
+    --jungle-light: #5E9E14;
+
+    --jurassic-primary: #E7650D;
+    --jurassic-dark: #A64F0A;
+    --jurassic-light: #C06D0D;
+
+    --ice-age-primary: #00A6F0;
+    --ice-age-dark: #005C8A;
+    --ice-age-light: #0079B5;
+
+    --city-primary: #A822CF;
+    --city-dark: #6F0F7A;
+    --city-light: #8A1E9A;
+
+    --mountain-primary: #7CD61C;
+    --mountain-dark: #497F0D;
+    --mountain-light: #5E9E14;
+
+    --moon-primary: #E7650D;
+    --moon-dark: #A64F0A;
+    --moon-light: #C06D0D;
+
+    --mars-primary: #00A6F0;
+    --mars-dark: #005C8A;
+    --mars-light: #0079B5;
 }
 
 .btn {

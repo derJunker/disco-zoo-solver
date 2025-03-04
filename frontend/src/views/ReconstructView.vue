@@ -1,14 +1,33 @@
 <template>
   <div>
     <div id="reconstruct-view-content">
-      <ReconstructionBoard id="reconstruction-board"/>
-      <reconstruction-config id="animal-selection"/>
+      <reconstruction-board id="reconstruction-board" :selected-animals="selectedAnimals" :selected-region="selectedRegion"/>
+      <reconstruction-config id="animal-selection" @selected-animals-changed="(val : Animal[]) => selectedAnimals = val"
+                             @region-changed="(val : string) =>
+      selectedRegion = val"
+                             @start="stop"/>
     </div>
   </div>
 </template>
-<script setup lang="ts">
-import ReconstructionConfig from "@/components/ReconstructionConfig.vue";
+<script lang="ts">
+import {defineComponent} from "vue";
 import ReconstructionBoard from "@/components/ReconstructionBoard.vue";
+import ReconstructionConfig from "@/components/ReconstructionConfig.vue";
+import {Animal} from "@/types/Animal";
+
+export default defineComponent ({
+  components: {ReconstructionConfig, ReconstructionBoard},
+  methods: {
+
+  },
+
+  data() {
+    return {
+      selectedAnimals: [] as Animal[],
+      selectedRegion: '' as string
+    }
+  }
+})
 </script>
 
 <style scoped>
