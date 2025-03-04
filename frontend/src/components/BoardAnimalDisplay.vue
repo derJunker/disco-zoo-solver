@@ -1,5 +1,5 @@
 <template>
-  <div id="animal-container">
+  <div id="board-animal-display">
     <div v-for="animal in animals" :key="animal.name" class="animal-display rounded dock-top"
          :style="'background-color: ' +
   regionColors.dark + ';'">
@@ -55,7 +55,7 @@ export default defineComponent ({
 })
 </script>
 <style scoped>
-#animal-container {
+#board-animal-display {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(5rem, 1fr));
   gap: .5rem;

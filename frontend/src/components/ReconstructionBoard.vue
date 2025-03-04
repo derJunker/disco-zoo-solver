@@ -1,9 +1,9 @@
 <template>
   <div id="reconstruction-board" class="dock-bottom dock-top border-small" :style="'background-color: ' +
   regionColors.light + ';'">
-    <BoardAnimalDisplay :region="selectedRegion" :animals="selectedAnimals"/>
-    <DiscoBoard />
-    <BoardInfoDisplay />
+    <BoardAnimalDisplay :region="selectedRegion" :animals="selectedAnimals" id="board-animal-display"/>
+    <DiscoBoard :game="game" id="disco-board" :region-colors="regionColors"/>
+    <BoardInfoDisplay id="board-info-display"/>
   </div>
 </template>
 
@@ -63,5 +63,17 @@ export default defineComponent({
   display: grid;
   grid-template-rows: 3fr 10fr 1fr;
   gap: .5rem;
+}
+
+#board-animal-display {
+  grid-row: 1;
+}
+
+#disco-board {
+  grid-row: 2;
+}
+
+#board-info-display {
+  grid-row: 3;
 }
 </style>
