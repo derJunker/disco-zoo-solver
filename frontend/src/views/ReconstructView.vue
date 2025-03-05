@@ -7,7 +7,9 @@
                              @selected-animals-changed="(val : Animal[]) => selectedAnimals = val"
                              @region-changed="(val : string) => selectedRegion = val"
                              @start="start"/>
-      <reconstruction-play-config v-if="game" id="reconstruction-play-config"/>
+      <reconstruction-play-config v-if="game" id="reconstruction-play-config" :animals="selectedAnimals"
+                                  :animal-to-place-changed="(val: Animal) => console.log(val)"
+                                  :animal-for-heatmap-changed="(val: Animal) => console.log(val)"/>
     </div>
   </div>
 </template>

@@ -3,7 +3,7 @@
     <h2 id="title">Select Animals</h2>
     <div class="first-row">
       <DropdownSelect :items="possibleRegions"
-      @item-selected="(val : string | null) => selectedRegion = val?val : ''"/>
+      @item-selected="(val : string | null) => selectedRegion = val?val : ''" class="dropdown"/>
       <ToggleSelect title="Timeless" selected-color-class="timeless" @selected="onTimelessChange" :default-value="selectedTimeless"/>
     </div>
     <div id="animal-selection">
@@ -80,7 +80,7 @@
 import { defineComponent } from 'vue';
 import {Animal} from "@/types/Animal";
 import {useAnimals} from "@/store/useAnimals";
-import Dropdown from "@/components/Basic/Dropdown.vue";
+import DropdownSelect from "@/components/Basic/DropdownSelect.vue";
 import {useRegions} from "@/store/useRegions";
 import ToggleSelect from "@/components/Basic/ToggleSelect.vue";
 
@@ -89,7 +89,7 @@ const regionStore = useRegions();
 
 export default defineComponent({
   name: 'reconstruction-config',
-  components: {ToggleSelect, DropdownSelect: Dropdown},
+  components: {ToggleSelect, DropdownSelect},
   props: {
 
   },
@@ -212,6 +212,10 @@ export default defineComponent({
 
 #start-btn {
   padding: 1rem 2rem 1rem 2rem;
+  max-width: fit-content;
+}
+
+.dropdown {
   max-width: fit-content;
 }
 </style>

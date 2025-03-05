@@ -41,7 +41,7 @@ export default defineComponent({
 
     initialGame: {
       type: Object as () => Game,
-      required: true
+      required: false
     }
   },
 
@@ -60,8 +60,6 @@ export default defineComponent({
     selectedRegion(newVal, oldVal) {
       if (newVal !== oldVal)
         this.regionColors = getRegionColors(this.selectedRegion);
-
-      console.log(this.regionColors);
     },
     initialGame(newVal, oldVal) {
       if (newVal !== oldVal)

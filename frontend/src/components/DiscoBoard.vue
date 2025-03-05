@@ -19,7 +19,7 @@ export default defineComponent ({
   props: {
     game: {
       type: Object as () => Game | null,
-      required: true
+      required: false
     },
     regionColors: {
       type: Object,

@@ -1,7 +1,9 @@
 <template>
   <span :class="'dropdown btn btn-action-neutral-2 ' + (isOpen? 'dock-bottom' : '')" @click="isOpen = !isOpen"
        :style="'min-width:'  +
-  getLongestItemSize()/1.2 + 'rem'">
+  getLongestItemSize()/1.2 + 'rem'"
+        @focusout="handleFocusOut"
+        tabindex="0">
     <span id="selectedItem">
       {{ itemMapper(selectedItem) }}
     </span>
@@ -19,7 +21,7 @@
 
 <script>
 export default {
-  name: 'custom-dropdown',
+  name: 'dropdown-select',
   props: {
     defaultValue: {
       type: Object,
@@ -49,8 +51,22 @@ export default {
       }
     }
   },
+
+  created() {
+    if(!this.defaultValue && this.items.length > 0) {
+      this.selectedItem = this.items[0]
+    } else {
+      this.selectedItem = this.defaultValue
+    }
+
+    this.$emit('item-selected', this.selectedItem);
+  },
+
   methods: {
     onClickSelect (item) {
+      if(this.itemMapper(item) === this.itemMapper(this.selectedItem)) {
+        return
+      }
       this.selectedItem = item
       this.$emit('item-selected', item);
     },
@@ -60,10 +76,14 @@ export default {
         return 0
       return this.items.reduce((a, b) => this.itemMapper(a).length > this.itemMapper(b).length ? a : b).length
     },
+
+    handleFocusOut() {
+      this.isOpen = false
+    }
   },
   data () {
     return {
-      selectedItem: this.defaultValue,
+      selectedItem: null,
       isOpen: false
     }
   },
@@ -95,7 +115,7 @@ export default {
 
 /* actually used */
 .dropdown {
-  max-width: fit-content;
+  min-width: fit-content;
   position: relative;
   display: flex;
   align-items: stretch;
@@ -103,5 +123,9 @@ export default {
   cursor: pointer;
   padding: .5rem;
   user-select: none;
+}
+
+.sub-menu {
+  z-index: 100;
 }
 </style>
