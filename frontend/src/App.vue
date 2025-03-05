@@ -21,8 +21,6 @@
       </nav>
     </header>
     <router-view id="router-view"/>
-    <a id="something-1" class="btn btn-action-bad dock-bottom">Something</a>
-    <a id="something-2" class="btn btn-action-neutral-2 dock-bottom">Something</a>
     <footer class="dock-bottom">
       <a :href="$baseUrl + '/pages/impressum.html'">Impressum / Contact</a>
       <div>
@@ -30,6 +28,8 @@
         /
         <a :href="$baseUrl + '/pages/privacy-policy-en.html'">Privacy Policy</a>
       </div>
+      <a id="something-1" class="btn btn-action-bad dock-bottom">Something</a>
+      <a id="something-2" class="btn btn-action-neutral-2 dock-bottom">Something</a>
     </footer>
   </div>
 </template>
@@ -60,6 +60,8 @@ header {
 }
 
 footer {
+  position: sticky;
+  bottom: 0;
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -76,17 +78,17 @@ footer {
 }
 
 #something-1 {
-  position: fixed;
   left: calc(var(--border-small) * -1);
   border-top-left-radius: 0;
 }
 #something-2 {
-  position: fixed;
-  right: calc(var(--border-small) * -1);
+  right: calc(var(--border-small) * -3);
   border-top-right-radius: 0;
 }
 
 #something-1, #something-2 {
+  position: fixed;
+
   padding-bottom: 1.25rem;
   padding-top: 1.25rem;
 
@@ -114,6 +116,7 @@ nav {
 }
 
 #app-content {
+  position: relative;
   display: grid;
   grid-template-rows: 3fr 30fr 1fr;
   gap: 0;

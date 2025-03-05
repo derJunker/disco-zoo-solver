@@ -31,6 +31,8 @@ export default defineComponent ({
       if (tile.revealed) {
         if(tile.animalBoardInstance)
           return tile.animalBoardInstance.animal.name.substring(0,2)
+        else
+          return 'x'
       } else {
         if(tile.animalBoardInstance)
           return '?'
@@ -43,7 +45,7 @@ export default defineComponent ({
 <style scoped>
 #disco-board {
   aspect-ratio: 1;
-  width: 75%;
+  width: 65%;
   max-width: 100%;
   margin: auto;
   border: var(--border-small) solid rgba(0, 0, 0, var(--border-dark-opacity));
@@ -68,5 +70,7 @@ export default defineComponent ({
 .picture {
   aspect-ratio: 1;
   width: 80%;
+  display: grid;
+  place-items: center;
 }
 </style>

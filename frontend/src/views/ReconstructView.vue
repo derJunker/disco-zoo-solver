@@ -2,13 +2,12 @@
   <div>
     <div id="reconstruct-view-content">
       <reconstruction-board id="reconstruction-board" :selected-animals="selectedAnimals"
-                            :selected-region="selectedRegion" :game="game"/>
-      <reconstruction-config v-if="!game" id="animal-selection" @selected-animals-changed="(val : Animal[]) =>
-      selectedAnimals =
-      val"
-                             @region-changed="(val : string) =>
-      selectedRegion = val"
+                            :selected-region="selectedRegion" :initialGame="game"/>
+      <reconstruction-config v-if="!game" id="reconstruction-config"
+                             @selected-animals-changed="(val : Animal[]) => selectedAnimals = val"
+                             @region-changed="(val : string) => selectedRegion = val"
                              @start="start"/>
+      <reconstruction-play-config v-if="game" id="reconstruction-play-config"/>
     </div>
   </div>
 </template>
@@ -19,11 +18,12 @@ import ReconstructionConfig from "@/components/ReconstructionConfig.vue";
 import {Animal} from "@/types/Animal";
 import {useGame} from "@/store/useGame";
 import {Game} from "@/types/Game";
+import ReconstructionPlayConfig from "@/components/ReconstructionPlayConfig.vue";
 
 let gameStore = useGame();
 
 export default defineComponent ({
-  components: {ReconstructionConfig, ReconstructionBoard},
+  components: {ReconstructionPlayConfig, ReconstructionConfig, ReconstructionBoard},
   methods: {
     async start() {
       this.game = await gameStore.startReconstruct(this.selectedAnimals)
@@ -52,7 +52,7 @@ export default defineComponent ({
   height: 100%;
 }
 
-#animal-selection {
+#reconstruction-config, #reconstruction-play-config {
   margin-right: 2rem;
   margin-left: 2rem;
   height: 55%;

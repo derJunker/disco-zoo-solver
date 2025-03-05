@@ -1,6 +1,6 @@
 <template>
   <div class="config-board dock-bottom">
-    <div id="title">Select Animals</div>
+    <h2 id="title">Select Animals</h2>
     <div class="first-row">
       <DropdownSelect :items="possibleRegions"
       @item-selected="(val : string | null) => selectedRegion = val?val : ''"/>
@@ -172,9 +172,6 @@ export default defineComponent({
 
 .config-board > * {
   margin-bottom: 1rem;
-}
-#title {
-  font-size: var(--font-size-larger);
 }
 
 #common-animals, #rare-animals, #epic-animal-wrapper, #timeless-animal-wrapper, #bux-animals {

@@ -53,6 +53,11 @@ public class Game {
         this.containedAnimals = new ArrayList<>(gameToClone.containedAnimals);
     }
 
+    public Game(Tile[][] board, List<Animal> containedAnimals) {
+        this.board = board;
+        this.containedAnimals = containedAnimals;
+    }
+
     public static Game of(Tile[][] board) {
         Game game = new Game(new ArrayList<>());
         game.board = board;

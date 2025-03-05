@@ -1,6 +1,8 @@
+import {Coords} from "@/types/Coords";
+
 export interface Animal {
     name: string;
     rarity: string;
-    pattern: { x: number; y: number }[];
+    pattern: Coords[];
     region: string;
 }

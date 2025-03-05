@@ -2,7 +2,7 @@
   <div id="reconstruction-board" class="dock-bottom dock-top border-small" :style="'background-color: ' +
   regionColors.light + ';'">
     <BoardAnimalDisplay :region="selectedRegion" :animals="selectedAnimals" id="board-animal-display"/>
-    <DiscoBoard :game="game" id="disco-board" :region-colors="regionColors"/>
+    <DiscoBoard :game="game" id="disco-board" :region-colors="regionColors" @tile-click="tileClick"/>
     <BoardInfoDisplay id="board-info-display"/>
   </div>
 </template>
@@ -16,11 +16,19 @@ import {getRegionColors} from "@/util/region-colors";
 
 import {Animal} from "@/types/Animal";
 import {Game} from "@/types/Game";
+import {useGame} from "@/store/useGame";
+import {Coords} from "@/types/Coords";
 
+const gameStore = useGame();
 
 export default defineComponent({
   name: "ReconstructionBoard",
   components: {BoardInfoDisplay, DiscoBoard, BoardAnimalDisplay},
+  methods: {
+    async tileClick({x, y}: Coords) {
+      this.game = await gameStore.clickReconstruct(this.game!, null, {x, y} as Coords);
+    }
+  },
   props: {
     selectedRegion: {
       type: String,
@@ -31,7 +39,7 @@ export default defineComponent({
       required: true
     },
 
-    game: {
+    initialGame: {
       type: Object as () => Game,
       required: true
     }
@@ -39,7 +47,8 @@ export default defineComponent({
 
   data() {
     return {
-      regionColors: {primary: '', dark: '', light: ''}
+      regionColors: {primary: '', dark: '', light: ''},
+      game: null as Game | null
     }
   },
 
@@ -54,7 +63,11 @@ export default defineComponent({
 
       console.log(this.regionColors);
     },
-  }
+    initialGame(newVal, oldVal) {
+      if (newVal !== oldVal)
+        this.game = newVal;
+    }
+  },
 })
 </script>
 
