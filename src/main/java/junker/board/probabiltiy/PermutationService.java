@@ -6,6 +6,7 @@ import java.util.List;
 import junker.animals.Animal;
 import junker.board.BoardService;
 import junker.board.Coords;
+import junker.board.Game;
 import junker.board.Tile;
 
 public class PermutationService {
@@ -18,6 +19,14 @@ public class PermutationService {
             return null;
         }
         return possiblePlacements.get((int) (Math.random() * possiblePlacements.size()));
+    }
+
+
+    public static boolean canClickAndPlace(Game game, int x, int y, Animal animal) {
+        var wipedGame = new Game(game, true);
+        wipedGame.setTile(x, y, true, animal);
+        var permutations = calculateBoardPermutations(wipedGame.getBoard(), game.getContainedAnimals());
+        return !permutations.isEmpty();
     }
 
     public static List<Tile[][]> calculateBoardPermutations(Tile[][] board, List<Animal> animals) {
@@ -46,7 +55,7 @@ public class PermutationService {
         List<Coords> possiblePlacements = new java.util.ArrayList<>();
         for (int i = 0; i < board.length; i++) {
             for (int j = 0; j < board[0].length; j++) {
-                if (canPlaceAnimal(board, animalToPlace, i, j)) {
+                if (canPlaceAnimalOfOrigin(board, animalToPlace, i, j)) {
                     possiblePlacements.add(new Coords(i, j));
                 }
 
@@ -96,7 +105,7 @@ public class PermutationService {
     }
 
 
-    private static boolean canPlaceAnimal(Tile[][] board, Animal animal, int startX, int startY) {
+    private static boolean canPlaceAnimalOfOrigin(Tile[][] board, Animal animal, int startX, int startY) {
         for (Coords coord : animal.pattern()) {
             int x = startX + coord.x();
             int y = startY + coord.y();

@@ -34,7 +34,7 @@ public class ReconstructController {
         if (currentlyRevealed)
             animal = null;
 
-        game.setTile(coords.x(), coords.y(), !currentlyRevealed, animal);
+        game.setTileIfValid(coords.x(), coords.y(), !currentlyRevealed, animal);
         return game;
     }
 }

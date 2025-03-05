@@ -15,6 +15,7 @@ import static junker.board.BoardService.cloneBoard;
 import static junker.board.min_cover.BoardCoverCalculator.calculateOverallOverlap;
 import static junker.board.min_cover.BoardCoverCalculator.getAnimalOverlap;
 import static junker.board.min_cover.BoardCoverCalculator.uniqueInstances;
+import static junker.board.probabiltiy.PermutationService.canClickAndPlace;
 import static junker.util.DoubleArrayUtil.arrayAsCoordinatesString;
 
 public class Game {
@@ -77,6 +78,16 @@ public class Game {
         tile.setAnimalBoardInstance(null);
         if (animal != null)
             tile.setAnimalBoardInstance(new AnimalBoardInstance(animal, "", new Coords(-1, -1)));
+    }
+
+    public void setTileIfValid(int x, int y, boolean revealed, Animal animal) {
+        if(revealed) {
+            boolean isValid = canClickAndPlace(this, x, y, animal);
+            if (!isValid) {
+                return;
+            }
+        }
+        setTile(x, y, revealed, animal);
     }
 
     public void printGame() {
