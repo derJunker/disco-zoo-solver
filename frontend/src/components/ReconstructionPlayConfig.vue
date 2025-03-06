@@ -45,11 +45,9 @@ export default defineComponent({
     },
 
     emitAnimalToPlaceChanged(val: Animal) {
-      console.log("emitAnimalToPlaceChanged", val);
       this.$emit('animal-to-place-changed', val);
     },
     emitAnimalForHeatmapChanged(val: Animal) {
-      console.log("emitAnimalForHeatmapChanged", val);
       this.$emit('animal-for-heatmap-changed', val);
     },
   }
@@ -57,31 +55,36 @@ export default defineComponent({
 </script>
 
 <style scoped>
-  #reconstruction-play-config {
-    display: flex;
-    flex-direction: column;
-    align-items: start;
-    padding-bottom: 2rem;
-  }
+#select-animal-to-place {
+  display: flex;
+  flex-direction: column;
+}
+#reconstruction-play-config {
+  max-width: fit-content;
+  gap: 1rem;
+  justify-content: space-between;
+  flex-direction: column;
+  align-items: start;
+}
 
-  #title {
-    align-self: center;
-  }
+#title {
+  align-self: center;
+}
 
-  #select-options {
-    flex: 1;
-    text-align: start;
-    display: grid;
-    max-width: fit-content;
-  }
+#select-options {
+  flex: 1;
+  text-align: start;
+  display: grid;
+  max-width: fit-content;
+}
 
-  #action-buttons {
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
-  }
+#action-buttons {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
 
-  .dropdown {
-    max-width: 50%;
-  }
+.dropdown {
+  max-width: 50%;
+}
 </style>

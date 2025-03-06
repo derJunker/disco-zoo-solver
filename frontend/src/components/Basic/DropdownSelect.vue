@@ -72,9 +72,15 @@ export default {
     },
 
     getLongestItemSize () {
+      let returnVal = 0;
       if (!this.items || this.items.length === 0)
-        return 0
-      return this.items.reduce((a, b) => this.itemMapper(a).length > this.itemMapper(b).length ? a : b).length
+        returnVal = 0
+      else
+        returnVal = this.items.map(this.itemMapper).reduce((a, b) => a.length >
+        b.length ?
+          a :
+          b).length
+      return returnVal
     },
 
     handleFocusOut() {
@@ -115,10 +121,10 @@ export default {
 
 /* actually used */
 .dropdown {
-  min-width: fit-content;
   position: relative;
   display: flex;
   align-items: stretch;
+  gap: .25rem;
   justify-content: space-between;
   cursor: pointer;
   padding: .5rem;

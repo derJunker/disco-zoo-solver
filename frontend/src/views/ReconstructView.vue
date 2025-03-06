@@ -62,6 +62,7 @@ export default defineComponent({
 
 @media (min-width: 900px) {
   #reconstruct-view-content {
+    place-items: center;
     display: grid;
     grid-template-columns: 5fr 7fr 5fr;
   }
@@ -71,10 +72,11 @@ export default defineComponent({
   }
 
   #reconstruct-view-content > #reconstruction-config, #reconstruct-view-content > #reconstruction-play-config {
-    display: block;
+    display: flex;
+    flex-direction: column;
     margin-right: 2rem;
     margin-left: 2rem;
-    height: 55%;
+    min-height: fit-content;
     align-self: end;
   }
 }

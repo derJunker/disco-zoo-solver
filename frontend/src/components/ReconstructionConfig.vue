@@ -68,7 +68,7 @@
         </div>
       </div>
     </div>
-    <div style="display: flex; justify-content: center;">
+    <div style="display: flex; justify-content: center; align-content: end">
       <div class="btn btn-action-good" id="start-btn" @click="clicked_start">
         Start
       </div>
@@ -167,7 +167,8 @@ export default defineComponent({
 <style scoped>
 
 h2 {
-  margin: .2rem 0;
+  margin-top: .2rem;
+  margin-bottom: .5rem;
 }
 .first-row {
   display: flex;
@@ -175,8 +176,15 @@ h2 {
   flex-wrap: wrap;
 }
 
-.config-board > * {
-  margin-bottom: 1rem;
+
+
+#animal-selection {
+  margin: .5rem 0;
+  display: flex;
+  flex-wrap: wrap;
+  row-gap: 1rem;
+  column-gap: 4rem;
+  justify-content: space-between;
 }
 
 #common-animals, #rare-animals, #epic-animal-wrapper, #timeless-animal-wrapper, #bux-animals {
