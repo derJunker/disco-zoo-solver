@@ -67,7 +67,7 @@ export default defineComponent ({
   place-items: center;
   border: var(--border-small) solid rgba(0, 0, 0, var(--border-dark-opacity));
   aspect-ratio: 1;
-  min-height: 5rem;
+  max-height: 10rem;
 }
 
 #animal-icon {

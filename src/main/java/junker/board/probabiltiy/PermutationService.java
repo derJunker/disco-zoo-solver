@@ -60,32 +60,28 @@ public class PermutationService {
                 }
 
                 if (board[i][j].hasAnimalInstanceOfType(animalToPlace) && board[i][j].isRevealed()) {
-                    return getPossiblePlacementsForRevealedAnimal(board, animalToPlace, i, j);
+                    return getPossiblePlacementsForRevealedAnimal(animalToPlace, i, j, board);
                 }
             }
         }
         return possiblePlacements;
     }
 
-    private static List<Coords> getPossiblePlacementsForRevealedAnimal(Tile[][] board, Animal animalToPlace, int x,
-                                                                       int y) {
-        List<Coords> possiblePlacements = addPossiblePlacements(animalToPlace, x, y, board);
-
-        return possiblePlacements;
-
-    }
-
-    private static List<Coords> addPossiblePlacements(Animal animalToPlace, int x, int y, Tile[][] board) {
+    private static List<Coords> getPossiblePlacementsForRevealedAnimal(Animal animalToPlace, int x, int y, Tile[][] board) {
         var pattern = animalToPlace.pattern();
         var possiblePlacements = new ArrayList<Coords>();
+        var revealedSpots = getAllRevealedSpotOfAnimal(board, animalToPlace);
         for (var revealedSpot : pattern) {
             boolean centerIsValid = true;
             var center = new Coords(x - revealedSpot.x(), y - revealedSpot.y());
+            var coveredSpots = new ArrayList<Coords>(revealedSpots);
+            coveredSpots.remove(center);
             for (var other : pattern) {
                 if (other.equals(revealedSpot)) {
                     continue;
                 }
                 var otherSpot = new Coords(center.x() + other.x(), center.y() + other.y());
+                coveredSpots.remove(otherSpot);
                 if (otherSpot.x() >= 0 && otherSpot.x() < board.length && otherSpot.y() >= 0 && otherSpot.y() < board[0].length) {
                     var tile = board[otherSpot.x()][otherSpot.y()];
                     if (tile.isRevealed() && !tile.hasAnimalInstanceOfType(animalToPlace)) {
@@ -97,11 +93,23 @@ public class PermutationService {
                     break;
                 }
             }
-            if (centerIsValid) {
+            if (centerIsValid && coveredSpots.isEmpty()) {
                 possiblePlacements.add(center);
             }
         }
         return possiblePlacements;
+    }
+
+    private static List<Coords> getAllRevealedSpotOfAnimal(Tile[][] board, Animal animal) {
+        List<Coords> revealedSpots = new ArrayList<>();
+        for (int i = 0; i < board.length; i++) {
+            for (int j = 0; j < board[0].length; j++) {
+                if (board[i][j].hasAnimalInstanceOfType(animal) && board[i][j].isRevealed()) {
+                    revealedSpots.add(new Coords(i, j));
+                }
+            }
+        }
+        return revealedSpots;
     }
 
 

@@ -1,7 +1,9 @@
 <template>
   <div id="reconstruction-board" class="dock-bottom dock-top border-small" :style="'background-color: ' +
   regionColors.light + ';'">
-    <BoardAnimalDisplay :region="selectedRegion" :animals="selectedAnimals" id="board-animal-display"/>
+    <div id="board-animal-display-wrapper">
+      <BoardAnimalDisplay :region="selectedRegion" :animals="selectedAnimals" id="board-animal-display"/>
+    </div>
     <DiscoBoard :game="game" id="disco-board" :region-colors="regionColors" @tile-click="tileClick"/>
     <BoardInfoDisplay id="board-info-display"/>
   </div>
@@ -85,21 +87,31 @@ export default defineComponent({
 
 <style scoped>
 #reconstruction-board {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  gap: 1rem;
+  position: relative;
+  display: grid;
+  place-items: center;
 }
 
-#board-animal-display {
-  max-height: 20%;
+#board-animal-display-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
 }
 
 #disco-board {
-  flex: .7;
+  max-height: 66%;
+  max-width: 66%;
+  margin-top: 10rem;
+  margin-bottom: 2rem;
 }
 
 #board-info-display {
-  flex: .05;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
 }
 </style>

@@ -40,20 +40,17 @@ export default defineComponent ({
 </script>
 <style scoped>
 #disco-board {
-  margin: auto;
   border: var(--border-small) solid rgba(0, 0, 0, var(--border-dark-opacity));
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   align-content: center;
   gap: .2rem;
   padding: .25rem;
-  margin-inline: 1rem;
+  margin-inline: 3rem;
   aspect-ratio: 1;
-  width: 70vmin;
-  height: 70vmin;
-  max-width: 30rem;
-  max-height: 30rem;
+  flex-grow: 0;
   align-self: center;
+  width: 100%;
 }
 .disco-row {
   display: contents;

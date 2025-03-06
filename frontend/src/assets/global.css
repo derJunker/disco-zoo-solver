@@ -86,6 +86,10 @@
     --mars-light: #0079B5;
 }
 
+* {
+    box-sizing: border-box;
+}
+
 body {
     background-color: var(--background-color);
     -webkit-font-smoothing: antialiased;
