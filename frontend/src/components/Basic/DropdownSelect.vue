@@ -109,6 +109,11 @@ export default {
   left: 0;
   padding: .5rem;
   box-shadow: var(--btn-shadow-and-border);
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  gap: .25rem
 }
 
 .menu-item * {
@@ -129,9 +134,5 @@ export default {
   cursor: pointer;
   padding: .5rem;
   user-select: none;
-}
-
-.sub-menu {
-  z-index: 100;
 }
 </style>

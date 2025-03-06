@@ -15,8 +15,8 @@
       </div>
     </div>
     <div id="action-buttons">
-      <span class="btn-action-neutral-2 rounded" @click="stop">Start</span>
-      <span class="btn-action-neutral-2 rounded" @click="stop">Stop</span>
+      <span class="btn btn-action-neutral-1 rounded" @click="stop">Reset</span>
+      <span class="btn btn-action-neutral-2 rounded" @click="stop">Change animals</span>
     </div>
   </div>
 </template>
@@ -76,15 +76,24 @@ export default defineComponent({
   text-align: start;
   display: grid;
   max-width: fit-content;
+  gap: 1rem;
 }
 
 #action-buttons {
   display: flex;
   justify-content: space-between;
   width: 100%;
+  margin-top: 1rem;
+  column-gap: .5rem;
+  row-gap: .25rem;
+  flex-wrap: wrap-reverse;
+}
+
+#action-buttons > .btn {
+  text-wrap: nowrap;
 }
 
 .dropdown {
-  max-width: 50%;
+  max-width: fit-content;
 }
 </style>
