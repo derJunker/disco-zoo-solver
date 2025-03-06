@@ -28,8 +28,8 @@
         /
         <a :href="$baseUrl + '/pages/privacy-policy-en.html'">Privacy Policy</a>
       </div>
-      <a id="something-1" class="btn btn-action-bad dock-bottom">Something</a>
-      <a id="something-2" class="btn btn-action-neutral-2 dock-bottom">Something</a>
+      <a id="util-btn-1" class="btn btn-action-bad dock-bottom">Nav</a>
+      <a id="util-btn-2" class="btn btn-action-neutral-2 dock-bottom">Config</a>
     </footer>
   </div>
 </template>
@@ -46,17 +46,29 @@ export default {
 </script>
 
 <style>
-
-#app {
-  min-height: 100vh;
-}
 header {
+  position: sticky;
+  top: 0;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  margin: 0 1rem 0 1rem;
-  grid-row: 1;
+  overflow: hidden;
+
+  border-left: none!important;
+  border-right: none!important;
+}
+
+@media (min-width: 900px) {
+  header {
+    margin: 0 1rem;
+    border: var(--border-large)!important;
+    border: var(--border-large) solid rgba(255, 255, 255, var(--border-light-opacity))!important;
+  }
+
+  #util-btn-1, #util-btn-2 {
+    display: none;
+  }
 }
 
 footer {
@@ -71,22 +83,24 @@ footer {
   background-color: var(--wood-color-light);
   box-shadow: var(--btn-shadow);
   border: var(--border-large) solid rgba(255, 255, 255, var(--border-light-opacity));
+  border-left: none;
+  border-right: none;
+  border-top-left-radius: 0!important;
+  border-top-right-radius: 0!important;
   max-height: 10vh;
   z-index: 0;
-
-  grid-row: 3;
 }
 
-#something-1 {
+#util-btn-1 {
   left: calc(var(--border-small) * -1);
   border-top-left-radius: 0;
 }
-#something-2 {
+#util-btn-2 {
   right: calc(var(--border-small) * -3);
   border-top-right-radius: 0;
 }
 
-#something-1, #something-2 {
+#util-btn-1, #util-btn-2 {
   position: fixed;
 
   padding-bottom: 1.25rem;
@@ -103,7 +117,7 @@ footer {
   margin: 0;
   user-select: none;
   cursor: pointer;
-  font-size: 2.25rem;
+  font-size: min(2.25rem, 3vw);
   text-wrap: nowrap;
 }
 
@@ -117,10 +131,16 @@ nav {
 
 #app-content {
   position: relative;
-  display: grid;
-  grid-template-rows: 3fr 30fr 1fr;
+  display: flex;
+  flex-direction: column;
   gap: 0;
   height: 100vh;
+  width: 100vw;
+}
+
+#router-view {
+  flex: 1;
+  overflow-y: auto;
 }
 
 </style>

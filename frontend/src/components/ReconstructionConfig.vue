@@ -165,9 +165,14 @@ export default defineComponent({
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+
+h2 {
+  margin: .2rem 0;
+}
 .first-row {
   display: flex;
   justify-content: space-between;
+  flex-wrap: wrap;
 }
 
 .config-board > * {

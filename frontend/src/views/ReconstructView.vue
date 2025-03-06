@@ -1,15 +1,18 @@
 <template>
   <div>
     <div id="reconstruct-view-content">
-      <reconstruction-board id="reconstruction-board" :selected-animals="selectedAnimals"
-                            :selected-region="selectedRegion" :initialGame="game"/>
-      <reconstruction-config v-if="!game" id="reconstruction-config"
-                             @selected-animals-changed="(val : Animal[]) => selectedAnimals = val"
-                             @region-changed="(val : string) => selectedRegion = val"
-                             @start="start"/>
-      <reconstruction-play-config v-if="game" id="reconstruction-play-config" :animals="selectedAnimals"
-                                  :animal-to-place-changed="(val: Animal) => console.log(val)"
-                                  :animal-for-heatmap-changed="(val: Animal) => console.log(val)"/>
+      <reconstruction-board
+          id="reconstruction-board" :selected-animals="selectedAnimals"
+          :selected-region="selectedRegion" :initialGame="game" />
+      <reconstruction-config
+          v-if="!game" id="reconstruction-config"
+          @selected-animals-changed="(val : Animal[]) => selectedAnimals = val"
+          @region-changed="(val : string) => selectedRegion = val"
+          @start="start" />
+      <reconstruction-play-config
+          v-if="game" id="reconstruction-play-config" :animals="selectedAnimals"
+          :animal-to-place-changed="(val: Animal) => console.log(val)"
+          :animal-for-heatmap-changed="(val: Animal) => console.log(val)" />
     </div>
   </div>
 </template>
@@ -24,7 +27,7 @@ import ReconstructionPlayConfig from "@/components/ReconstructionPlayConfig.vue"
 
 let gameStore = useGame();
 
-export default defineComponent ({
+export default defineComponent({
   components: {ReconstructionPlayConfig, ReconstructionConfig, ReconstructionBoard},
   methods: {
     async start() {
@@ -43,21 +46,40 @@ export default defineComponent ({
 </script>
 
 <style scoped>
+
 #reconstruct-view-content {
-  display: grid;
-  grid-template-columns: 5fr 7fr 5fr;
   height: 100%;
 }
 
-#reconstruction-board {
-  grid-column: 2;
+#reconstruct-view-content > #reconstruction-board {
+  width: 100%;
   height: 100%;
 }
 
-#reconstruction-config, #reconstruction-play-config {
-  margin-right: 2rem;
-  margin-left: 2rem;
-  height: 55%;
-  align-self: end;
+#reconstruct-view-content > #reconstruction-config, #reconstruct-view-content > #reconstruction-play-config {
+  display: none;
 }
+
+@media (min-width: 900px) {
+  #reconstruct-view-content {
+    display: grid;
+    grid-template-columns: 5fr 7fr 5fr;
+  }
+
+  #reconstruct-view-content > #reconstruction-board {
+    grid-column: 2;
+  }
+
+  #reconstruct-view-content > #reconstruction-config, #reconstruct-view-content > #reconstruction-play-config {
+    display: block;
+    margin-right: 2rem;
+    margin-left: 2rem;
+    height: 55%;
+    align-self: end;
+  }
+}
+
+
+
+
 </style>

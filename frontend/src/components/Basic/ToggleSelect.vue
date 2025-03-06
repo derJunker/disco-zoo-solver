@@ -58,5 +58,8 @@ export default defineComponent({
 
 .btn {
   user-select: none;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 </style>
