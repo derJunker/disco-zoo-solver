@@ -1,10 +1,11 @@
 <template>
   <div id="disco-board" class="rounded" :style="'background-color: ' + regionColors.dark" v-if="game">
     <div v-for="(row, x) in game.board" :key="row" class="disco-row">
-      <div v-for="(tile, y) in row" :key="tile" class="disco-cell" :style="'background-color: ' + regionColors.primary">
-        <span class="picture" @click="$emit('tile-click', {x, y})">
-          {{ getTileRepr(tile) }}
-        </span>
+      <div v-for="(tile, y) in row" :key="tile" class="disco-cell" :style="'background-color: ' +
+      regionColors.primary" @click="$emit('tile-click', {x, y})">
+        <img v-if="hasRevealedAnimal(tile)" id="animal-icon" src="https://placehold.co/400/png" alt="animal"
+             style="max-width: 70%;"/>
+        <span v-else-if="isRevealedWithNoAnimal(tile)">:(</span>
       </div>
     </div>
   </div>
@@ -27,17 +28,12 @@ export default defineComponent ({
     }
   },
   methods: {
-    getTileRepr(tile: Tile) {
-      if (tile.revealed) {
-        if(tile.animalBoardInstance)
-          return tile.animalBoardInstance.animal.name.substring(0,2)
-        else
-          return 'x'
-      } else {
-        if(tile.animalBoardInstance)
-          return '?'
-      }
-      return ''
+    hasRevealedAnimal(tile: Tile): boolean {
+      return tile.animalBoardInstance != null
+    },
+
+    isRevealedWithNoAnimal(tile: Tile): boolean {
+      return tile.revealed && tile.animalBoardInstance == null
     }
   }
 })
