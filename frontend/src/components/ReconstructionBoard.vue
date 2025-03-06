@@ -71,20 +71,22 @@ export default defineComponent({
 
 <style scoped>
 #reconstruction-board {
-  display: grid;
-  grid-template-rows: 3fr 10fr 1fr;
-  gap: .5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 1rem;
 }
 
 #board-animal-display {
-  grid-row: 1;
+  flex: .25;
+  max-height: 20%;
 }
 
 #disco-board {
-  grid-row: 2;
+  flex: .60;
 }
 
 #board-info-display {
-  grid-row: 3;
+  flex: .05;
 }
 </style>

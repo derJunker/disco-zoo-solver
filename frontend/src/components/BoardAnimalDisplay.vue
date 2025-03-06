@@ -56,34 +56,30 @@ export default defineComponent ({
 </script>
 <style scoped>
 #board-animal-display {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(5rem, 1fr));
+  display: flex;
   gap: .5rem;
-  justify-self: center;
+  justify-content: center;
+  align-self: center;
   justify-items: center;
-  max-width: 100%;
-  height: 95%;
 }
 
 .animal-display {
   position: relative;
   display: grid;
-  grid-template-rows: subgrid;
-  container-type: inline-size;
+  place-items: center;
   border: var(--border-small) solid rgba(0, 0, 0, var(--border-dark-opacity));
   aspect-ratio: 1;
+  min-height: 5rem;
 }
 
 #animal-icon {
-  grid-row: 2;
   align-self: center;
 }
 
 #animal-name {
-  grid-row: 3;
+  position: absolute;
   align-self: end;
-  height: 50%;
-  padding-bottom: .25rem;
+  padding-bottom: .5rem;
 }
 
 #reveal-trackers {

@@ -45,8 +45,6 @@ export default defineComponent ({
 <style scoped>
 #disco-board {
   aspect-ratio: 1;
-  width: 65%;
-  max-width: 100%;
   margin: auto;
   border: var(--border-small) solid rgba(0, 0, 0, var(--border-dark-opacity));
   display: grid;
@@ -69,7 +67,6 @@ export default defineComponent ({
 }
 .picture {
   aspect-ratio: 1;
-  width: 80%;
   display: grid;
   place-items: center;
 }
