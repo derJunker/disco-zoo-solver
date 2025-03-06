@@ -89,6 +89,7 @@ footer {
   border-top-right-radius: 0!important;
   max-height: 10vh;
   z-index: 0;
+  box-sizing: border-box;
 }
 
 #util-btn-1 {
@@ -133,6 +134,7 @@ nav {
   position: relative;
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
   gap: 0;
   height: 100vh;
   width: 100vw;

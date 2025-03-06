@@ -3,7 +3,8 @@
     <div id="reconstruct-view-content">
       <reconstruction-board
           id="reconstruction-board" :selected-animals="selectedAnimals"
-          :selected-region="selectedRegion" :initialGame="game" />
+          :selected-region="selectedRegion" :initialGame="game" :animalForHeatmap="animalForHeatmap"
+          :animalToPlace="animalToPlace"/>
       <reconstruction-config
           v-if="!game" id="reconstruction-config"
           @selected-animals-changed="(val : Animal[]) => selectedAnimals = val"
@@ -11,8 +12,8 @@
           @start="start" />
       <reconstruction-play-config
           v-if="game" id="reconstruction-play-config" :animals="selectedAnimals"
-          :animal-to-place-changed="(val: Animal) => console.log(val)"
-          :animal-for-heatmap-changed="(val: Animal) => console.log(val)" />
+          @animal-to-place-changed="updatePlaceAnimal"
+          @animal-for-heatmap-changed="updateHeatmapAnimal" />
     </div>
   </div>
 </template>
@@ -32,6 +33,16 @@ export default defineComponent({
   methods: {
     async start() {
       this.game = await gameStore.startReconstruct(this.selectedAnimals)
+    },
+
+    updateHeatmapAnimal(animal: Animal) {
+      console.log("updating")
+      this.animalForHeatmap = animal;
+    },
+
+    updatePlaceAnimal(animal: Animal) {
+      console.log("updating")
+      this.animalToPlace = animal;
     }
   },
 
@@ -40,6 +51,8 @@ export default defineComponent({
       selectedAnimals: [] as Animal[],
       selectedRegion: '' as string,
       game: null as Game | null,
+      animalToPlace: null as Animal | null,
+      animalForHeatmap: null as Animal | null,
     }
   },
 })

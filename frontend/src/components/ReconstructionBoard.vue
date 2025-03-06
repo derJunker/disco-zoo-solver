@@ -18,6 +18,7 @@ import {Animal} from "@/types/Animal";
 import {Game} from "@/types/Game";
 import {useGame} from "@/store/useGame";
 import {Coords} from "@/types/Coords";
+import {nothingAnimal} from "@/util/nothing-animal";
 
 const gameStore = useGame();
 
@@ -26,7 +27,10 @@ export default defineComponent({
   components: {BoardInfoDisplay, DiscoBoard, BoardAnimalDisplay},
   methods: {
     async tileClick({x, y}: Coords) {
-      this.game = await gameStore.clickReconstruct(this.game!, null, {x, y} as Coords);
+      let animal: Animal | null | undefined = this.animalToPlace;
+      if (animal === nothingAnimal || !animal)
+        animal = null;
+      this.game = await gameStore.clickReconstruct(this.game!, animal, {x, y} as Coords);
     }
   },
   props: {
@@ -42,7 +46,17 @@ export default defineComponent({
     initialGame: {
       type: Object as () => Game,
       required: false
-    }
+    },
+
+    animalForHeatmap: {
+      type: Object as () => Animal,
+      required: false
+    },
+
+    animalToPlace: {
+      type: Object as () => Animal,
+      required: false
+    },
   },
 
   data() {
@@ -64,7 +78,7 @@ export default defineComponent({
     initialGame(newVal, oldVal) {
       if (newVal !== oldVal)
         this.game = newVal;
-    }
+    },
   },
 })
 </script>
