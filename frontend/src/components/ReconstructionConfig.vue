@@ -31,28 +31,15 @@
           </span>
         </div>
       </div>
-      <div id="epic-and-timeless">
-        <div v-if="epicAnimal">
-          <div id="epic-animals-title">
-            Epic:
-          </div>
-          <div id="epic-animal-wrapper">
-          <span :class="'btn epic-animal ' + (selectedAnimals.includes(epicAnimal)? 'highlighted' : '')"
-                @click="onClickAnimal(epicAnimal)">
-            {{epicAnimal.name.charAt(0)}}
-          </span>
-          </div>
+      <div v-if="epicAnimal">
+        <div id="epic-animals-title">
+          Epic:
         </div>
-        <div v-if="selectedTimeless">
-          <div id="timeless-animals-title">
-            Timeless:
-          </div>
-          <div id="timeless-animal-wrapper">
-          <span :class="'btn timeless-animal ' + (selectedAnimals.includes(timelessAnimal)? 'highlighted' : '')"
-                @click="onClickAnimal(timelessAnimal)">
-            {{timelessAnimal.name.charAt(0)}}
-          </span>
-          </div>
+        <div id="epic-animal-wrapper">
+        <span :class="'btn epic-animal ' + (selectedAnimals.includes(epicAnimal)? 'highlighted' : '')"
+              @click="onClickAnimal(epicAnimal)">
+          {{epicAnimal.name.charAt(0)}}
+        </span>
         </div>
       </div>
       <div>
@@ -64,6 +51,17 @@
           (selectedAnimals.includes(animal)? 'highlighted' : '')"
                 @click="onClickAnimal(animal)">
             {{animal.name.charAt(0)}}
+          </span>
+        </div>
+      </div>
+      <div v-if="selectedTimeless">
+        <div id="timeless-animals-title">
+          Timeless:
+        </div>
+        <div id="timeless-animal-wrapper">
+          <span :class="'btn timeless-animal ' + (selectedAnimals.includes(timelessAnimal)? 'highlighted' : '')"
+                @click="onClickAnimal(timelessAnimal)">
+            {{timelessAnimal.name.charAt(0)}}
           </span>
         </div>
       </div>

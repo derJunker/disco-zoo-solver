@@ -7,7 +7,7 @@
         </span>
       </div>
     </div>
-    </div>
+  </div>
 </template>
 <script lang="ts">
 import {defineComponent} from 'vue'
@@ -44,30 +44,38 @@ export default defineComponent ({
 </script>
 <style scoped>
 #disco-board {
-  aspect-ratio: 1;
   margin: auto;
   border: var(--border-small) solid rgba(0, 0, 0, var(--border-dark-opacity));
   display: grid;
-  grid-template-rows: repeat(5, 1fr);
   grid-template-columns: repeat(5, 1fr);
   align-content: center;
   gap: .2rem;
   padding: .25rem;
+  margin-inline: 1rem;
+  aspect-ratio: 1;
+  width: 70vmin;
+  height: 70vmin;
+  max-width: 30rem;
+  max-height: 30rem;
+  align-self: center;
 }
 .disco-row {
-  display: grid;
-  grid-row: span 5;
-  grid-template-rows: subgrid;
+  display: contents;
 }
 .disco-cell {
-  aspect-ratio: 1;
   display: flex;
-  align-items: center;
   justify-content: center;
+  align-items: center;
+  aspect-ratio: 1 / 1;
+  font-size: 2rem;
+  text-align: center;
+  cursor: pointer;
 }
 .picture {
-  aspect-ratio: 1;
-  display: grid;
-  place-items: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
 }
 </style>

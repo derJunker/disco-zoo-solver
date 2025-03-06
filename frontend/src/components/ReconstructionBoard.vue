@@ -78,12 +78,11 @@ export default defineComponent({
 }
 
 #board-animal-display {
-  flex: .25;
   max-height: 20%;
 }
 
 #disco-board {
-  flex: .60;
+  flex: .7;
 }
 
 #board-info-display {
