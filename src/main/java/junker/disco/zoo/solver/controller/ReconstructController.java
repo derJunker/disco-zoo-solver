@@ -1,12 +1,8 @@
 package junker.disco.zoo.solver.controller;
 
 import java.util.Arrays;
-import java.util.Map;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import junker.animals.Animal;
-import junker.board.Coords;
 import junker.board.Game;
 import junker.disco.zoo.solver.post_bodies.ReconstructClickBody;
 import org.springframework.web.bind.annotation.CrossOrigin;
