@@ -30,7 +30,6 @@ export default defineComponent({
   components: {DiscoBoard, BoardInfoDisplay, BoardAnimalDisplay},
   methods: {
     async tileClick({x, y}: Coords) {
-      console.log('tile clicked', x, y);
       let animal: Animal | null | undefined = this.animalToPlace;
       if (!animal || animal.name === nothingAnimal.name) {
         animal = null;

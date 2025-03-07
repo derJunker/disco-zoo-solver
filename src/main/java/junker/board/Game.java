@@ -80,14 +80,14 @@ public class Game {
             tile.setAnimalBoardInstance(new AnimalBoardInstance(animal, "", new Coords(-1, -1)));
     }
 
-    public void setTileIfValid(int x, int y, boolean revealed, Animal animal) {
-        if(revealed) {
+    public void setTileIfValid(int x, int y, boolean shouldReveal, Animal animal) {
+        if(shouldReveal) {
             boolean isValid = canClickAndPlace(this, x, y, animal);
             if (!isValid) {
                 return;
             }
         }
-        setTile(x, y, revealed, animal);
+        setTile(x, y, shouldReveal, animal);
     }
 
     public void printGame() {

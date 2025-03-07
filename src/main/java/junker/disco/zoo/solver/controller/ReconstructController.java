@@ -1,6 +1,7 @@
 package junker.disco.zoo.solver.controller;
 
 import java.util.Arrays;
+import java.util.Objects;
 
 import junker.animals.Animal;
 import junker.board.Game;
@@ -26,11 +27,15 @@ public class ReconstructController {
         final var game = requestBody.game().toGame();
         var animal = requestBody.animal();
         final var coords = requestBody.coords();
-        final var currentlyRevealed = game.getBoard()[coords.x()][coords.y()].isRevealed();
-        if (currentlyRevealed)
+        final var currentTile = game.getBoard()[coords.x()][coords.y()];
+        final var clickWithSameAnimal = (currentTile.getAnimalBoardInstance() == null && animal == null) ||
+                (currentTile.getAnimalBoardInstance() != null && currentTile.getAnimalBoardInstance().animal().equals(animal));
+        final var shouldReveal =
+                !currentTile.isRevealed() || !clickWithSameAnimal;
+        if (clickWithSameAnimal && !shouldReveal) {
             animal = null;
-
-        game.setTileIfValid(coords.x(), coords.y(), !currentlyRevealed, animal);
+        }
+        game.setTileIfValid(coords.x(), coords.y(), shouldReveal, animal);
         return game;
     }
 }
