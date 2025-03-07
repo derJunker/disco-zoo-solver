@@ -1,4 +1,4 @@
-package junker.disco.zoo.solver.post_bodies;
+package junker.disco.zoo.solver.requests.post_bodies;
 
 import java.util.List;
 

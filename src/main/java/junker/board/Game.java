@@ -13,7 +13,7 @@ import junker.board.probabiltiy.PermutationService;
 
 import static junker.board.BoardService.cloneBoard;
 import static junker.board.min_cover.BoardCoverCalculator.calculateOverallOverlap;
-import static junker.board.min_cover.BoardCoverCalculator.getAnimalOverlap;
+import static junker.board.min_cover.BoardCoverCalculator.calculateAnimalOverlap;
 import static junker.board.min_cover.BoardCoverCalculator.uniqueInstances;
 import static junker.board.probabiltiy.PermutationService.canClickAndPlace;
 import static junker.util.DoubleArrayUtil.arrayAsCoordinatesString;
@@ -113,11 +113,10 @@ public class Game {
     }
 
     public int getSolvedTileCount(Animal animalToSearch) {
-        var overallOverlap = calculateOverallOverlap(calcWipedBoard(), containedAnimals);
-        var overlap = getAnimalOverlap(overallOverlap, animalToSearch);
+        var overlap = calculateAnimalOverlap(this, animalToSearch);
         var occuringInstances = uniqueInstances(overlap);
         if (occuringInstances.isEmpty()) {
-            System.out.println(arrayAsCoordinatesString(overallOverlap));;
+            System.out.println(arrayAsCoordinatesString(overlap));;
             throw new IllegalStateException("Animal not found on board: " + animalToSearch.name());
         }
         var solvedTileCount = 0;

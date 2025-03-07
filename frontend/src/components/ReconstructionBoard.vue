@@ -22,8 +22,10 @@ import {useGame} from "@/store/useGame";
 import {Coords} from "@/types/Coords";
 import {nothingAnimal} from "@/util/nothing-animal";
 import DiscoBoard from "@/components/DiscoBoard.vue";
+import {useSolver} from "@/store/useSolver";
 
 const gameStore = useGame();
+const solverStore = useSolver();
 
 export default defineComponent({
   name: "ReconstructionBoard",
@@ -36,6 +38,7 @@ export default defineComponent({
       }
       console.log('animal to place', animal);
       this.game = await gameStore.clickReconstruct(this.game!, animal, {x, y} as Coords);
+      await solverStore.solve(this.game!, this.animalForHeatmap!);
     }
   },
   props: {
@@ -81,8 +84,14 @@ export default defineComponent({
         this.regionColors = getRegionColors(this.selectedRegion);
     },
     initialGame(newVal, oldVal) {
-      if (newVal !== oldVal)
+      if (newVal !== oldVal) {
         this.game = newVal;
+      }
+    },
+    async animalForHeatmap(newVal, oldVal) {
+      if (newVal !== oldVal) {
+        await solverStore.solve(this.game!, this.animalForHeatmap!);
+      }
     },
   },
 })

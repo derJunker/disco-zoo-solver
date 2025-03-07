@@ -25,7 +25,7 @@ public class BoardCoverCalculator {
 
     public static Set<Solution> minCoveringSets(Game game, Animal animalToSearch, boolean forceFullSolution) {
         var overallOverlap = calculateOverallOverlap(game.calcWipedBoard(), game.getContainedAnimals());
-        var overlap = getAnimalOverlap(overallOverlap, animalToSearch);
+        var overlap = calculateAnimalOverlap(overallOverlap, animalToSearch);
         var highestOverlapCoords = getHighestOverlapCoords(overlap);
 
         if (highestOverlapCoords.size() <= 1 && !forceFullSolution)
@@ -46,8 +46,15 @@ public class BoardCoverCalculator {
         }
         return uniqueInstances;
     }
-    public static List<AnimalBoardInstance>[][] getAnimalOverlap(List<AnimalBoardInstance>[][] overlap,
-                                                                 Animal animalToSearch) {
+    private static List<AnimalBoardInstance>[][] calculateAnimalOverlap(List<AnimalBoardInstance>[][] overlap,
+                                                                       Animal animalToSearch) {
+        return filterListsInDoubleArray(overlap,
+                animalInstance -> animalInstance != null && animalInstance.animal().equals(animalToSearch));
+    }
+
+    public static List<AnimalBoardInstance>[][] calculateAnimalOverlap(Game game,
+                                                                       Animal animalToSearch) {
+        final var overlap = calculateOverallOverlap(game.calcWipedBoard(), game.getContainedAnimals());
         return filterListsInDoubleArray(overlap,
                 animalInstance -> animalInstance != null && animalInstance.animal().equals(animalToSearch));
     }
@@ -78,7 +85,7 @@ public class BoardCoverCalculator {
 
     private static Set<Solution> coveringSets(Game game, Animal animalToSearch, List<Coords> prevCoords, MinSolutionTracker tracker) {
         var overallOverlap = calculateOverallOverlap(game.calcWipedBoard(), game.getContainedAnimals());
-        var overlap = getAnimalOverlap(overallOverlap, animalToSearch);
+        var overlap = calculateAnimalOverlap(overallOverlap, animalToSearch);
         var highestOverlapCoords = getHighestOverlapCoords(overlap);
 
 

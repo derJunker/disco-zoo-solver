@@ -80,17 +80,6 @@ public class DoubleArrayUtil {
         return result;
     }
 
-    public static <T> List<T>[][] cloneDoubleListArray(List<T>[][] doubleListArray) {
-        List<T>[][] clone = new List[doubleListArray.length][];
-        for (int i = 0; i < doubleListArray.length; i++) {
-            clone[i] = new List[doubleListArray[i].length];
-            for (int j = 0; j < doubleListArray[i].length; j++) {
-                clone[i][j] = new ArrayList<>(doubleListArray[i][j]);
-            }
-        }
-        return clone;
-    }
-
     public static <T, V> List<V> flatMapDoubleArrayToList(T[][] array, Function<T, V> mapper) {
         List<V> result = new ArrayList<>();
         for (int i = 0; i < array.length; i++) {
@@ -119,6 +108,27 @@ public class DoubleArrayUtil {
             sb.append("\n");
         }
         return sb.toString();
+    }
+
+    public static <T> int[][] countListDoubleArray(List<T>[][] array) {
+        int[][] result = new int[array.length][];
+        for (int i = 0; i < array.length; i++) {
+            result[i] = new int[array[i].length];
+            for (int j = 0; j < array[i].length; j++) {
+                result[i][j] = array[i][j].size();
+            }
+        }
+        return result;
+    }
+
+    public static int sum(int[][] array) {
+        int sum = 0;
+        for (int[] row : array) {
+            for (int value : row) {
+                sum += value;
+            }
+        }
+        return sum;
     }
 
 

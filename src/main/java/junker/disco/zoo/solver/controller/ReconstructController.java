@@ -1,11 +1,10 @@
 package junker.disco.zoo.solver.controller;
 
 import java.util.Arrays;
-import java.util.Objects;
 
 import junker.animals.Animal;
 import junker.board.Game;
-import junker.disco.zoo.solver.post_bodies.ReconstructClickBody;
+import junker.disco.zoo.solver.requests.post_bodies.ReconstructClickBody;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

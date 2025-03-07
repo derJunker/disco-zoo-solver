@@ -1,0 +1,32 @@
+package junker.disco.zoo.solver.controller;
+
+import junker.disco.zoo.solver.requests.post_bodies.SolveRequestBody;
+import junker.disco.zoo.solver.requests.return_objects.SolveResult;
+import junker.disco.zoo.solver.service.ProbabilityService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@CrossOrigin
+@RequestMapping("/solve")
+public class SolveController {
+
+    private final ProbabilityService solveService;
+
+    @Autowired
+    public SolveController(ProbabilityService solveService) {
+        this.solveService = solveService;
+    }
+
+    @PostMapping
+    public SolveResult solve(@RequestBody SolveRequestBody body) {
+        final var game = body.game().toGame();
+        final var bestClicks = game.getBestClicks(body.animalToSolveFor());
+        final var probabilities = solveService.getProbabilities(game, body.animalToSolveFor());
+        return new SolveResult(bestClicks, probabilities);
+    }
+}
