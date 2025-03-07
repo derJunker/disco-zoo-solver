@@ -66,12 +66,13 @@ export default defineComponent ({
   display: grid;
   place-items: center;
   border: var(--border-small) solid rgba(0, 0, 0, var(--border-dark-opacity));
-  aspect-ratio: 1;
-  max-height: 10rem;
+  aspect-ratio: 7/6;
+  max-height: 7rem;
 }
 
 #animal-icon {
   align-self: center;
+  margin-bottom: .75rem;
 }
 
 #animal-name {

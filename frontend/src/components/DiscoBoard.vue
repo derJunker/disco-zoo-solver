@@ -1,18 +1,17 @@
 <template>
   <div id="disco-board" class="rounded" :style="'background-color: ' + regionColors.dark" v-if="game">
-    <div v-for="(row, x) in game.board" :key="row" class="disco-row">
-      <div v-for="(tile, y) in row" :key="tile" class="disco-cell" :style="'background-color: ' +
-      regionColors.primary" @click="$emit('tile-click', {x, y})">
-        <img v-if="hasRevealedAnimal(tile)" id="animal-icon" src="https://placehold.co/400/png" alt="animal"
-             style="max-width: 70%;"/>
-        <span v-else-if="isRevealedWithNoAnimal(tile)">:(</span>
-      </div>
+    <div v-for="(coords) in getCoords()" :key="coords" class="disco-cell" :style="'background-color: ' +
+    regionColors.primary" @click="$emit('tile-click', {x, y})">
+      <img v-if="hasRevealedAnimal(coords)" id="animal-icon" src="https://placehold.co/400/png" alt="animal"
+           style="max-width: 70%;"/>
+      <span v-else-if="isRevealedWithNoAnimal(coords)">:(</span>
     </div>
   </div>
 </template>
 <script lang="ts">
 import {defineComponent} from 'vue'
 import {Game, Tile} from "@/types/Game";
+import {Coords} from "@/types/Coords";
 
 
 export default defineComponent ({
@@ -28,12 +27,25 @@ export default defineComponent ({
     }
   },
   methods: {
-    hasRevealedAnimal(tile: Tile): boolean {
-      return tile.animalBoardInstance != null
+    hasRevealedAnimal(coords: Coords): boolean {
+      const tile = this.game?.board[coords.x][coords.y]
+      return tile !== undefined && tile.animalBoardInstance != null
     },
 
-    isRevealedWithNoAnimal(tile: Tile): boolean {
-      return tile.revealed && tile.animalBoardInstance == null
+    isRevealedWithNoAnimal(coords: Coords): boolean {
+      const tile = this.game?.board[coords.x][coords.y]
+      console.log(tile)
+      return tile != undefined && tile.revealed && tile.animalBoardInstance == null
+    },
+
+    getCoords(): Coords[] {
+      let coords: Coords[] = []
+      for (let x = 0; x < this.game!.board.length; x++) {
+        for (let y = 0; y < this.game!.board[x].length; y++) {
+          coords.push({x, y})
+        }
+      }
+      return coords
     }
   }
 })
@@ -51,9 +63,6 @@ export default defineComponent ({
   flex-grow: 0;
   align-self: center;
   width: 100%;
-}
-.disco-row {
-  display: contents;
 }
 .disco-cell {
   display: flex;

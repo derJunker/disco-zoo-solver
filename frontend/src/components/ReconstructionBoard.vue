@@ -4,6 +4,7 @@
     <div id="board-animal-display-wrapper">
       <BoardAnimalDisplay :region="selectedRegion" :animals="selectedAnimals" id="board-animal-display"/>
     </div>
+<!--    <new-disco-board id="disco-board"/>-->
     <DiscoBoard :game="game" id="disco-board" :region-colors="regionColors" @tile-click="tileClick"/>
     <BoardInfoDisplay id="board-info-display"/>
   </div>
@@ -12,7 +13,6 @@
 <script lang="ts">
 import {defineComponent} from 'vue'
 import BoardAnimalDisplay from "@/components/BoardAnimalDisplay.vue";
-import DiscoBoard from "@/components/DiscoBoard.vue";
 import BoardInfoDisplay from "@/components/BoardInfoDisplay.vue";
 import {getRegionColors} from "@/util/region-colors";
 
@@ -21,12 +21,13 @@ import {Game} from "@/types/Game";
 import {useGame} from "@/store/useGame";
 import {Coords} from "@/types/Coords";
 import {nothingAnimal} from "@/util/nothing-animal";
+import DiscoBoard from "@/components/DiscoBoard.vue";
 
 const gameStore = useGame();
 
 export default defineComponent({
   name: "ReconstructionBoard",
-  components: {BoardInfoDisplay, DiscoBoard, BoardAnimalDisplay},
+  components: {DiscoBoard, BoardInfoDisplay, BoardAnimalDisplay},
   methods: {
     async tileClick({x, y}: Coords) {
       let animal: Animal | null | undefined = this.animalToPlace;
@@ -101,17 +102,16 @@ export default defineComponent({
   justify-content: center;
 }
 
-#disco-board {
-  max-height: 66%;
-  max-width: 66%;
-  margin-top: 10rem;
-  margin-bottom: 2rem;
-}
-
 #board-info-display {
   position: absolute;
   bottom: 0;
   left: 0;
   right: 0;
+}
+
+
+#disco-board {
+  width: 66%;
+  margin-top: 10rem;
 }
 </style>
