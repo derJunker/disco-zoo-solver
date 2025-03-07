@@ -60,43 +60,53 @@ public class PermutationService {
                 }
 
                 if (board[i][j].hasAnimalInstanceOfType(animalToPlace) && board[i][j].isRevealed()) {
-                    return getPossiblePlacementsForRevealedAnimal(animalToPlace, i, j, board);
+                    return getPossiblePlacementsForRevealedAnimal(animalToPlace, board);
                 }
             }
         }
         return possiblePlacements;
     }
 
-    private static List<Coords> getPossiblePlacementsForRevealedAnimal(Animal animalToPlace, int x, int y, Tile[][] board) {
+    private static List<Coords> getPossiblePlacementsForRevealedAnimal(Animal animalToPlace, Tile[][] board) {
         var pattern = animalToPlace.pattern();
         var possiblePlacements = new ArrayList<Coords>();
         var revealedSpots = getAllRevealedSpotOfAnimal(board, animalToPlace);
-        for (var revealedSpot : pattern) {
-            boolean centerIsValid = true;
-            var center = new Coords(x - revealedSpot.x(), y - revealedSpot.y());
-            var coveredSpots = new ArrayList<Coords>(revealedSpots);
-            coveredSpots.remove(center);
-            for (var other : pattern) {
-                if (other.equals(revealedSpot)) {
-                    continue;
-                }
-                var otherSpot = new Coords(center.x() + other.x(), center.y() + other.y());
-                coveredSpots.remove(otherSpot);
-                if (otherSpot.x() >= 0 && otherSpot.x() < board.length && otherSpot.y() >= 0 && otherSpot.y() < board[0].length) {
-                    var tile = board[otherSpot.x()][otherSpot.y()];
-                    if (tile.isRevealed() && !tile.hasAnimalInstanceOfType(animalToPlace)) {
-                        centerIsValid = false;
+        if (revealedSpots.isEmpty()) {
+            throw new IllegalStateException("No revealed spots found for animal " + animalToPlace.name());
+        }
+        final var initialRevealedSpot = revealedSpots.getFirst();
+        for (var patternAsRevealed : pattern) {
+            var potentialOriginX = initialRevealedSpot.x() - patternAsRevealed.x();
+            var potentialOriginY = initialRevealedSpot.y() - patternAsRevealed.y();
+            var revealedSpotsToCover = new ArrayList<>(revealedSpots);
+            var canPlace = true;
+            for (var patternSpot : pattern) {
+                var x = potentialOriginX + patternSpot.x();
+                var y = potentialOriginY + patternSpot.y();
+                revealedSpotsToCover.remove(new Coords(x, y));
+                if (x < 0 || x >= board.length || y < 0 || y >= board[0].length) {
+                    canPlace = false;
+                    break;
+                } else {
+                    var tile = board[x][y];
+                    if (tile.isRevealed() && tile.isOccupied() && !tile.hasAnimalInstanceOfType(animalToPlace)) {
+                        canPlace = false;
+                        break;
+                    } else if(tile.isRevealed() && !tile.isOccupied()) {
+                        canPlace = false;
+                        break;
+                    } else if (!tile.isRevealed() && tile.isOccupied()) {
+                        canPlace = false;
                         break;
                     }
-                } else {
-                    centerIsValid = false;
-                    break;
                 }
             }
-            if (centerIsValid && coveredSpots.isEmpty()) {
-                possiblePlacements.add(center);
-            }
+            if (canPlace && revealedSpotsToCover.isEmpty())
+                possiblePlacements.add(new Coords(potentialOriginX, potentialOriginY));
         }
+
+
+
         return possiblePlacements;
     }
 

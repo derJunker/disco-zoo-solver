@@ -1,10 +1,11 @@
 <template>
   <div id="disco-board" class="rounded" :style="'background-color: ' + regionColors.dark" v-if="game">
     <div v-for="(coords) in getCoords()" :key="coords" class="disco-cell" :style="'background-color: ' +
-    regionColors.primary" @click="$emit('tile-click', {x, y})">
+    regionColors.primary" @click="$emit('tile-click', coords)">
       <img v-if="hasRevealedAnimal(coords)" id="animal-icon" src="https://placehold.co/400/png" alt="animal"
            style="max-width: 70%;"/>
       <span v-else-if="isRevealedWithNoAnimal(coords)">:(</span>
+      <span v-else>{{coords.x}} {{coords.y}}</span>
     </div>
   </div>
 </template>
@@ -34,14 +35,13 @@ export default defineComponent ({
 
     isRevealedWithNoAnimal(coords: Coords): boolean {
       const tile = this.game?.board[coords.x][coords.y]
-      console.log(tile)
       return tile != undefined && tile.revealed && tile.animalBoardInstance == null
     },
 
     getCoords(): Coords[] {
       let coords: Coords[] = []
-      for (let x = 0; x < this.game!.board.length; x++) {
-        for (let y = 0; y < this.game!.board[x].length; y++) {
+      for (let y = 0; y < this.game!.board.length; y++) {
+        for (let x = 0; x < this.game!.board[y].length; x++) {
           coords.push({x, y})
         }
       }

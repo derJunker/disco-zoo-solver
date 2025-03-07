@@ -30,9 +30,12 @@ export default defineComponent({
   components: {DiscoBoard, BoardInfoDisplay, BoardAnimalDisplay},
   methods: {
     async tileClick({x, y}: Coords) {
+      console.log('tile clicked', x, y);
       let animal: Animal | null | undefined = this.animalToPlace;
-      if (animal === nothingAnimal || !animal)
+      if (!animal || animal.name === nothingAnimal.name) {
         animal = null;
+      }
+      console.log('animal to place', animal);
       this.game = await gameStore.clickReconstruct(this.game!, animal, {x, y} as Coords);
     }
   },
