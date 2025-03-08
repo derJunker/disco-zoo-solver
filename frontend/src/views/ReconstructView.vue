@@ -36,12 +36,10 @@ export default defineComponent({
     },
 
     updateHeatmapAnimal(animal: Animal) {
-      console.log("updating")
       this.animalForHeatmap = animal;
     },
 
     updatePlaceAnimal(animal: Animal) {
-      console.log("updating")
       this.animalToPlace = animal;
     }
   },

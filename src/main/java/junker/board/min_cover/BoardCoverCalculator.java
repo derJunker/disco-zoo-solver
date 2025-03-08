@@ -134,6 +134,8 @@ public class BoardCoverCalculator {
         for (int i = 0; i < multiClickCollection.size(); i++) {
             var multiClicks = multiClickCollection.get(i);
             var clonedGames = allClonedGames.get(i);
+            if (clonedGames == null)
+                continue;
             for (var coords : multiClicks) {
                 var fakedClickOrder = new ArrayList<>(prevCoords);
                 fakedClickOrder.add(coords);
@@ -153,6 +155,7 @@ public class BoardCoverCalculator {
             tracker.totalCounter++;
             if (multiClicks.size() + prevCoords.size() > tracker.minSolutionSize) {
                 tracker.rejectionCounter++;
+                allClonedGames.add(null);
                 continue;
             }
             var clonedGames = new ArrayList<Game>(List.of(new Game(game, true)));

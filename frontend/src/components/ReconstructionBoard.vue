@@ -5,7 +5,8 @@
       <BoardAnimalDisplay :region="selectedRegion" :animals="selectedAnimals" id="board-animal-display"/>
     </div>
 <!--    <new-disco-board id="disco-board"/>-->
-    <DiscoBoard :game="game" id="disco-board" :region-colors="regionColors" @tile-click="tileClick"/>
+    <DiscoBoard :game="game" id="disco-board" :region-colors="regionColors" @tile-click="tileClick" :bestClicks="bestClicks"
+        :probabilities="probabilities"/>
     <BoardInfoDisplay id="board-info-display"/>
   </div>
 </template>
@@ -36,10 +37,13 @@ export default defineComponent({
       if (!animal || animal.name === nothingAnimal.name) {
         animal = null;
       }
-      console.log('animal to place', animal);
       this.game = await gameStore.clickReconstruct(this.game!, animal, {x, y} as Coords);
-      await solverStore.solve(this.game!, this.animalForHeatmap!);
-    }
+      const { bestClicks, probabilities } = await solverStore.solve(this.game!, this.animalForHeatmap!);
+      console.log("bestClicks")
+      console.log(bestClicks)
+      this.bestClicks = bestClicks;
+      this.probabilities = probabilities;
+    },
   },
   props: {
     selectedRegion: {
@@ -70,7 +74,9 @@ export default defineComponent({
   data() {
     return {
       regionColors: {primary: '', dark: '', light: ''},
-      game: null as Game | null
+      game: null as Game | null,
+      bestClicks: [] as Coords[],
+      probabilities: [] as number[][],
     }
   },
 
@@ -90,7 +96,11 @@ export default defineComponent({
     },
     async animalForHeatmap(newVal, oldVal) {
       if (newVal !== oldVal) {
-        await solverStore.solve(this.game!, this.animalForHeatmap!);
+        const { bestClicks, probabilities } = await solverStore.solve(this.game!, this.animalForHeatmap!);
+        console.log("bestClicks")
+        console.log(bestClicks)
+        this.bestClicks = bestClicks;
+        this.probabilities = probabilities;
       }
     },
   },

@@ -1,11 +1,9 @@
 <template>
   <div id="disco-board" class="rounded" :style="'background-color: ' + regionColors.dark" v-if="game">
-    <div v-for="(coords) in getCoords()" :key="coords" class="disco-cell" :style="'background-color: ' +
-    regionColors.primary" @click="$emit('tile-click', coords)">
-      <img v-if="hasRevealedAnimal(coords)" id="animal-icon" src="https://placehold.co/400/png" alt="animal"
+    <div v-for="(coords) in getCoords()" :key="coords" class="disco-cell" :style="getBackgroundStyling(coords)"
+         @click="$emit('tile-click', coords)">
+      <img v-if="hasRevealedAnimal(coords)" id="animal-icon" src="../assets/placeholder.png" alt="animal"
            style="max-width: 70%;"/>
-      <span v-else-if="isRevealedWithNoAnimal(coords)">:(</span>
-      <span v-else>{{coords.x}} {{coords.y}}</span>
     </div>
   </div>
 </template>
@@ -25,6 +23,14 @@ export default defineComponent ({
     regionColors: {
       type: Object,
       required: true
+    },
+    bestClicks: {
+      type: Array as () => Coords[],
+      required: false
+    },
+    probabilities: {
+      type: Array as () => number[][],
+      required: false
     }
   },
   methods: {
@@ -46,8 +52,43 @@ export default defineComponent ({
         }
       }
       return coords
+    },
+
+    getBackgroundStyling(coords: Coords): string {
+      let backgroundStyling = "background-color: "
+      if (this.game?.board[coords.x][coords.y].revealed) {
+        backgroundStyling += "rgba(0, 0, 0, 0.2)"
+      }
+      else if(!this.probabilities || this.probabilities.length == 0) {
+        backgroundStyling += this.regionColors.primary
+      } else {
+        let probability = this.probabilities[coords.x][coords.y]
+        let min = Math.min(...this.probabilities.flat())
+        let max = Math.max(...this.probabilities.flat())
+        backgroundStyling += this.valueToHeatmapColor(probability, min, max)
+      }
+
+      if (this.bestClicks?.some(click => click.x === coords.x && click.y === coords.y)) {
+        backgroundStyling += "; border: 2px solid white"
+      }
+      return backgroundStyling + ";"
+    },
+
+    valueToHeatmapColor(value: number, min: number, max: number) {
+      if (value < min || value > max) {
+        throw new Error("Value out of range");
+      }
+
+      // Normalize value between 0 and 1
+      let normalized = (value - min) / (max - min);
+
+      // Adjust green intensity to make mid-tones more orange
+      let greenIntensity = value === min ? 255 : Math.round(255 * (1 - normalized) * 0.6 + 80);
+      let redIntensity = Math.round(255 * normalized);
+
+      return `rgb(${redIntensity}, ${greenIntensity}, 0)`;
     }
-  }
+  },
 })
 </script>
 <style scoped>

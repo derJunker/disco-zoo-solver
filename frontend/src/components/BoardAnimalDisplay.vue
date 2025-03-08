@@ -3,7 +3,7 @@
     <div v-for="animal in animals" :key="animal.name" class="animal-display rounded dock-top"
          :style="'background-color: ' +
   regionColors.dark + ';'">
-      <img id="animal-icon" src="https://placehold.co/400/png" alt="animal" style="max-width: 50%;"/>
+      <img id="animal-icon" src="../assets/placeholder.png" alt="animal" style="max-width: 50%;"/>
       <div id="animal-name">
         {{animal.name}}
       </div>
