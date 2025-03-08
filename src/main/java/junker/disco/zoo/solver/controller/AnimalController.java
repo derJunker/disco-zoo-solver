@@ -2,8 +2,8 @@ package junker.disco.zoo.solver.controller;
 
 import java.util.List;
 
-import junker.animals.Animal;
-import junker.animals.Region;
+import junker.disco.zoo.solver.model.animals.Animal;
+import junker.disco.zoo.solver.model.animals.Region;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

@@ -1,9 +1,9 @@
-package junker.board.min_cover;
+package junker.disco.zoo.solver.board.min_cover;
 
 import java.util.*;
 import java.util.function.Function;
 
-import junker.board.Coords;
+import junker.disco.zoo.solver.board.Coords;
 
 public class IndependentSetsCalculator {
 

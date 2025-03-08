@@ -1,9 +1,9 @@
-package junker.board.min_cover;
+package junker.disco.zoo.solver.board.min_cover;
 
 import java.util.List;
 
-import junker.board.Coords;
-import junker.board.Game;
+import junker.disco.zoo.solver.board.Coords;
+import junker.disco.zoo.solver.board.Game;
 
 public record Solution(List<Coords> clicks, Game solvedGame) {
     @Override

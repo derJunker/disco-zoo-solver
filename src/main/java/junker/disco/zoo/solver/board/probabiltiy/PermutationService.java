@@ -1,13 +1,13 @@
-package junker.board.probabiltiy;
+package junker.disco.zoo.solver.board.probabiltiy;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import junker.animals.Animal;
-import junker.board.BoardService;
-import junker.board.Coords;
-import junker.board.Game;
-import junker.board.Tile;
+import junker.disco.zoo.solver.model.animals.Animal;
+import junker.disco.zoo.solver.board.BoardService;
+import junker.disco.zoo.solver.board.Coords;
+import junker.disco.zoo.solver.board.Game;
+import junker.disco.zoo.solver.board.Tile;
 
 public class PermutationService {
 

@@ -1,4 +1,4 @@
-package junker.util;
+package junker.disco.zoo.solver.util;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -8,7 +8,7 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import junker.board.Coords;
+import junker.disco.zoo.solver.board.Coords;
 
 public class DoubleArrayUtil {
 

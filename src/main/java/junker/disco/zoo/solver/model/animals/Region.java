@@ -1,4 +1,4 @@
-package junker.animals;
+package junker.disco.zoo.solver.model.animals;
 
 import java.util.ArrayList;
 import java.util.Arrays;

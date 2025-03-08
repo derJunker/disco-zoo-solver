@@ -26,7 +26,7 @@ public class SolveController {
     public SolveResult solve(@RequestBody SolveRequestBody body) {
         final var game = body.game().toGame();
         final var bestClicks = game.getBestClicks(body.animalToSolveFor());
-        final var probabilities = solveService.getProbabilities(game, body.animalToSolveFor());
-        return new SolveResult(bestClicks, probabilities);
+        final var overlapAndProbabilities = solveService.getProbabilitiesAndOverlap(game, body.animalToSolveFor());
+        return new SolveResult(bestClicks, overlapAndProbabilities.probabilities());
     }
 }

@@ -1,6 +1,6 @@
 package junker.disco.zoo.solver.requests.post_bodies;
 
-import junker.animals.Animal;
+import junker.disco.zoo.solver.model.animals.Animal;
 
 public record SolveRequestBody(
         GameDTO game,

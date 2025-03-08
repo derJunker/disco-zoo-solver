@@ -1,8 +1,8 @@
-package junker.board;
+package junker.disco.zoo.solver.board;
 
 import java.util.List;
 
-import junker.animals.Animal;
+import junker.disco.zoo.solver.model.animals.Animal;
 
 public class BoardService {
     public static void placeAnimal(Tile[][] board, Animal animal, Coords coords) {

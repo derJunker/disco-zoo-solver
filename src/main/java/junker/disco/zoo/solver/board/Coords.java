@@ -1,4 +1,4 @@
-package junker.board;
+package junker.disco.zoo.solver.board;
 
 public record Coords(
         int x,

@@ -1,6 +1,6 @@
-package junker.board;
+package junker.disco.zoo.solver.board;
 
-import junker.animals.Animal;
+import junker.disco.zoo.solver.model.animals.Animal;
 
 public class Tile {
     private AnimalBoardInstance animalBoardInstance;

@@ -1,4 +1,4 @@
-package junker.board;
+package junker.disco.zoo.solver.board;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -8,17 +8,14 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import junker.animals.Animal;
-import junker.board.min_cover.BoardCoverCalculator;
-import junker.board.min_cover.Solution;
-import junker.board.probabiltiy.PermutationService;
+import junker.disco.zoo.solver.model.animals.Animal;
+import junker.disco.zoo.solver.board.min_cover.BoardCoverCalculator;
+import junker.disco.zoo.solver.board.min_cover.Solution;
+import junker.disco.zoo.solver.board.probabiltiy.PermutationService;
 
-import static junker.board.BoardService.cloneBoard;
-import static junker.board.min_cover.BoardCoverCalculator.calculateOverallOverlap;
-import static junker.board.min_cover.BoardCoverCalculator.calculateAnimalOverlap;
-import static junker.board.min_cover.BoardCoverCalculator.uniqueInstances;
-import static junker.board.probabiltiy.PermutationService.canClickAndPlace;
-import static junker.util.DoubleArrayUtil.arrayAsCoordinatesString;
+import static junker.disco.zoo.solver.board.BoardService.cloneBoard;
+import static junker.disco.zoo.solver.board.probabiltiy.PermutationService.canClickAndPlace;
+import static junker.disco.zoo.solver.util.DoubleArrayUtil.arrayAsCoordinatesString;
 
 public class Game {
     public static final int BOARD_SIZE = 5;
@@ -108,29 +105,6 @@ public class Game {
     @Override
     public String toString() {
         return arrayAsCoordinatesString(board);
-    }
-
-    public boolean isSolvedFor(Animal animalToBeSolved) {
-        return getSolvedTileCount(animalToBeSolved) == animalToBeSolved.pattern().size();
-    }
-
-    public int getSolvedTileCount(Animal animalToSearch) {
-        var overlap = calculateAnimalOverlap(this, animalToSearch);
-        var occuringInstances = uniqueInstances(overlap);
-        if (occuringInstances.isEmpty()) {
-            System.out.println(arrayAsCoordinatesString(overlap));;
-            throw new IllegalStateException("Animal not found on board: " + animalToSearch.name());
-        }
-        var solvedTileCount = 0;
-        for (int x = 0; x < overlap.length; x++) {
-            for (int y = 0; y < overlap[0].length; y++) {
-                var tileOverlap = overlap[x][y];
-                if (new HashSet<>(tileOverlap).containsAll(occuringInstances) && tileOverlap.size() == occuringInstances.size()) {
-                    solvedTileCount++;
-                }
-            }
-        }
-        return solvedTileCount;
     }
 
     public boolean animalIsCompletelyRevealed(Animal animal) {

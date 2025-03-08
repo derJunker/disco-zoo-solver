@@ -1,13 +1,13 @@
-package junker.animals;
+package junker.disco.zoo.solver.model.animals;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
-import junker.board.Coords;
+import junker.disco.zoo.solver.board.Coords;
 
-import static junker.board.Coords.coords;
+import static junker.disco.zoo.solver.board.Coords.coords;
 
 public record Animal(
         String name,

@@ -1,7 +1,7 @@
 package junker;
 
-import junker.animals.Animal;
-import junker.board.Game;
+import junker.disco.zoo.solver.model.animals.Animal;
+import junker.disco.zoo.solver.board.Game;
 
 // TODO Optimizations:
 //  - ignore discobux
