@@ -14,18 +14,18 @@ import junker.disco.zoo.solver.board.Coords;
 import junker.disco.zoo.solver.board.Game;
 import junker.disco.zoo.solver.board.Tile;
 import junker.disco.zoo.solver.board.probabiltiy.PermutationService;
-import junker.disco.zoo.solver.model.calculations.OverlapAndProbabilities;
+import junker.disco.zoo.solver.model.calculations.AnimalOverlapAndProbabilities;
+import junker.disco.zoo.solver.model.calculations.OverlapsAndProbabilities;
 
 import static junker.disco.zoo.solver.util.DoubleArrayUtil.allNotEmptyListsAreOfEqualLength;
 import static junker.disco.zoo.solver.util.DoubleArrayUtil.filter;
 import static junker.disco.zoo.solver.util.DoubleArrayUtil.filterByIndex;
-import static junker.disco.zoo.solver.util.DoubleArrayUtil.filterListsInDoubleArray;
 
 public class BoardCoverCalculator {
 
     public static Set<Solution> minCoveringSets(Game game, Animal animalToSearch, boolean forceFullSolution) {
-        var overallOverlap = calculateOverallOverlap(game.calcWipedBoard(), game.getContainedAnimals());
-        var overlapAndProbabilities = calculateOverlapAndProbabilities(overallOverlap, animalToSearch);
+        var overlapsAndProbabilities = calculateOverlapsAndProbabilities(game);
+        var overlapAndProbabilities = overlapsAndProbabilities.animalOverlapAndProbabilities().get(animalToSearch);
         var overlap = overlapAndProbabilities.overlap();
         var highestOverlapCoords = getHighestOverlapCoords(overlap);
 
@@ -38,67 +38,75 @@ public class BoardCoverCalculator {
         return onlyMinSizedSets(coveringSets);
     }
 
-    public static Set<AnimalBoardInstance> uniqueInstances(List<AnimalBoardInstance>[][] overlap) {
-        Set<AnimalBoardInstance> uniqueInstances = new HashSet<>();
-        for (int i = 0; i < overlap.length; i++) {
-            for (int j = 0; j < overlap[i].length; j++) {
-                uniqueInstances.addAll(overlap[i][j]);
-            }
-        }
-        return uniqueInstances;
+    public static AnimalOverlapAndProbabilities calculateOverlapAndProbabilities(Game game, Animal animalToSearch) {
+        return calculateOverlapsAndProbabilities(game).animalOverlapAndProbabilities().get(animalToSearch);
     }
 
-    public static OverlapAndProbabilities calculateOverlapAndProbabilities(Game game, Animal animalToSearch) {
-        var overallOverlap = calculateOverallOverlap(game.calcWipedBoard(), game.getContainedAnimals());
-        return calculateOverlapAndProbabilities(overallOverlap, animalToSearch);
-    }
+    public static OverlapsAndProbabilities calculateOverlapsAndProbabilities(Game game) {
+        final var boardWidth = game.getBoard().length;
+        final var boardHeight = game.getBoard()[0].length;
 
-    public static OverlapAndProbabilities calculateOverlapAndProbabilities(List<AnimalBoardInstance>[][] overallOverlap,
-                                                                           Animal animalToSearch) {
-        final var boardWidth = overallOverlap.length;
-        final var boardHeight = overallOverlap[0].length;
-
-        List<AnimalBoardInstance>[][] overlap = new List[boardWidth][boardHeight];
-        int[][] overlapCount = new int[boardWidth][boardHeight];
-
-        final var allDistinctAnimals = new HashSet<AnimalBoardInstance>();
-        final var probabilities = new double[boardWidth][boardHeight];
-        for (int y = 0; y < boardWidth; y++) {
-            for (int x = 0; x < boardHeight; x++) {
-                var overallOverlapAtTile = overallOverlap[x][y];
-                var overlapAtTile = overallOverlapAtTile.stream()
-                        .filter(animalInstance -> animalInstance != null && animalInstance.animal().equals(animalToSearch))
-                        .toList();
-                overlap[x][y] = overlapAtTile;
-                overlapCount[x][y] = overlapAtTile.size();
-
-                allDistinctAnimals.addAll(overlapAtTile);
-            }
-        }
-        for (int y = 0; y < boardWidth; y++) {
-            for (int x = 0; x < boardHeight; x++) {
-                probabilities[x][y] = ((double)overlapCount[x][y]) / allDistinctAnimals.size();
-            }
-        }
-        return new OverlapAndProbabilities(overlap, probabilities);
-    }
-
-    public static List<AnimalBoardInstance>[][] calculateOverallOverlap(Tile[][] wipedBoard,
-                                                                        List<Animal> containedAnimals) {
+        var wipedBoard = game.calcWipedBoard();
+        var containedAnimals = game.getContainedAnimals();
         var boardPermutations = PermutationService.calculateBoardPermutations(wipedBoard, containedAnimals);
-        List<AnimalBoardInstance>[][] overlap = new List[wipedBoard.length][wipedBoard[0].length];
+        List<AnimalBoardInstance>[][] overallOverlap = new List[boardWidth][boardHeight];
+        Map<Animal, List<AnimalBoardInstance>[][]> animalOverlaps = new HashMap<>();
+        Map<Animal, int[][]> animalOverlapCounts = new HashMap<>();
+        Map<Animal, Set<AnimalBoardInstance>> animalDistinctInstancesMap = new HashMap<>();
         for (var permutation : boardPermutations) {
-            for (int x = 0; x < wipedBoard.length; x++) {
-                for (int y = 0; y < wipedBoard[0].length; y++) {
-                    if (overlap[x][y] == null)
-                        overlap[x][y] = new ArrayList<>();
+            for (int x = 0; x < boardWidth; x++) {
+                for (int y = 0; y < boardHeight; y++) {
+                    if (overallOverlap[x][y] == null)
+                        overallOverlap[x][y] = new ArrayList<>();
                     if (wipedBoard[x][y].isRevealed())
                         continue;
-                    overlap[x][y].add(permutation[x][y].getAnimalBoardInstance());
+                    var animalBoardInstance = permutation[x][y].getAnimalBoardInstance();
+                    overallOverlap[x][y].add(animalBoardInstance);
+                    if (animalBoardInstance != null) {
+                        var animal = animalBoardInstance.animal();
+
+                        animalOverlaps.computeIfAbsent(animal, _ -> {
+                            var animList = new List[boardWidth][boardHeight];
+                            for (int i = 0; i < boardWidth; i++) {
+                                for (int j = 0; j < boardHeight; j++) {
+                                    animList[i][j] = new ArrayList<>();
+                                }
+                            }
+                            return animList;
+                        });
+                        animalOverlapCounts.putIfAbsent(animal, new int[boardWidth][boardHeight]);
+
+                        var animalOverlap = animalOverlaps.get(animal);
+                        if (animalOverlap[x][y] == null)
+                            animalOverlap[x][y] = new ArrayList<>();
+                        animalOverlap[x][y].add(animalBoardInstance);
+
+                        var animalOverlapCount = animalOverlapCounts.get(animal);
+                        animalOverlapCount[x][y] += 1;
+
+                        animalDistinctInstancesMap.putIfAbsent(animal, new HashSet<>());
+                        animalDistinctInstancesMap.get(animal).add(animalBoardInstance);
+                    }
                 }
             }
         }
-        return overlap;
+        Map<Animal, Double[][]> animalProbabilities = new HashMap<>();
+        animalOverlaps.keySet().forEach(animal -> {
+            var overlapCount = animalOverlapCounts.get(animal);
+            var allDistinctAnimals = animalDistinctInstancesMap.get(animal);
+            final var probabilities = new Double[boardWidth][boardHeight];
+            for (int y = 0; y < boardWidth; y++) {
+                for (int x = 0; x < boardHeight; x++) {
+                    probabilities[x][y] = ((double) overlapCount[x][y]) / allDistinctAnimals.size();
+                }
+            }
+            animalProbabilities.put(animal, probabilities);
+        });
+        var animalOverlapAndProbabilities = new HashMap<Animal, AnimalOverlapAndProbabilities>();
+
+        animalOverlaps.keySet().forEach(animal -> animalOverlapAndProbabilities.put(animal, new AnimalOverlapAndProbabilities(animalOverlaps.get(animal),
+                animalProbabilities.get(animal))));
+        return new OverlapsAndProbabilities(overallOverlap, animalOverlapAndProbabilities);
     }
 
     private static Set<Solution> onlyMinSizedSets(Set<Solution> coveringSolutions) {
@@ -108,8 +116,8 @@ public class BoardCoverCalculator {
     }
 
     private static Set<Solution> coveringSets(Game game, Animal animalToSearch, List<Coords> prevCoords, MinSolutionTracker tracker) {
-        var overallOverlap = calculateOverallOverlap(game.calcWipedBoard(), game.getContainedAnimals());
-        var overlapAndProbabilities = calculateOverlapAndProbabilities(overallOverlap, animalToSearch);
+        var overlapsAndProbabilities = calculateOverlapsAndProbabilities(game);
+        var overlapAndProbabilities = overlapsAndProbabilities.animalOverlapAndProbabilities().get(animalToSearch);
         var overlap = overlapAndProbabilities.overlap();
         var highestOverlapCoords = getHighestOverlapCoords(overlap);
 
@@ -189,7 +197,8 @@ public class BoardCoverCalculator {
                 var newClonedGames = new ArrayList<Game>();
                 var gamesWithNoSolution = new ArrayList<Game>();
                 for (var clonedGame : clonedGames) {
-                    var newOverallOverlap = calculateOverallOverlap(clonedGame.getBoard(), clonedGame.getContainedAnimals());
+                    var overlapsAndProbabilities = calculateOverlapsAndProbabilities(clonedGame);
+                    var newOverallOverlap = overlapsAndProbabilities.overallOverlap();
                     var animalsToPlace = getAnimalToPlace(newOverallOverlap, coords, animalToSearch);
                     ifAnimalToPlaceEmptyThrow(animalsToPlace, game, coords, multiClicks);
                     for (var animal : animalsToPlace) {
@@ -311,7 +320,8 @@ public class BoardCoverCalculator {
     private static Solution clickThroughSolution(Game intialGame, List<Coords> clicks, Animal animalToSearch, List<Coords> prevCoords) {
         var solutionGame = new Game(intialGame, true);
         for (var click : clicks) {
-            var animalToPlace = getAnimalToPlace(calculateOverallOverlap(solutionGame.getBoard(), solutionGame.getContainedAnimals()), click, animalToSearch);
+            var overallOverlap = calculateOverlapsAndProbabilities(solutionGame).overallOverlap();
+            var animalToPlace = getAnimalToPlace(overallOverlap, click, animalToSearch);
             solutionGame.setTile(click.x(), click.y(), true, animalToPlace.getFirst());
         }
         var solutionClicks = new ArrayList<>(prevCoords);

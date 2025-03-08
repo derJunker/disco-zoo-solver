@@ -4,8 +4,8 @@ import java.util.List;
 
 import junker.disco.zoo.solver.board.AnimalBoardInstance;
 
-public record OverlapAndProbabilities(
+public record AnimalOverlapAndProbabilities(
         List<AnimalBoardInstance>[][] overlap,
-        double[][] probabilities
+        Double[][] probabilities
 ) {
 }
