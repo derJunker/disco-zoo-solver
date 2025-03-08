@@ -7,4 +7,9 @@ public record Coords(
     public static Coords coords(int x, int y) {
         return new Coords(x, y);
     }
+
+    @Override
+    public String toString() {
+        return "(" + x + ", " + y + ")";
+    }
 }

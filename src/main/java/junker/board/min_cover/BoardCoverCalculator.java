@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -171,7 +170,7 @@ public class BoardCoverCalculator {
                         var newClonedGame = new Game(clonedGame, true);
                         newClonedGame.setTile(coords.x(), coords.y(), true, animal);
                         newClonedGames.add(newClonedGame);
-                        if (!newClonedGame.isSolvedFor(animalToSearch)) {
+                        if (!newClonedGame.animalIsCompletelyRevealed(animalToSearch)) {
                             gamesWithNoSolution.add(newClonedGame);
                         }
                     }
@@ -240,52 +239,58 @@ public class BoardCoverCalculator {
                                                         Animal animalToSearch,
                                                         Set<Coords> highestOverlapCoords, Game game, List<Coords> prevCoords
     , MinSolutionTracker tracker) {
-        var remainingUndiscoveredCoords =
-                new ArrayList<>(remainingUnOverlappedStartCoords.values().stream().map(List::getFirst).toList());
+        // all the lists in the remainingUnOverlappedStartCoords are of equal length
+        // therefore we know we have to click at least all of them for one solution, then additionally we need to
+        // click one tile of all the other unOverlappedCords to make sure it is not there
+        final var clicksToSolution =
+                new ArrayList<>(remainingUnOverlappedStartCoords.values()).getFirst().size() + remainingUnOverlappedStartCoords.keySet().size()-1;
         tracker.totalCounter++;
-        if (prevCoords.size() + remainingUnOverlappedStartCoords.keySet().size() > tracker.minSolutionSize) {
+        if (prevCoords.size() + clicksToSolution > tracker.minSolutionSize) {
             tracker.rejectionCounter++;
             return Set.of();
         }
-        var highOverlapClicks = new ArrayList<Coords>();
-        var lowerOverlapClicks = new ArrayList<Coords>();
-        remainingUndiscoveredCoords.forEach(coords -> {
-            if (highestOverlapCoords.contains(coords)) {
-                highOverlapClicks.add(coords);
-            } else {
-                lowerOverlapClicks.add(coords);
-            }
-        });
-        var result = new HashSet<Solution>();
-        for (var firstClick : highOverlapClicks) {
-            var perm = new ArrayList<>(highOverlapClicks);
-            perm.remove(firstClick);
-            perm.addFirst(firstClick);
-            perm.addAll(lowerOverlapClicks);
+        final var allSolutions = new HashSet<Solution>();
+        for (var finalClickCoordsEntry : remainingUnOverlappedStartCoords.entrySet()) {
+            var finalClickCoords = finalClickCoordsEntry.getValue();
+            var positionsThatWillBeClickedBefore = new ArrayList<>(remainingUnOverlappedStartCoords.keySet());
+            positionsThatWillBeClickedBefore.remove(finalClickCoordsEntry.getKey());
+            if (positionsThatWillBeClickedBefore.isEmpty()) {
+                for (var firstFinalClick : finalClickCoords) {
+                    var remainingFinalClicks = new ArrayList<>(finalClickCoords);
+                    remainingFinalClicks.remove(firstFinalClick);
 
-            var clonedGames = new ArrayList<Game>(List.of(new Game(game, true)));
-            for (var click : perm) {
-                var newClonedGames = new ArrayList<Game>();
-                for (var clonedGame : clonedGames) {
-                    var newOverallOverlap = calculateOverallOverlap(clonedGame.getBoard(), clonedGame.getContainedAnimals());
-                    var animalsToPlace = getAnimalToPlace(newOverallOverlap, click, animalToSearch);
-                    if (animalsToPlace.size() == 1 && Objects.equals(animalsToPlace.getFirst(), animalToSearch)) {
-                        var solutionFirstClicks = perm.subList(0, perm.indexOf(click) + 1);
-                        var clicks = new ArrayList<>(prevCoords);
-                        clicks.addAll(solutionFirstClicks);
-                        tracker.update(clicks.size());
-                        result.add(new Solution(clicks, clonedGame));
-                        continue;
-                    }
-                    for (var animalToPlace : animalsToPlace) {
-                        clonedGame.setTile(click.x(), click.y(), true, animalToPlace);
-                        newClonedGames.add(new Game(clonedGame, true));
-                    }
+                    var solutionClicks = new ArrayList<Coords>();
+                    solutionClicks.add(firstFinalClick);
+                    solutionClicks.addAll(remainingFinalClicks);
+                    allSolutions.add(clickThroughSolution(game, solutionClicks, animalToSearch, prevCoords));
                 }
-                clonedGames = newClonedGames;
+            }
+            for (var positionThatWillBeClickedBefore : positionsThatWillBeClickedBefore) {
+                var possibleFirstClicksOfFirstPosition = remainingUnOverlappedStartCoords.get(positionThatWillBeClickedBefore);
+                for (var asFirstOfThePositionThatWillBeClickedFirst : possibleFirstClicksOfFirstPosition) {
+                    var clicksBeforeTheLastClickButAfterTheFirst = new ArrayList<>(positionsThatWillBeClickedBefore);
+                    clicksBeforeTheLastClickButAfterTheFirst.remove(positionThatWillBeClickedBefore);
+
+                    var solutionClicks = new ArrayList<Coords>();
+                    solutionClicks.add(asFirstOfThePositionThatWillBeClickedFirst);
+                    solutionClicks.addAll(clicksBeforeTheLastClickButAfterTheFirst);
+                    solutionClicks.addAll(finalClickCoords);
+                    allSolutions.add(clickThroughSolution(game, solutionClicks, animalToSearch, prevCoords));
+                }
             }
         }
-        return result;
+        return allSolutions;
+    }
+
+    private static Solution clickThroughSolution(Game intialGame, List<Coords> clicks, Animal animalToSearch, List<Coords> prevCoords) {
+        var solutionGame = new Game(intialGame, true);
+        for (var click : clicks) {
+            var animalToPlace = getAnimalToPlace(calculateOverallOverlap(solutionGame.getBoard(), solutionGame.getContainedAnimals()), click, animalToSearch);
+            solutionGame.setTile(click.x(), click.y(), true, animalToPlace.getFirst());
+        }
+        var solutionClicks = new ArrayList<>(prevCoords);
+        solutionClicks.addAll(clicks);
+        return new Solution(solutionClicks, solutionGame);
     }
 
     private static Map<Coords, List<Coords>> checkForNoOverlap(List<AnimalBoardInstance>[][] overlap) {

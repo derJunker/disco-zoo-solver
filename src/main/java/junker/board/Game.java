@@ -1,8 +1,10 @@
 package junker.board;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -129,6 +131,26 @@ public class Game {
             }
         }
         return solvedTileCount;
+    }
+
+    public boolean animalIsCompletelyRevealed(Animal animal) {
+        return getCompletelyRevealedAnimals().contains(animal);
+    }
+
+    public List<Animal> getCompletelyRevealedAnimals() {
+        var animalRevealedCountMap = new HashMap<Animal, Integer>();
+        for (int x = 0; x < board.length; x++) {
+            for (int y = 0; y < board[0].length; y++) {
+                var tile = board[x][y];
+                if (tile.isRevealed() && tile.getAnimalBoardInstance() != null) {
+                    var animal = tile.getAnimalBoardInstance().animal();
+                    animalRevealedCountMap.put(animal, animalRevealedCountMap.getOrDefault(animal, 0) + 1);
+                }
+            }
+        }
+        return animalRevealedCountMap.entrySet().stream()
+                .filter(e -> e.getValue() == e.getKey().pattern().size())
+                .map(Map.Entry::getKey).toList();
     }
 
 
