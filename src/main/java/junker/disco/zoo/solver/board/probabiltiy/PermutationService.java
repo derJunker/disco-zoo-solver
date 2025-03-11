@@ -1,7 +1,9 @@
 package junker.disco.zoo.solver.board.probabiltiy;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import junker.disco.zoo.solver.model.animals.Animal;
 import junker.disco.zoo.solver.board.BoardService;
@@ -29,8 +31,8 @@ public class PermutationService {
         return !permutations.isEmpty();
     }
 
-    public static List<Tile[][]> calculateBoardPermutations(Tile[][] board, List<Animal> animals) {
-        var permutations = new ArrayList<Tile[][]>();
+    public static Set<Tile[][]> calculateBoardPermutations(Tile[][] board, List<Animal> animals) {
+        var permutations = new HashSet<Tile[][]>();
         if (animals.isEmpty()) {
             return permutations;
         }

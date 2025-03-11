@@ -2,15 +2,10 @@ package junker.disco.zoo.solver.board;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 import junker.disco.zoo.solver.model.animals.Animal;
-import junker.disco.zoo.solver.board.min_cover.BoardCoverCalculator;
-import junker.disco.zoo.solver.board.min_cover.Solution;
 import junker.disco.zoo.solver.board.probabiltiy.PermutationService;
 
 import static junker.disco.zoo.solver.board.BoardService.cloneBoard;
@@ -19,7 +14,6 @@ import static junker.disco.zoo.solver.util.DoubleArrayUtil.arrayAsCoordinatesStr
 
 public class Game {
     public static final int BOARD_SIZE = 5;
-    public static final int MAX_ATTEMPTS = 10;
 
     private Tile[][] board;
     private final List<Animal> containedAnimals;
@@ -91,15 +85,6 @@ public class Game {
 
     public void printGame() {
         System.out.println(this);
-    }
-
-    public Set<Coords> getBestClicks(Animal animalToSearch) {
-        var minCover = BoardCoverCalculator.minCoveringSets(this, animalToSearch, false);
-        return minCover.stream().map(sol -> sol.clicks().getFirst()).collect(Collectors.toSet());
-    }
-
-    public Set<Solution> getBestSolutions(Animal animalToSearch) {
-        return BoardCoverCalculator.minCoveringSets(this, animalToSearch, true);
     }
 
     @Override
