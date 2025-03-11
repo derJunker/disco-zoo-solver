@@ -153,8 +153,19 @@ public class BoardCoverCalculator {
 
         Map<Coords, List<AnimalBoardInstance>> tilesWithHighestOverlaps = filterByIndex(overlap,
                 highestOverlapCoords::contains);
-        var multiClickCollection = new ArrayList<>(IndependentSetsCalculator.calculateMaxIndependentSubSets(tilesWithHighestOverlaps,
-                AnimalBoardInstance::id));
+        List<Set<Coords>> multiClickCollection;
+        var containedAnimalCount = game.getContainedAnimals().size();
+        var unrevealedAnimalCount = containedAnimalCount - game.getCompletelyRevealedAnimals().size();
+        if (containedAnimalCount > 1 && unrevealedAnimalCount != 1) {
+            multiClickCollection = new ArrayList<Set<Coords>>();
+            tilesWithHighestOverlaps.keySet().forEach(coords -> multiClickCollection.add(Set.of(coords)));
+        } else if (unrevealedAnimalCount == 1) {
+            multiClickCollection = new ArrayList<>(IndependentSetsCalculator.calculateMaxIndependentSubSets(tilesWithHighestOverlaps,
+                    AnimalBoardInstance::id));
+        } else {
+            return Set.of();
+        }
+
 
         var allClonedGames = new ArrayList<List<Game>>();
         Set<Solution> foundSolutions = checkForMultiClickSolutions(multiClickCollection, game, animalToSearch,
@@ -179,7 +190,7 @@ public class BoardCoverCalculator {
         return overallResults;
     }
 
-    private static Set<Solution> checkForMultiClickSolutions(ArrayList<Set<Coords>> multiClickCollection,
+    private static Set<Solution> checkForMultiClickSolutions(List<Set<Coords>> multiClickCollection,
                                                              Game game, Animal animalToSearch,
                                                              ArrayList<List<Game>> allClonedGames,
                                                              List<Coords> prevCoords, MinSolutionTracker tracker) {
@@ -352,16 +363,13 @@ public class BoardCoverCalculator {
     private static List<Animal> getNecessaryAnimalToPlace(Set<Animal> possibleTileAnimalsAndNull,
                                                          Animal animalToSearch) {
         var list = new ArrayList<Animal>();
-        if (possibleTileAnimalsAndNull.contains(null)) {
-            list.add(null);
-        } else {
-            var nonQueriedAnimals = possibleTileAnimalsAndNull.stream().filter(animal -> !animal.equals(animalToSearch)).toList();
-            if (nonQueriedAnimals.isEmpty()) {
-                list.add(animalToSearch);
-            }
-            else {
-                list.addAll(nonQueriedAnimals);
-            }
+        var nonQueriedAnimals =
+                possibleTileAnimalsAndNull.stream().filter(animal -> animal != null && !animal.equals(animalToSearch)).toList();
+        if (nonQueriedAnimals.isEmpty()) {
+            list.add(animalToSearch);
+        }
+        else {
+            list.addAll(nonQueriedAnimals);
         }
         return list;
     }
