@@ -2,25 +2,38 @@ package junker.disco.zoo.solver.board.probabiltiy;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
+import java.util.Set;
 
 import junker.disco.zoo.solver.board.AnimalBoardInstance;
 import junker.disco.zoo.solver.board.Coords;
 import junker.disco.zoo.solver.board.Game;
 import junker.disco.zoo.solver.model.animals.Animal;
 import junker.disco.zoo.solver.model.solver.Overlaps;
+import junker.disco.zoo.solver.model.solver.Solution;
 
 import static junker.disco.zoo.solver.board.probabiltiy.OverlapCalulator.findHighestOverlapCoords;
 import static junker.disco.zoo.solver.board.probabiltiy.OverlapCalulator.getBestReducingRemainingAnimalOverlapCoords;
 
 public class DiscoZooSolver {
-    public static List<Coords> getBestClicks(Animal animalToSolve, Game game) {
+    public static List<Solution> getBestClicks(Animal animalToSolve, Game game, List<Coords> previousClicks) {
         var clonedGame = new Game(game, true);
         var overlaps = calculateOverlaps(clonedGame);
         var highestOverlapCoords = findHighestOverlapCoords(overlaps, animalToSolve);
         if (game.getContainedAnimals().size() >= 2) // TODO AND is not a discobux
             highestOverlapCoords = getBestReducingRemainingAnimalOverlapCoords(highestOverlapCoords, overlaps, animalToSolve);
-
+//        Set<Set<Coords>> clickPermutations = getIndependentMultiClicks(overlaps, highestOverlapCoords);
+//        for (Set<Coords> permutation : clickPermutations) {
+//            for (Coords click : permutation) {
+//                Set<Animal> placeableAnimals = getPlaceableAnimals(clonedGame, click);
+//                for (Animal animal : placeableAnimals) {
+//                    // Für jeden Klick in der permutation muss ne eigene Liste an den resultierenden solutions
+//                    // rauskommen rekursiv. Damit man am ende minimaxen kann.
+//                    // man muss nach dem click : permutation ding rekursiv die solutions berechnen und dann bewerten
+//                    // wie effizient die sind. D.h. iwie muss nachvollziehbar sein, welche clicks zu welchen
+//                    // solutions gehören.
+//                }
+//            }
+//        }
         return null;
     }
 

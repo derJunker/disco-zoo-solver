@@ -65,6 +65,10 @@ public class Game {
         tile.setRevealed(true);
     }
 
+    public void setTile(Coords coords, boolean revealed, Animal animal) {
+        setTile(coords.x(), coords.y(), revealed, animal);
+    }
+
     public void setTile(int x, int y, boolean revealed, Animal animal) {
         var tile = board[x][y];
         tile.setRevealed(revealed);
