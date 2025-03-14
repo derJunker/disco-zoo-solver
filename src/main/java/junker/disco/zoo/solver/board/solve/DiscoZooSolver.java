@@ -41,6 +41,9 @@ public class DiscoZooSolver {
     private static List<Solution> getBestSolutions(Animal animalToSolve, Game game, Overlaps overlaps) {
         var clonedGame = new Game(game, true);
         var highestOverlapCoords = findHighestOverlapCoords(overlaps, animalToSolve);
+        if (highestOverlapCoords.size() == 1) {
+            return List.of(new Solution(List.of(highestOverlapCoords.getFirst())));
+        }
         return emulateClicks(overlaps, animalToSolve, clonedGame, List.of(), highestOverlapCoords, Integer.MAX_VALUE);
     }
 
