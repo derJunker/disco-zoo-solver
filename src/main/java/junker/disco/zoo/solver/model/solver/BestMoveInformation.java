@@ -1,8 +1,6 @@
-package junker.disco.zoo.solver.model;
+package junker.disco.zoo.solver.model.solver;
 
 import java.util.List;
-
-import junker.disco.zoo.solver.model.solver.Solution;
 
 public record BestMoveInformation(
         Double[][] probabilities,
