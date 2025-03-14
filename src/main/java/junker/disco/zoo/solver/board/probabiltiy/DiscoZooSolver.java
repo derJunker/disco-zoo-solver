@@ -54,7 +54,44 @@ public class DiscoZooSolver {
 
     private static List<Solution> emulateClicksForMultipleAnimals(List<Coords> highestOverlapCoords, Overlaps overlaps,
                                                                   Game game, List<Coords> previousClicks, Animal animalToSolve, int smallestSolutionLength) {
-        return null;
+        var overallOverlap = overlaps.overallOverlap();
+        var allSolutions = new ArrayList<Solution>();
+        for (var coords : highestOverlapCoords) {
+            Set<AnimalBoardInstance> animalInstances =
+                    new HashSet<>(overallOverlap[coords.x()][coords.y()]);
+            var placeableAnimals = animalInstances.stream()
+                    .map(animalBoardInstance -> animalBoardInstance != null? animalBoardInstance.animal() : null)
+                    .collect(Collectors.toSet());
+            var differentAnimalSolutions = new ArrayList<Solution>();
+            var worstSolutionLengthForDifferentAnimals = 0;
+            for (var animalToPlace : placeableAnimals) {
+                var nextOverlaps = emulateOverlapClick(overlaps, animalToPlace, animalInstances, coords);
+                var nextGame = new Game(game, true);
+                nextGame.setTile(coords.x(), coords.y(), true, animalToPlace);
+
+                var nextPreviousClicks = ListUtil.putLast(previousClicks, coords);
+                if (nextPreviousClicks.size() > smallestSolutionLength) {
+                    continue;
+                }
+                var solutions = emulateClicks(nextOverlaps, animalToSolve, nextGame, nextPreviousClicks, smallestSolutionLength);
+                // it is the worst solution compared to the other placeable animals.
+                if (solutions.isEmpty()) {
+                    solutions = List.of(new Solution(IntStream.range(0,
+                            game.getBoard().length * game.getBoard()[0].length).mapToObj(i -> new Coords(-1, -1)).toList()));
+                }
+
+                solutions = onlyMinSolutions(solutions); // Get the best solutions of that animal click and check if
+                worstSolutionLengthForDifferentAnimals = ListUtil.resetAddIfAboveLimit(differentAnimalSolutions,
+                        solutions,
+                        solutions.getFirst().clicks().size(), worstSolutionLengthForDifferentAnimals);
+            }
+            if (differentAnimalSolutions.isEmpty())
+                continue;
+            smallestSolutionLength = ListUtil.resetAddIfBelowLimit(allSolutions, differentAnimalSolutions,
+                    differentAnimalSolutions.getFirst().clicks().size(),
+                    smallestSolutionLength);
+        }
+        return allSolutions;
     }
 
     private static List<Solution> emulateClicksForSingleAnimal(Set<Set<Coords>> multipleClickSets, Overlaps overlaps, Game game, List<Coords> previousClicks, Animal animalToSolve, int smallestSolutionLength) {
