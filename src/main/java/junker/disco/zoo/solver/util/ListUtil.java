@@ -1,8 +1,12 @@
 package junker.disco.zoo.solver.util;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
+import junker.disco.zoo.solver.board.Coords;
 import junker.disco.zoo.solver.board.probabiltiy.PermutationService;
 
 public class ListUtil {
@@ -43,11 +47,26 @@ public class ListUtil {
         }
     }
 
-    public static <T>  List<List<T>> putFirstAndPermuteRest(List<T> list, T element) {
+    public static <T> Set<List<T>> putFirstAndPermuteRest(List<T> list, T element) {
         var remainingList = new ArrayList<T>(list);
         remainingList.remove(element);
-        var remainingListPerms = PermutationService.getPermutationOfList(remainingList);
+        var remainingListPerms = PermutationService.getPermutationOfCollection(remainingList);
         remainingListPerms.forEach(perm -> perm.addFirst(element));
         return remainingListPerms;
+    }
+
+    public static <T> Set<List<T>> permuteFirst(Collection<T> collection) {
+        var list = new ArrayList<>(collection);
+        var permutedFirstLists = new HashSet<List<T>>();
+        for (var elToPutFirst : list) {
+            permutedFirstLists.add(putFirst(list, elToPutFirst));
+        }
+        return permutedFirstLists;
+    }
+
+    public static <T> List<T> cloneThenAddAll(List<T> previousClicks, Collection<T> collectionToAdd) {
+        var newClicks = new ArrayList<>(previousClicks);
+        newClicks.addAll(collectionToAdd);
+        return newClicks;
     }
 }

@@ -11,13 +11,20 @@ import junker.disco.zoo.solver.util.DoubleArrayUtil;
 
 public record Overlaps(
         List<AnimalBoardInstance>[][] overallOverlap,
-        Set<Tile[][]> permutations,
+        Map<Animal, List<AnimalBoardInstance>[][]> animalOverlap, Set<Tile[][]> permutations,
         Map<Animal, Integer> animalOverlapCounts
 ) {
     @Override
     public String toString() {
         var sb = new StringBuilder();
         sb.append("Overlaps{");
+        sb.append("animalOverlap=\n");
+        for (var entry : animalOverlap.entrySet()) {
+            sb.append(entry.getKey());
+            sb.append("=\n");
+            sb.append(DoubleArrayUtil.arrayAsCoordinatesString(entry.getValue()));
+            sb.append("\n");
+        }
         sb.append("overallOverlap=\n");
         sb.append(DoubleArrayUtil.arrayAsCoordinatesString(overallOverlap));
         sb.append(",\npermutations=\n");

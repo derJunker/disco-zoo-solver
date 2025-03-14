@@ -30,10 +30,9 @@ public class NoOverlapSolutionFinder {
                                                   List<Coords> previousClicks, int smallestSolutionLength) {
         int boardWidth = game.getBoard().length;
         int boardHeight = game.getBoard()[0].length;
-        var overallOverlap = overlaps.overallOverlap();
 
         // For each animalBoardInstance all the clickable Coords
-        var animalBoardInstancesClickableCoordsMap = getClickableCoordsForAnimalBoardInstance(overallOverlap,
+        var animalBoardInstancesClickableCoordsMap = getClickableCoordsForAnimalBoardInstance(overlaps,
                 animalToSolve, boardWidth, boardHeight);
         var minSolutionLength = minSolutionLength(animalBoardInstancesClickableCoordsMap, previousClicks);
         if (minSolutionLength > smallestSolutionLength)
@@ -41,22 +40,15 @@ public class NoOverlapSolutionFinder {
         return allSolutionsForDifferentClickPermutations(animalBoardInstancesClickableCoordsMap, previousClicks);
     }
 
-    private static Map<AnimalBoardInstance, Set<Coords>> getClickableCoordsForAnimalBoardInstance(List<AnimalBoardInstance>[][] overallOverlap, Animal animalToSolve, int boardWidth, int boardHeight) {
+    private static Map<AnimalBoardInstance, Set<Coords>> getClickableCoordsForAnimalBoardInstance(Overlaps overlaps,
+                                                                                                  Animal animalToSolve, int boardWidth, int boardHeight) {
         // For each animalBoardInstance all the clickable Coords
         var animalBoardInstancesClickableCoordsMap = new HashMap<AnimalBoardInstance, Set<Coords>>();
         for (int x = 0; x < boardWidth; x++) {
             for (int y = 0; y < boardHeight; y++) {
-                var overallTileOverlap = overallOverlap[x][y]; // TODO add a overlaps map for each animal to have its
-                // own overlap. So its precomputed
-
-                // As this function assumes an overlap of 1 there only should be 1 animalBoardInstance. So its okay
-                // to say findAny
-                Optional<AnimalBoardInstance> optAnimalInstance = overallTileOverlap.stream()
-                        .filter(Objects::nonNull)
-                        .filter(instance -> instance.animal().equals(animalToSolve))
-                        .findAny();
-                if (optAnimalInstance.isPresent()) {
-                    var animalInstance = optAnimalInstance.get();
+                var animalTileOverlap = overlaps.animalOverlap().get(animalToSolve)[x][y];
+                if (!animalTileOverlap.isEmpty()) {
+                    var animalInstance = animalTileOverlap.getFirst();
                     animalBoardInstancesClickableCoordsMap.putIfAbsent(animalInstance, new HashSet<Coords>());
                     animalBoardInstancesClickableCoordsMap.get(animalInstance).add(new Coords(x, y));
                 }

@@ -17,14 +17,6 @@ import junker.disco.zoo.solver.model.animals.Animal;
 import junker.disco.zoo.solver.model.solver.Overlaps;
 
 public class OverlapCalulator {
-
-    public static List<Coords> getBestReducingRemainingAnimalOverlapCoords(List<Coords> highestOverlapCoords,
-                                                                            Overlaps overlaps, Animal animalToSolve) {
-        // TODO
-        System.out.println("TODO: Implement getBestReducingClicks");
-        return highestOverlapCoords;
-    }
-
     // TODO precomputable in Overlaps class
     public static List<Coords> findHighestOverlapCoords(Overlaps overlaps, Animal animalToSolve) {
         var overallOverlap = overlaps.overallOverlap();
@@ -67,24 +59,44 @@ public class OverlapCalulator {
 
     private static Overlaps calculateOverlaps(Set<Tile[][]> permutations, int boardWidth, int boardHeight) {
         List<AnimalBoardInstance>[][] overallOverlap = new List[boardWidth][boardHeight];
-        setOverallOverlap(overallOverlap, permutations, boardWidth, boardHeight);
+        Map<Animal, List<AnimalBoardInstance>[][]> animalOverlap = new java.util.HashMap<>();
+        setOverlaps(overallOverlap, animalOverlap, permutations, boardWidth, boardHeight);
 
         Map<Animal, Integer> animalMaxOverlaps = new java.util.HashMap<>();
         setMaxAnimalOverlaps(animalMaxOverlaps, overallOverlap, boardWidth, boardHeight);
 
-        return new Overlaps(overallOverlap, permutations, animalMaxOverlaps);
+        return new Overlaps(overallOverlap, animalOverlap, permutations, animalMaxOverlaps);
     }
 
-    private static void setOverallOverlap(List<AnimalBoardInstance>[][] overallOverlap,
-                                          Set<Tile[][]> permutations, int boardWidth,int boardHeight) {
+    private static void setOverlaps(List<AnimalBoardInstance>[][] overallOverlap,
+                                    Map<Animal, List<AnimalBoardInstance>[][]> animalOverlap, Set<Tile[][]> permutations, int boardWidth, int boardHeight) {
         for (int x = 0; x < boardWidth; x++) {
             for (int y = 0; y < boardHeight; y++) {
                 var tileOverlaps = new ArrayList<AnimalBoardInstance>();
                 for (var permutation : permutations) {
                     var animalBoardInstance = permutation[x][y].getAnimalBoardInstance();
                     tileOverlaps.add(animalBoardInstance);
+                    if (animalBoardInstance != null) {
+                        var animal = animalBoardInstance.animal();
+                        createNewListArrayIfNotPresent(animal, animalOverlap, boardWidth, boardHeight);
+                        var animalOverlapForAnimal = animalOverlap.get(animal);
+                        animalOverlapForAnimal[x][y].add(animalBoardInstance);
+                    }
                 }
                 overallOverlap[x][y] = tileOverlaps;
+            }
+        }
+    }
+
+    private static void createNewListArrayIfNotPresent(Animal animal,
+                                                   Map<Animal, List<AnimalBoardInstance>[][]> animalOverlap, int boardWidth, int boardHeight) {
+        if (!animalOverlap.containsKey(animal)) {
+            animalOverlap.put(animal, new List[boardWidth][boardHeight]);
+            var animalOverlapForAnimal = animalOverlap.get(animal);
+            for (int i = 0; i < boardWidth; i++) {
+                for (int j = 0; j < boardHeight; j++) {
+                    animalOverlapForAnimal[i][j] = new ArrayList<>();
+                }
             }
         }
     }

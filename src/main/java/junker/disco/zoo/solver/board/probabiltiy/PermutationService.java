@@ -1,6 +1,7 @@
 package junker.disco.zoo.solver.board.probabiltiy;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -137,15 +138,16 @@ public class PermutationService {
         return true;
     }
 
-    public static <T> List<List<T>> getPermutationOfList(List<T> list) {
-        List<List<T>> result = new ArrayList<>();
+    public static <T> Set<List<T>> getPermutationOfCollection(Collection<T> collection) {
+        List<T> list = new ArrayList<>(collection);
+        Set<List<T>> result = new HashSet<>();
         if (list.isEmpty()) {
             result.add(new ArrayList<>());
             return result;
         }
-        T firstElement = list.get(0);
+        T firstElement = list.getFirst();
         List<T> remainingList = list.subList(1, list.size());
-        List<List<T>> permutations = getPermutationOfList(remainingList);
+        Set<List<T>> permutations = getPermutationOfCollection(remainingList);
         for (List<T> permutation : permutations) {
             for (int i = 0; i <= permutation.size(); i++) {
                 List<T> newPermutation = new ArrayList<>(permutation);

@@ -1,11 +1,8 @@
 package junker.disco.zoo.solver.board.probabiltiy;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -22,7 +19,6 @@ import static junker.disco.zoo.solver.board.probabiltiy.NoOverlapSolutionFinder.
 import static junker.disco.zoo.solver.board.probabiltiy.OverlapCalulator.calculateOverlaps;
 import static junker.disco.zoo.solver.board.probabiltiy.OverlapCalulator.emulateOverlapClick;
 import static junker.disco.zoo.solver.board.probabiltiy.OverlapCalulator.findHighestOverlapCoords;
-import static junker.disco.zoo.solver.board.probabiltiy.OverlapCalulator.getBestReducingRemainingAnimalOverlapCoords;
 
 public class DiscoZooSolver {
     public static List<Solution> getBestSolutions(Animal animalToSolve, Game game) {
@@ -41,45 +37,67 @@ public class DiscoZooSolver {
         }
         var highestOverlapCoords = findHighestOverlapCoords(overlaps, animalToSolve);
         if (highestOverlapCoords.isEmpty()) {
-            return List.of(new Solution(previousClicks));
+            return List.of(new Solution(previousClicks)); // TODO not sure if this is needed tbh, the first case should
+            // cover this imo
         }
-        if (game.getContainedAnimals().size() >= 2) // TODO AND is not a discobux
-            highestOverlapCoords = getBestReducingRemainingAnimalOverlapCoords(highestOverlapCoords, overlaps, animalToSolve);
-        var overallOverlap = overlaps.overallOverlap();
+
+        if (game.getNotCompletelyRevealedAnimals().size() == 1) { // TODO remove discobux from this logic
+            var multipleClickSets = MultiClickEmulator.calculateMultiClickSets(overlaps,
+                    highestOverlapCoords, animalToSolve);
+            return emulateClicksForSingleAnimal(multipleClickSets, overlaps, game, previousClicks, animalToSolve,
+                    smallestSolutionLength); // This is recursive back to this main function
+        } else {
+            return emulateClicksForMultipleAnimals(highestOverlapCoords, overlaps, game, previousClicks, animalToSolve,
+                    smallestSolutionLength);
+        }
+    }
+
+    private static List<Solution> emulateClicksForMultipleAnimals(List<Coords> highestOverlapCoords, Overlaps overlaps,
+                                                                  Game game, List<Coords> previousClicks, Animal animalToSolve, int smallestSolutionLength) {
+        return null;
+    }
+
+    private static List<Solution> emulateClicksForSingleAnimal(Set<Set<Coords>> multipleClickSets, Overlaps overlaps, Game game, List<Coords> previousClicks, Animal animalToSolve, int smallestSolutionLength) {
         var allSolutions = new ArrayList<Solution>();
-        for (var coords : highestOverlapCoords) {
-            Set<AnimalBoardInstance> animalInstances =
-                    new HashSet<>(overallOverlap[coords.x()][coords.y()]);
-            var placeableAnimals = animalInstances.stream()
-                    .map(animalBoardInstance -> animalBoardInstance != null? animalBoardInstance.animal() : null)
-                    .collect(Collectors.toSet());
-            var differentAnimalSolutions = new ArrayList<Solution>();
-            var worstSolutionLengthForDifferentAnimals = 0;
-            for (var animalToPlace : placeableAnimals) {
-                var nextOverlaps = emulateOverlapClick(overlaps, animalToPlace, animalInstances, coords);
-                var nextGame = new Game(game, true);
-                nextGame.setTile(coords.x(), coords.y(), true, animalToPlace);
-
-                var nextPreviousClicks = ListUtil.putLast(previousClicks, coords);
-                if (nextPreviousClicks.size() > smallestSolutionLength) {
-                    continue;
-                }
-                var solutions = emulateClicks(nextOverlaps, animalToSolve, nextGame, nextPreviousClicks, smallestSolutionLength);
-                // it is the worst solution compared to the other placeable animals.
-                if (solutions.isEmpty()) {
-                    solutions = List.of(new Solution(IntStream.range(0,
-                            game.getBoard().length * game.getBoard()[0].length).mapToObj(i -> new Coords(-1, -1)).toList()));
-                }
-
-                solutions = onlyMinSolutions(solutions); // Get the best solutions of that animal click and check if
-                worstSolutionLengthForDifferentAnimals = ListUtil.resetAddIfAboveLimit(differentAnimalSolutions,
-                        solutions,
-                        solutions.getFirst().clicks().size(), worstSolutionLengthForDifferentAnimals);
+        for (var multiClickSet : multipleClickSets) {
+            var nextOverlaps = overlaps;
+            var nextGame = game;
+            for (var click : multiClickSet) {
+                Set<AnimalBoardInstance> animalInstances =
+                        new HashSet<>(nextOverlaps.overallOverlap()[click.x()][click.y()]);
+                var placeableAnimals = animalInstances.stream()
+                        .map(animalBoardInstance -> animalBoardInstance != null? animalBoardInstance.animal() : null)
+                        .collect(Collectors.toSet());
+                // These placeable Animals can only be null and the animal to solve
+                // if there is only one animal to solve, we can just click on it
+                Animal animalToPlace = null;
+                if (placeableAnimals.size() == 1)
+                    animalToPlace = placeableAnimals.iterator().next();
+                nextOverlaps = emulateOverlapClick(nextOverlaps, animalToPlace, animalInstances, click);
+                nextGame = new Game(nextGame, true);
+                nextGame.setTile(click.x(), click.y(), true, animalToPlace);
             }
-            if (differentAnimalSolutions.isEmpty())
-                continue;
-            smallestSolutionLength = ListUtil.resetAddIfBelowLimit(allSolutions, differentAnimalSolutions,
-                    differentAnimalSolutions.getFirst().clicks().size(),
+            var differentFirstSolutions = new ArrayList<Solution>();
+            var worstSolutionLengthForDifferentAnimals = 0;
+            for (var firstClickPermutation : ListUtil.permuteFirst(multiClickSet)) {
+                var nextPreviousClicks = ListUtil.cloneThenAddAll(previousClicks, firstClickPermutation);
+                var multiClickSolutions =  emulateClicks(nextOverlaps, animalToSolve, nextGame, nextPreviousClicks,
+                        smallestSolutionLength);
+
+                // it is the worst solution compared to the other placeable animals.
+                if (multiClickSolutions.isEmpty())
+                    multiClickSolutions = List.of(new Solution(IntStream.range(0,
+                            game.getBoard().length * game.getBoard()[0].length + 1).mapToObj(i -> new Coords(-1, -1)).toList()));
+
+                multiClickSolutions = onlyMinSolutions(multiClickSolutions); // Get the best solutions of that animal click and check if
+
+                worstSolutionLengthForDifferentAnimals = ListUtil.resetAddIfAboveLimit(differentFirstSolutions,
+                        multiClickSolutions,
+                        multiClickSolutions.getFirst().clicks().size(), worstSolutionLengthForDifferentAnimals);
+            }
+
+            smallestSolutionLength = ListUtil.resetAddIfBelowLimit(allSolutions, differentFirstSolutions,
+                    differentFirstSolutions.getFirst().clicks().size(),
                     smallestSolutionLength);
         }
         return allSolutions;
@@ -97,7 +115,4 @@ public class DiscoZooSolver {
         }
         return minSolution;
     }
-
-    // TODO this can be done inside the calculate Overlaps
-
 }

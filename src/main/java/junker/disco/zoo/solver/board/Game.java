@@ -116,6 +116,12 @@ public class Game {
                 .map(Map.Entry::getKey).toList();
     }
 
+    public List<Animal> getNotCompletelyRevealedAnimals() {
+        var allAnimals = new ArrayList<>(containedAnimals);
+        allAnimals.removeAll(getCompletelyRevealedAnimals());
+        return allAnimals;
+    }
+
 
     private void placeAnimalsRandomly(List<Animal> animalsToPlace) {
         for (Animal animal : animalsToPlace) {
