@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.IntStream;
 
@@ -20,11 +19,6 @@ import junker.disco.zoo.solver.model.solver.Solution;
 public class NoOverlapSolutionFinder {
     /**
      * This function assumes there is at most 1 animalBoardInstance per tile for the animalToSolve.
-     * @param overlaps
-     * @param animalToSolve
-     * @param game
-     * @param previousClicks
-     * @return
      */
     public static List<Solution> solutionsForNoOverlap(Overlaps overlaps, Animal animalToSolve, Game game,
                                                   List<Coords> previousClicks, int smallestSolutionLength,
@@ -37,9 +31,9 @@ public class NoOverlapSolutionFinder {
                 animalToSolve, boardWidth, boardHeight);
         var minSolutionLength = minSolutionLength(animalBoardInstancesClickableCoordsMap, previousClicks);
         if (minSolutionLength > smallestSolutionLength)
-            return List.of(new Solution(IntStream.range(0, minSolutionLength).mapToObj(i -> new Coords(-1, -1)).toList(), Optional.empty()));
+            return List.of(new Solution(IntStream.range(0, minSolutionLength).mapToObj(_ -> new Coords(-1, -1)).toList()));
         return allSolutionsForDifferentClickPermutations(animalBoardInstancesClickableCoordsMap, previousClicks,
-                highestOverlapCoords, game);
+                highestOverlapCoords);
     }
 
     private static Map<AnimalBoardInstance, Set<Coords>> getClickableCoordsForAnimalBoardInstance(Overlaps overlaps,
@@ -51,7 +45,7 @@ public class NoOverlapSolutionFinder {
                 var animalTileOverlap = overlaps.uniqueAnimalOverlapMap().get(animalToSolve)[x][y];
                 if (!animalTileOverlap.isEmpty()) {
                     var animalInstance = animalTileOverlap.iterator().next();
-                    animalBoardInstancesClickableCoordsMap.putIfAbsent(animalInstance, new HashSet<Coords>());
+                    animalBoardInstancesClickableCoordsMap.putIfAbsent(animalInstance, new HashSet<>());
                     animalBoardInstancesClickableCoordsMap.get(animalInstance).add(new Coords(x, y));
                 }
             }
@@ -61,8 +55,7 @@ public class NoOverlapSolutionFinder {
 
     private static List<Solution> allSolutionsForDifferentClickPermutations(Map<AnimalBoardInstance, Set<Coords>> animalBoardInstancesClickableCoordsMap,
                                                                             List<Coords> previousClicks,
-                                                                            List<Coords> highestOverlapCoords,
-                                                                            Game game) {
+                                                                            List<Coords> highestOverlapCoords) {
         List<Solution> solutions = new ArrayList<>();
         for (var lastClickedInstanceToClickableCoords : animalBoardInstancesClickableCoordsMap.entrySet()) {
             var lastClickedInstance = lastClickedInstanceToClickableCoords.getKey();
@@ -72,13 +65,11 @@ public class NoOverlapSolutionFinder {
             instancesToEliminateBefore.remove(lastClickedInstance);
 
             if (instancesToEliminateBefore.isEmpty()) {
-                var newGame = new Game(game, true);
-                lastClickableCoords.forEach(coords -> newGame.setTile(coords.x(), coords.y(), true, lastClickedInstance.animal()));
                 var permutedSolutionClicks =
                         ListUtil.permuteFirst(lastClickableCoords).stream().map(clicks -> {
                             var appendedPrevClicks = new ArrayList<>(previousClicks);
                             appendedPrevClicks.addAll(clicks);
-                            return new Solution(appendedPrevClicks, Optional.of(newGame));
+                            return new Solution(appendedPrevClicks);
                         }).toList();
                 solutions.addAll(permutedSolutionClicks);
                 return solutions;
@@ -99,11 +90,7 @@ public class NoOverlapSolutionFinder {
                             instancesToEliminateInBetween.values().stream().map(instances -> instances.iterator().next()).toList();
                     solutionClicks.addAll(anyClickableCoordsInBetween);
                     solutionClicks.addAll(lastClickableCoords);
-                    var newGame = new Game(game, true);
-                    newGame.setTile(clickableCoordPermutation.getFirst(), true, null);
-                    anyClickableCoordsInBetween.forEach(coords -> newGame.setTile(coords, true, null));
-                    lastClickableCoords.forEach(coords -> newGame.setTile(coords, true, lastClickedInstance.animal()));
-                    solutions.add(new Solution(solutionClicks, Optional.of(newGame)));
+                    solutions.add(new Solution(solutionClicks));
                 }
             }
         }

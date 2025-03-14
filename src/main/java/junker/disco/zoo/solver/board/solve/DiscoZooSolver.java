@@ -28,17 +28,18 @@ import static junker.disco.zoo.solver.board.solve.OverlapCalulator.findHighestOv
 public class DiscoZooSolver {
 
     public static BestMoveInformation getBestMoveInformation(Animal animalToSolve, Game game) {
-        var clonedGame = new Game(game, true);
-        var overlaps = calculateOverlaps(clonedGame);
-        var highestOverlapCoords = findHighestOverlapCoords(overlaps, animalToSolve);
-        var solutions = emulateClicks(overlaps, animalToSolve, clonedGame, List.of(), highestOverlapCoords,
-                Integer.MAX_VALUE);
+        var overlaps = calculateOverlaps(game);
+        var solutions = getBestSolutions(animalToSolve, game, overlaps);
         return new BestMoveInformation(overlaps.animalOverlapProbability().get(animalToSolve), solutions);
     }
 
     public static List<Solution> getBestSolutions(Animal animalToSolve, Game game) {
+        var overlaps = calculateOverlaps(game);
+        return getBestSolutions(animalToSolve, game, overlaps);
+    }
+
+    private static List<Solution> getBestSolutions(Animal animalToSolve, Game game, Overlaps overlaps) {
         var clonedGame = new Game(game, true);
-        var overlaps = calculateOverlaps(clonedGame);
         var highestOverlapCoords = findHighestOverlapCoords(overlaps, animalToSolve);
         return emulateClicks(overlaps, animalToSolve, clonedGame, List.of(), highestOverlapCoords, Integer.MAX_VALUE);
     }
@@ -48,12 +49,12 @@ public class DiscoZooSolver {
                                                 List<Coords> highestOverlapCoords, int smallestSolutionLength) {
         var maxOverlapCount = overlaps.animalMaxOverlapCounts().get(animalToSolve);
         if (maxOverlapCount == null || maxOverlapCount == 0) {
-            return List.of(new Solution(previousClicks, Optional.of(new Game(game, true))));
+            return List.of(new Solution(previousClicks));
         } else if (maxOverlapCount == 1) {
             return solutionsForNoOverlap(overlaps, animalToSolve, game, previousClicks, smallestSolutionLength, highestOverlapCoords);
         }
         if (highestOverlapCoords.isEmpty()) {
-            return List.of(new Solution(previousClicks, Optional.of(new Game(game, true)))); // TODO not sure if this
+            return List.of(new Solution(previousClicks)); // TODO not sure if this
             // is needed tbh, the first case
             // should
             // cover this imo
@@ -100,7 +101,7 @@ public class DiscoZooSolver {
                 // it is the worst solution compared to the other placeable animals.
                 if (solutions.isEmpty()) {
                     solutions = List.of(new Solution(IntStream.range(0,
-                            game.getBoard().length * game.getBoard()[0].length).mapToObj(i -> new Coords(-1, -1)).toList(), Optional.empty()));
+                            game.getBoard().length * game.getBoard()[0].length).mapToObj(i -> new Coords(-1, -1)).toList()));
                 }
 
                 solutions = onlyMinSolutions(solutions);
@@ -187,7 +188,7 @@ public class DiscoZooSolver {
                 // it is the worst solution compared to the other placeable animals.
                 if (multiClickSolutions.isEmpty())
                     multiClickSolutions = List.of(new Solution(IntStream.range(0,
-                            game.getBoard().length * game.getBoard()[0].length + 1).mapToObj(i -> new Coords(-1, -1)).toList(), Optional.empty()));
+                            game.getBoard().length * game.getBoard()[0].length + 1).mapToObj(i -> new Coords(-1, -1)).toList()));
 
                 multiClickSolutions = onlyMinSolutions(multiClickSolutions); // Get the best solutions of that animal click and check if
 
