@@ -3,6 +3,8 @@ package junker.disco.zoo.solver.util;
 import java.util.ArrayList;
 import java.util.List;
 
+import junker.disco.zoo.solver.board.probabiltiy.PermutationService;
+
 public class ListUtil {
     public static <T> List<T> putFirst(List<T> list, T element) {
         var newList = new ArrayList<T>(list);
@@ -39,5 +41,13 @@ public class ListUtil {
         } else {
             return limit;
         }
+    }
+
+    public static <T>  List<List<T>> putFirstAndPermuteRest(List<T> list, T element) {
+        var remainingList = new ArrayList<T>(list);
+        remainingList.remove(element);
+        var remainingListPerms = PermutationService.getPermutationOfList(remainingList);
+        remainingListPerms.forEach(perm -> perm.addFirst(element));
+        return remainingListPerms;
     }
 }

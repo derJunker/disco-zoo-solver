@@ -1,8 +1,11 @@
 package junker.disco.zoo.solver.board.probabiltiy;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -14,6 +17,7 @@ import junker.disco.zoo.solver.model.solver.Overlaps;
 import junker.disco.zoo.solver.model.solver.Solution;
 import junker.disco.zoo.solver.util.ListUtil;
 
+import static junker.disco.zoo.solver.board.probabiltiy.NoOverlapSolutionFinder.solutionsForNoOverlap;
 import static junker.disco.zoo.solver.board.probabiltiy.OverlapCalulator.calculateOverlaps;
 import static junker.disco.zoo.solver.board.probabiltiy.OverlapCalulator.emulateOverlapClick;
 import static junker.disco.zoo.solver.board.probabiltiy.OverlapCalulator.findHighestOverlapCoords;
@@ -28,6 +32,12 @@ public class DiscoZooSolver {
 
     private static List<Solution> emulateClicks(Overlaps overlaps, Animal animalToSolve, Game game,
                                                 List<Coords> previousClicks, int smallestSolutionLength) {
+        var maxOverlapCount = overlaps.animalOverlapCounts().get(animalToSolve);
+        if (maxOverlapCount == null || maxOverlapCount == 0) {
+            return List.of(new Solution(previousClicks));
+        } else if (maxOverlapCount == 1) {
+            return solutionsForNoOverlap(overlaps, animalToSolve, game, previousClicks, smallestSolutionLength);
+        }
         var highestOverlapCoords = findHighestOverlapCoords(overlaps, animalToSolve);
         if (highestOverlapCoords.isEmpty()) {
             return List.of(new Solution(previousClicks));
