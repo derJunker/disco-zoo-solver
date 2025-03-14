@@ -4,6 +4,10 @@
          @click="$emit('tile-click', coords)">
       <img v-if="hasRevealedAnimal(coords)" id="animal-icon" src="../assets/placeholder.png" alt="animal"
            style="max-width: 70%;"/>
+      <span v-if="probabilities && probabilities[coords.x]" style="text-wrap: nowrap; max-width: 100%;
+      overflow: hidden;">
+        {{probabilities[coords.x][coords.y].toFixed(3)}}
+      </span>
     </div>
   </div>
 </template>

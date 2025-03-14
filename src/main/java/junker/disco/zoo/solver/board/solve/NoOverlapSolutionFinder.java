@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.IntStream;
 
@@ -36,8 +37,9 @@ public class NoOverlapSolutionFinder {
                 animalToSolve, boardWidth, boardHeight);
         var minSolutionLength = minSolutionLength(animalBoardInstancesClickableCoordsMap, previousClicks);
         if (minSolutionLength > smallestSolutionLength)
-            return List.of(new Solution(IntStream.range(0, minSolutionLength).mapToObj(i -> new Coords(-1, -1)).toList()));
-        return allSolutionsForDifferentClickPermutations(animalBoardInstancesClickableCoordsMap, previousClicks, highestOverlapCoords);
+            return List.of(new Solution(IntStream.range(0, minSolutionLength).mapToObj(i -> new Coords(-1, -1)).toList(), Optional.empty()));
+        return allSolutionsForDifferentClickPermutations(animalBoardInstancesClickableCoordsMap, previousClicks,
+                highestOverlapCoords, game);
     }
 
     private static Map<AnimalBoardInstance, Set<Coords>> getClickableCoordsForAnimalBoardInstance(Overlaps overlaps,
@@ -59,7 +61,8 @@ public class NoOverlapSolutionFinder {
 
     private static List<Solution> allSolutionsForDifferentClickPermutations(Map<AnimalBoardInstance, Set<Coords>> animalBoardInstancesClickableCoordsMap,
                                                                             List<Coords> previousClicks,
-                                                                            List<Coords> highestOverlapCoords) {
+                                                                            List<Coords> highestOverlapCoords,
+                                                                            Game game) {
         List<Solution> solutions = new ArrayList<>();
         for (var lastClickedInstanceToClickableCoords : animalBoardInstancesClickableCoordsMap.entrySet()) {
             var lastClickedInstance = lastClickedInstanceToClickableCoords.getKey();
@@ -69,11 +72,13 @@ public class NoOverlapSolutionFinder {
             instancesToEliminateBefore.remove(lastClickedInstance);
 
             if (instancesToEliminateBefore.isEmpty()) {
+                var newGame = new Game(game, true);
+                lastClickableCoords.forEach(coords -> newGame.setTile(coords.x(), coords.y(), true, lastClickedInstance.animal()));
                 var permutedSolutionClicks =
                         ListUtil.permuteFirst(lastClickableCoords).stream().map(clicks -> {
                             var appendedPrevClicks = new ArrayList<>(previousClicks);
                             appendedPrevClicks.addAll(clicks);
-                            return new Solution(appendedPrevClicks);
+                            return new Solution(appendedPrevClicks, Optional.of(newGame));
                         }).toList();
                 solutions.addAll(permutedSolutionClicks);
                 return solutions;
@@ -90,9 +95,15 @@ public class NoOverlapSolutionFinder {
                 for (var clickableCoordPermutation : clickableCoordPermutations) {
                     var solutionClicks = new ArrayList<>(previousClicks);
                     solutionClicks.add(clickableCoordPermutation.getFirst());
-                    solutionClicks.addAll(instancesToEliminateInBetween.values().stream().map(instances -> instances.iterator().next()).toList());
+                    var anyClickableCoordsInBetween =
+                            instancesToEliminateInBetween.values().stream().map(instances -> instances.iterator().next()).toList();
+                    solutionClicks.addAll(anyClickableCoordsInBetween);
                     solutionClicks.addAll(lastClickableCoords);
-                    solutions.add(new Solution(solutionClicks));
+                    var newGame = new Game(game, true);
+                    newGame.setTile(clickableCoordPermutation.getFirst(), true, null);
+                    anyClickableCoordsInBetween.forEach(coords -> newGame.setTile(coords, true, null));
+                    lastClickableCoords.forEach(coords -> newGame.setTile(coords, true, lastClickedInstance.animal()));
+                    solutions.add(new Solution(solutionClicks, Optional.of(newGame)));
                 }
             }
         }
