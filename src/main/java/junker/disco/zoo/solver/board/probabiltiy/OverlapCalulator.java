@@ -59,7 +59,7 @@ public class OverlapCalulator {
 
     private static Overlaps calculateOverlaps(Set<Tile[][]> permutations, int boardWidth, int boardHeight) {
         List<AnimalBoardInstance>[][] overallOverlap = new List[boardWidth][boardHeight];
-        Map<Animal, List<AnimalBoardInstance>[][]> animalOverlap = new java.util.HashMap<>();
+        Map<Animal, Set<AnimalBoardInstance>[][]> animalOverlap = new java.util.HashMap<>();
         setOverlaps(overallOverlap, animalOverlap, permutations, boardWidth, boardHeight);
 
         Map<Animal, Integer> animalMaxOverlaps = new java.util.HashMap<>();
@@ -69,7 +69,8 @@ public class OverlapCalulator {
     }
 
     private static void setOverlaps(List<AnimalBoardInstance>[][] overallOverlap,
-                                    Map<Animal, List<AnimalBoardInstance>[][]> animalOverlap, Set<Tile[][]> permutations, int boardWidth, int boardHeight) {
+                                    Map<Animal, Set<AnimalBoardInstance>[][]> animalOverlap, Set<Tile[][]> permutations
+            , int boardWidth, int boardHeight) {
         for (int x = 0; x < boardWidth; x++) {
             for (int y = 0; y < boardHeight; y++) {
                 var tileOverlaps = new ArrayList<AnimalBoardInstance>();
@@ -89,13 +90,14 @@ public class OverlapCalulator {
     }
 
     private static void createNewListArrayIfNotPresent(Animal animal,
-                                                   Map<Animal, List<AnimalBoardInstance>[][]> animalOverlap, int boardWidth, int boardHeight) {
+                                                   Map<Animal, Set<AnimalBoardInstance>[][]> animalOverlap,
+                                                       int boardWidth, int boardHeight) {
         if (!animalOverlap.containsKey(animal)) {
-            animalOverlap.put(animal, new List[boardWidth][boardHeight]);
+            animalOverlap.put(animal, new Set[boardWidth][boardHeight]);
             var animalOverlapForAnimal = animalOverlap.get(animal);
             for (int i = 0; i < boardWidth; i++) {
                 for (int j = 0; j < boardHeight; j++) {
-                    animalOverlapForAnimal[i][j] = new ArrayList<>();
+                    animalOverlapForAnimal[i][j] = new HashSet<>();
                 }
             }
         }

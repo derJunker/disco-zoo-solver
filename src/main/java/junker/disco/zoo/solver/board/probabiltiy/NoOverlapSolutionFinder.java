@@ -5,8 +5,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.IntStream;
 
@@ -46,7 +44,7 @@ public class NoOverlapSolutionFinder {
         var animalBoardInstancesClickableCoordsMap = new HashMap<AnimalBoardInstance, Set<Coords>>();
         for (int x = 0; x < boardWidth; x++) {
             for (int y = 0; y < boardHeight; y++) {
-                var animalTileOverlap = overlaps.animalOverlap().get(animalToSolve)[x][y];
+                var animalTileOverlap = overlaps.uniqueAnimalOverlapMap().get(animalToSolve)[x][y];
                 if (!animalTileOverlap.isEmpty()) {
                     var animalInstance = animalTileOverlap.getFirst();
                     animalBoardInstancesClickableCoordsMap.putIfAbsent(animalInstance, new HashSet<Coords>());
