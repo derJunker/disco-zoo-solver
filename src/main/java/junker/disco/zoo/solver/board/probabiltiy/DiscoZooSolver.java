@@ -8,6 +8,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import junker.disco.zoo.solver.board.AnimalBoardInstance;
 import junker.disco.zoo.solver.board.Coords;
@@ -65,8 +66,10 @@ public class DiscoZooSolver {
                 }
                 var solutions = emulateClicks(nextOverlaps, animalToSolve, nextGame, nextPreviousClicks, smallestSolutionLength);
                 // it is the worst solution compared to the other placeable animals.
-                if (solutions.isEmpty())
-                    continue;
+                if (solutions.isEmpty()) {
+                    solutions = List.of(new Solution(IntStream.range(0,
+                            game.getBoard().length * game.getBoard()[0].length).mapToObj(i -> new Coords(-1, -1)).toList()));
+                }
 
                 solutions = onlyMinSolutions(solutions); // Get the best solutions of that animal click and check if
                 worstSolutionLengthForDifferentAnimals = ListUtil.resetAddIfAboveLimit(differentAnimalSolutions,

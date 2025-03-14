@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.IntStream;
 
 import junker.disco.zoo.solver.board.AnimalBoardInstance;
 import junker.disco.zoo.solver.board.Coords;
@@ -34,8 +35,9 @@ public class NoOverlapSolutionFinder {
         // For each animalBoardInstance all the clickable Coords
         var animalBoardInstancesClickableCoordsMap = getClickableCoordsForAnimalBoardInstance(overallOverlap,
                 animalToSolve, boardWidth, boardHeight);
-        if (solutionLengthIsTooLong(animalBoardInstancesClickableCoordsMap, previousClicks, smallestSolutionLength))
-            return List.of();
+        var minSolutionLength = minSolutionLength(animalBoardInstancesClickableCoordsMap, previousClicks);
+        if (minSolutionLength > smallestSolutionLength)
+            return List.of(new Solution(IntStream.range(0, minSolutionLength).mapToObj(i -> new Coords(-1, -1)).toList()));
         return allSolutionsForDifferentClickPermutations(animalBoardInstancesClickableCoordsMap, previousClicks);
     }
 
@@ -82,11 +84,11 @@ public class NoOverlapSolutionFinder {
         return solutions;
     }
 
-    private static boolean solutionLengthIsTooLong(Map<AnimalBoardInstance, Set<Coords>> animalBoardInstancesClickableCoordsMap,
-                                                   List<Coords> previousClicks, int smallestSolutionLength) {
+    private static int minSolutionLength(Map<AnimalBoardInstance, Set<Coords>> animalBoardInstancesClickableCoordsMap,
+                                                   List<Coords> previousClicks) {
         var clicksToSolveSingleNoOverlap =
                 animalBoardInstancesClickableCoordsMap.entrySet().iterator().next().getValue().size();
         var clicksToSolveRemainingNoOverlaps = animalBoardInstancesClickableCoordsMap.size() - 1;
-        return previousClicks.size() + clicksToSolveSingleNoOverlap + clicksToSolveRemainingNoOverlaps > smallestSolutionLength;
+        return previousClicks.size() + clicksToSolveSingleNoOverlap + clicksToSolveRemainingNoOverlaps;
     }
 }
