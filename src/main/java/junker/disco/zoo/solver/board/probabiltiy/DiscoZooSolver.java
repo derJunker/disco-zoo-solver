@@ -35,7 +35,7 @@ public class DiscoZooSolver {
         if (game.getContainedAnimals().size() >= 2) // TODO AND is not a discobux
             highestOverlapCoords = getBestReducingRemainingAnimalOverlapCoords(highestOverlapCoords, overlaps, animalToSolve);
         var overallOverlap = overlaps.overallOverlap();
-        var allSolution = new ArrayList<Solution>();
+        var allSolutions = new ArrayList<Solution>();
         for (var coords : highestOverlapCoords) {
             Set<AnimalBoardInstance> animalInstances =
                     new HashSet<>(overallOverlap[coords.x()][coords.y()]);
@@ -59,26 +59,17 @@ public class DiscoZooSolver {
                     continue;
 
                 solutions = onlyMinSolutions(solutions); // Get the best solutions of that animal click and check if
-                var solutionLength = solutions.getFirst().clicks().size();
-                if (solutionLength > worstSolutionLengthForDifferentAnimals) {
-                    differentAnimalSolutions.clear();
-                    differentAnimalSolutions.addAll(solutions);
-                    worstSolutionLengthForDifferentAnimals = solutionLength;
-                } else if (solutionLength == worstSolutionLengthForDifferentAnimals)
-                    differentAnimalSolutions.addAll(solutions);
+                worstSolutionLengthForDifferentAnimals = ListUtil.resetAddIfAboveLimit(differentAnimalSolutions,
+                        solutions,
+                        solutions.getFirst().clicks().size(), worstSolutionLengthForDifferentAnimals);
             }
             if (differentAnimalSolutions.isEmpty())
                 continue;
-            var solutionLength = differentAnimalSolutions.getFirst().clicks().size();
-            if (solutionLength < smallestSolutionLength) {
-                allSolution.clear();
-                allSolution.addAll(differentAnimalSolutions);
-                smallestSolutionLength = solutionLength;
-            } else if (solutionLength == smallestSolutionLength) {
-                allSolution.addAll(differentAnimalSolutions);
-            }
+            smallestSolutionLength = ListUtil.resetAddIfBelowLimit(allSolutions, differentAnimalSolutions,
+                    differentAnimalSolutions.getFirst().clicks().size(),
+                    smallestSolutionLength);
         }
-        return allSolution;
+        return allSolutions;
     }
 
     private static List<Solution> onlyMinSolutions(List<Solution> solutions) {

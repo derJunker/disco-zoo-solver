@@ -17,4 +17,27 @@ public class ListUtil {
         newList.addLast(element);
         return newList;
     }
+
+    public static <T> int resetAddIfBelowLimit(List<T> listToModify, List<T> elements, int value, int limit) {
+        return addAndClearIfThresholdTrue(listToModify, elements, value, limit, value < limit);
+    }
+
+    public static <T> int resetAddIfAboveLimit(List<T> listToModify, List<T> elements, int value,
+                                                          int limit) {
+        return addAndClearIfThresholdTrue(listToModify, elements, value, limit, value > limit);
+    }
+
+    private static <T> int addAndClearIfThresholdTrue(List<T> listToModify, List<T> elements, int value, int limit,
+                                            boolean threshold) {
+        if (threshold) {
+            listToModify.clear();
+            listToModify.addAll(elements);
+            return value;
+        } else if(value == limit) {
+            listToModify.addAll(elements);
+            return value;
+        } else {
+            return limit;
+        }
+    }
 }
