@@ -8,6 +8,7 @@ import java.util.Map;
 import junker.disco.zoo.solver.board.util.BoardUtil;
 import junker.disco.zoo.solver.board.util.PermutationUtil;
 import junker.disco.zoo.solver.model.animals.Animal;
+import junker.disco.zoo.solver.model.animals.Rarity;
 
 import static junker.disco.zoo.solver.board.util.BoardUtil.cloneBoard;
 import static junker.disco.zoo.solver.board.util.PermutationUtil.canClickAndPlace;
@@ -117,7 +118,7 @@ public class Game {
                 .map(Map.Entry::getKey).toList();
     }
 
-    public List<Animal> getNotCompletelyRevealedAnimals() {
+    public List<Animal> getNotCompletelyRevealedAnimalsWithoutBux() {
         var allAnimals = new ArrayList<>(containedAnimals);
         allAnimals.removeAll(getCompletelyRevealedAnimals());
         return allAnimals;

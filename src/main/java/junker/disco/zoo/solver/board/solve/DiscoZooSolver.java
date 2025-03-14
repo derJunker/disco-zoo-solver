@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -56,14 +55,8 @@ public class DiscoZooSolver {
         } else if (maxOverlapCount == 1) {
             return solutionsForNoOverlap(overlaps, animalToSolve, game, previousClicks, smallestSolutionLength, highestOverlapCoords);
         }
-        if (highestOverlapCoords.isEmpty()) {
-            return List.of(new Solution(previousClicks)); // TODO not sure if this
-            // is needed tbh, the first case
-            // should
-            // cover this imo
-        }
 
-        if (game.getNotCompletelyRevealedAnimals().size() == 1) { // TODO remove discobux from this logic
+        if (game.getNotCompletelyRevealedAnimalsWithoutBux().size() == 1) {
             var multipleClickSets = MultiClickEmulator.calculateMultiClickSets(overlaps,
                     highestOverlapCoords, animalToSolve);
             return emulateClicksForSingleAnimal(multipleClickSets, overlaps, game, previousClicks, animalToSolve,

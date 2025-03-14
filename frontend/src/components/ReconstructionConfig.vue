@@ -42,18 +42,6 @@
         </span>
         </div>
       </div>
-      <div>
-        <div id="bux-animals-title">
-          Discobux:
-        </div>
-        <div id="bux-animals">
-          <span v-for="animal in timebux" :key="animal.id" :class="'btn bux-animal ' +
-          (selectedAnimals.includes(animal)? 'highlighted' : '')"
-                @click="onClickAnimal(animal)">
-            {{animal.name.charAt(0)}}
-          </span>
-        </div>
-      </div>
       <div v-if="selectedTimeless">
         <div id="timeless-animals-title">
           Timeless:
