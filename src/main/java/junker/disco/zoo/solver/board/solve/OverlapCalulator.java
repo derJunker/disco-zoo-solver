@@ -64,9 +64,11 @@ public class OverlapCalulator {
         setOverlaps(overallOverlap, animalOverlap, permutations, boardWidth, boardHeight);
 
         Map<Animal, Integer> animalMaxOverlaps = new java.util.HashMap<>();
-        setMaxAnimalOverlaps(animalMaxOverlaps, overallOverlap, boardWidth, boardHeight);
+        Map<Animal, Double[][]> animalOverlapProbabilities = new java.util.HashMap<>();
+        setMaxAnimalOverlaps(animalMaxOverlaps, animalOverlapProbabilities, overallOverlap, permutations, boardWidth,
+                boardHeight);
 
-        return new Overlaps(overallOverlap, animalOverlap, permutations, animalMaxOverlaps);
+        return new Overlaps(overallOverlap, animalOverlap, animalOverlapProbabilities, permutations, animalMaxOverlaps);
     }
 
     private static void setOverlaps(List<AnimalBoardInstance>[][] overallOverlap,
@@ -105,7 +107,7 @@ public class OverlapCalulator {
     }
 
     private static void setMaxAnimalOverlaps(Map<Animal, Integer> animalMaxOverlaps,
-                                             List<AnimalBoardInstance>[][] overallOverlap, int boardWidth, int boardHeight) {
+                                             Map<Animal, Double[][]> animalOverlapProbabilities, List<AnimalBoardInstance>[][] overallOverlap, Set<Tile[][]> permutations, int boardWidth, int boardHeight) {
         for (int x = 0; x < boardWidth; x++) {
             for (int y = 0; y < boardHeight; y++) {
                 var tileOverlaps = overallOverlap[x][y];
@@ -119,7 +121,23 @@ public class OverlapCalulator {
                             .distinct()
                             .count();
                     animalMaxOverlaps.put(animal, Math.max(animalMaxOverlaps.getOrDefault(animal, 0), animalOverlapCount));
+
+
+                    if (!animalOverlapProbabilities.containsKey(animal)) {
+                        animalOverlapProbabilities.put(animal, new Double[boardWidth][boardHeight]);
+                        for (int i = 0; i < boardWidth; i++) {
+                            for (int j = 0; j < boardHeight; j++) {
+                                animalOverlapProbabilities.get(animal)[i][j] = 0.0;
+                            }
+                        }
+                    }
+                    var instancesAtTile =
+                            (double) overallOverlap[x][y].stream().filter(instance -> instance != null && instance.animal().equals(animal)).count();
+                    animalOverlapProbabilities.get(animal)[x][y] =
+                            instancesAtTile / permutations.size();
+
                 }
+
             }
         }
     }

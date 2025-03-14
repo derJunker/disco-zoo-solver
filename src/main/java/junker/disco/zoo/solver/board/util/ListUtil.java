@@ -6,6 +6,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import junker.disco.zoo.solver.board.Coords;
+
 public class ListUtil {
     public static <T> List<T> putFirst(List<T> list, T element) {
         var newList = new ArrayList<T>(list);
