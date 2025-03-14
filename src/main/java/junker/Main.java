@@ -1,7 +1,11 @@
 package junker;
 
+import java.util.stream.Collectors;
+
+import junker.disco.zoo.solver.board.probabiltiy.DiscoZooSolver;
 import junker.disco.zoo.solver.model.animals.Animal;
 import junker.disco.zoo.solver.board.Game;
+import junker.disco.zoo.solver.model.solver.Solution;
 
 // TODO Optimizations:
 //  - ignore discobux
@@ -12,9 +16,10 @@ import junker.disco.zoo.solver.board.Game;
 public class Main {
     public static void main(String[] args) {
         Animal.initAnimals();
-        var animals = Animal.findAnimalsByName("Sasquatch");
+        var animals = Animal.findAnimalsByName("Koala");
         var game = new Game(animals);
-        var bestClicks = game.getBestClicks(animals.getFirst());
+        var bestSolutions = DiscoZooSolver.getBestSolutions(animals.getFirst(), game);
+        var bestClicks = bestSolutions.stream().map(solution -> solution.clicks().getFirst()).collect(Collectors.toSet());
         System.out.println(bestClicks.size() + " best Solutions:\n" + bestClicks);
     }
 }
