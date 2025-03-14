@@ -12,5 +12,9 @@ export const useAnimals = defineStore('animals', () => {
 
         return await resp.json();
     }
-    return {getAnimalsOfRegion}
+
+    function getAnimalPictureUrl(animal: Animal): string {
+        return `/animals/${animal.name.toLowerCase()}.png`;
+    }
+    return {getAnimalsOfRegion, getAnimalPictureUrl}
 })

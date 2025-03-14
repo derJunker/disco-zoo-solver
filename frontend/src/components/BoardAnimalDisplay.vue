@@ -3,7 +3,7 @@
     <div v-for="animal in animals" :key="animal.name" class="animal-display rounded dock-top"
          :style="'background-color: ' +
   regionColors.dark + ';'">
-      <img id="animal-icon" src="../assets/placeholder.png" alt="animal" style="max-width: 50%;"/>
+      <img id="animal-icon" :src="getAnimalPictureUrl(animal)" alt="animal" style="max-width: 50%;"/>
       <div id="animal-name">
         {{animal.name}}
       </div>
@@ -20,6 +20,9 @@
 import {Animal} from "@/types/Animal";
 import {getRegionColors} from "@/util/region-colors";
 import {defineComponent} from "vue";
+import {useAnimals} from "@/store/useAnimals";
+
+const animalStore = useAnimals();
 
 export default defineComponent ({
   name: 'BoardAnimalDisplay',
@@ -49,6 +52,12 @@ export default defineComponent ({
       if (newVal !== oldVal)
         this.regionColors = getRegionColors(this.region);
     },
+  },
+
+  methods: {
+    getAnimalPictureUrl(animal: Animal): string {
+      return animalStore.getAnimalPictureUrl(animal);
+    }
   }
 })
 </script>

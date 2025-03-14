@@ -2,9 +2,10 @@
   <div id="disco-board" class="rounded" :style="'background-color: ' + regionColors.dark" v-if="game">
     <div v-for="(coords) in getCoords()" :key="coords" class="disco-cell" :style="getBackgroundStyling(coords)"
          @click="$emit('tile-click', coords)">
-      <img v-if="hasRevealedAnimal(coords)" id="animal-icon" src="../assets/placeholder.png" alt="animal"
-           style="max-width: 70%;"/>
-      <span v-if="probabilities && probabilities[coords.x]" style="text-wrap: nowrap; max-width: 100%;
+      <img v-if="hasRevealedAnimal(coords)" id="animal-icon" :src="getAnimalImagePath(coords)"
+           :alt="game?.board[coords.x][coords.y].animalBoardInstance.animal.name"/>
+      <span v-if="probabilities && probabilities[coords.x] && !hasRevealedAnimal(coords)" style="text-wrap: nowrap;
+      max-width: 100%;
       overflow: hidden;">
         {{probabilities[coords.x][coords.y].toFixed(3)}}
       </span>
@@ -15,7 +16,9 @@
 import {defineComponent} from 'vue'
 import {Game, Tile} from "@/types/Game";
 import {Coords} from "@/types/Coords";
+import {useAnimals} from "@/store/useAnimals";
 
+const animalStore = useAnimals();
 
 export default defineComponent ({
   name: 'DiscoBoard',
@@ -41,6 +44,15 @@ export default defineComponent ({
     hasRevealedAnimal(coords: Coords): boolean {
       const tile = this.game?.board[coords.x][coords.y]
       return tile !== undefined && tile.animalBoardInstance != null
+    },
+
+    getAnimalImagePath(coords: Coords): string {
+      const tile = this.game?.board[coords.x][coords.y]
+      const boardInstance = tile?.animalBoardInstance
+      if (boardInstance == null) {
+        return '/animals/placeholder.png'
+      }
+      return animalStore.getAnimalPictureUrl(tile!.animalBoardInstance.animal!)
     },
 
     isRevealedWithNoAnimal(coords: Coords): boolean {
@@ -110,19 +122,14 @@ export default defineComponent ({
   width: 100%;
 }
 .disco-cell {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  display: grid;
+  place-items: center;
   aspect-ratio: 1 / 1;
   font-size: 2rem;
   text-align: center;
   cursor: pointer;
 }
-.picture {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  height: 100%;
+#animal-icon {
+  max-width: 90%;
 }
 </style>
