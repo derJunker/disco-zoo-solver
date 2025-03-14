@@ -14,10 +14,4 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/solve")
 public class SolveController {
 
-
-    @PostMapping
-    public SolveResult solve(@RequestBody SolveRequestBody body) {
-        final var game = body.game().toGame();
-        return null;
-    }
 }

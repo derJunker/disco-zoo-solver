@@ -20,8 +20,8 @@ public class IndependentSetsCalculator {
      * @param idMapper a function that maps an item T to its string id
      * @return a set of maximal independent subsets, each represented as a set of Coords
      */
-    public static <T> Set<Set<Coords>> calculateMaxIndependentSubSets(
-            Map<Coords, List<T>> items,
+    public static <T, V extends Collection<T>> Set<Set<Coords>> calculateMaxIndependentSubSets(
+            Map<Coords, V> items,
             Function<T, String> idMapper) {
 
         // Extract the list of coordinates.
@@ -31,7 +31,7 @@ public class IndependentSetsCalculator {
         // For each coordinate, compute the set of ids present in its associated list.
         List<Set<String>> idSets = new ArrayList<>(total);
         for (Coords coord : coordsList) {
-            List<T> itemList = items.get(coord);
+            List<T> itemList = new ArrayList<>(items.get(coord));
             Set<String> ids = new HashSet<>();
             for (T item : itemList) {
                 ids.add(idMapper.apply(item));

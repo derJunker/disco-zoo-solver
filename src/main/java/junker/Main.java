@@ -16,7 +16,7 @@ import junker.disco.zoo.solver.model.solver.Solution;
 public class Main {
     public static void main(String[] args) {
         Animal.initAnimals();
-        var animals = Animal.findAnimalsByName("Sasquatch");
+        var animals = Animal.findAnimalsByName("Sheep", "Rabbit");
         var game = new Game(animals);
         var bestSolutions = DiscoZooSolver.getBestSolutions(animals.getFirst(), game);
         var bestClicks = bestSolutions.stream().map(solution -> solution.clicks().getFirst()).collect(Collectors.toSet());
