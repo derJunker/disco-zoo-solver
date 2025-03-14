@@ -6,7 +6,7 @@ import junker.disco.zoo.solver.board.Coords;
 
 public record SolveResult(
         Set<Coords> bestClicks,
-        Double[][] probabilities
+        double[][] probabilities
 ) {
 
 }

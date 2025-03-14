@@ -10,6 +10,7 @@ import java.util.stream.IntStream;
 import junker.disco.zoo.solver.board.AnimalBoardInstance;
 import junker.disco.zoo.solver.board.Coords;
 import junker.disco.zoo.solver.board.Game;
+import junker.disco.zoo.solver.model.BestMoveInformation;
 import junker.disco.zoo.solver.model.animals.Animal;
 import junker.disco.zoo.solver.model.solver.Overlaps;
 import junker.disco.zoo.solver.model.solver.Solution;
@@ -21,6 +22,14 @@ import static junker.disco.zoo.solver.board.solve.OverlapCalulator.emulateOverla
 import static junker.disco.zoo.solver.board.solve.OverlapCalulator.findHighestOverlapCoords;
 
 public class DiscoZooSolver {
+
+    public static BestMoveInformation getBestMoveInformation(Animal animalToSolve, Game game) {
+        var clonedGame = new Game(game, true);
+        var overlaps = calculateOverlaps(clonedGame);
+        var solutions = emulateClicks(overlaps, animalToSolve, clonedGame, List.of(), Integer.MAX_VALUE);
+        return new BestMoveInformation(overlaps.calculateProbability(animalToSolve), solutions);
+    }
+
     public static List<Solution> getBestSolutions(Animal animalToSolve, Game game) {
         var clonedGame = new Game(game, true);
         var overlaps = calculateOverlaps(clonedGame);
@@ -29,7 +38,7 @@ public class DiscoZooSolver {
 
     private static List<Solution> emulateClicks(Overlaps overlaps, Animal animalToSolve, Game game,
                                                 List<Coords> previousClicks, int smallestSolutionLength) {
-        var maxOverlapCount = overlaps.animalOverlapCounts().get(animalToSolve);
+        var maxOverlapCount = overlaps.animalMaxOverlapCounts().get(animalToSolve);
         if (maxOverlapCount == null || maxOverlapCount == 0) {
             return List.of(new Solution(previousClicks));
         } else if (maxOverlapCount == 1) {
