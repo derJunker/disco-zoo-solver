@@ -1,10 +1,13 @@
-package junker.disco.zoo.solver.board;
+package junker.disco.zoo.solver.board.util;
 
 import java.util.List;
 
+import junker.disco.zoo.solver.board.AnimalBoardInstance;
+import junker.disco.zoo.solver.board.Coords;
+import junker.disco.zoo.solver.board.Tile;
 import junker.disco.zoo.solver.model.animals.Animal;
 
-public class BoardService {
+public class BoardUtil {
     public static void placeAnimal(Tile[][] board, Animal animal, Coords coords) {
         var instance = new AnimalBoardInstance(animal, coords.x() + " " + coords.y(), coords);
         for (Coords coord : animal.pattern()) {

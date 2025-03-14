@@ -1,4 +1,4 @@
-package junker.disco.zoo.solver.board.probabiltiy;
+package junker.disco.zoo.solver.board.solve;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -13,12 +13,12 @@ import junker.disco.zoo.solver.board.Game;
 import junker.disco.zoo.solver.model.animals.Animal;
 import junker.disco.zoo.solver.model.solver.Overlaps;
 import junker.disco.zoo.solver.model.solver.Solution;
-import junker.disco.zoo.solver.util.ListUtil;
+import junker.disco.zoo.solver.board.util.ListUtil;
 
-import static junker.disco.zoo.solver.board.probabiltiy.NoOverlapSolutionFinder.solutionsForNoOverlap;
-import static junker.disco.zoo.solver.board.probabiltiy.OverlapCalulator.calculateOverlaps;
-import static junker.disco.zoo.solver.board.probabiltiy.OverlapCalulator.emulateOverlapClick;
-import static junker.disco.zoo.solver.board.probabiltiy.OverlapCalulator.findHighestOverlapCoords;
+import static junker.disco.zoo.solver.board.solve.NoOverlapSolutionFinder.solutionsForNoOverlap;
+import static junker.disco.zoo.solver.board.solve.OverlapCalulator.calculateOverlaps;
+import static junker.disco.zoo.solver.board.solve.OverlapCalulator.emulateOverlapClick;
+import static junker.disco.zoo.solver.board.solve.OverlapCalulator.findHighestOverlapCoords;
 
 public class DiscoZooSolver {
     public static List<Solution> getBestSolutions(Animal animalToSolve, Game game) {

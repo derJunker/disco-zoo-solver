@@ -1,4 +1,4 @@
-package junker.disco.zoo.solver.util;
+package junker.disco.zoo.solver.board.util;
 
 import java.util.ArrayList;
 import java.util.HashMap;

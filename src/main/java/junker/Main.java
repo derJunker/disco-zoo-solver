@@ -2,10 +2,9 @@ package junker;
 
 import java.util.stream.Collectors;
 
-import junker.disco.zoo.solver.board.probabiltiy.DiscoZooSolver;
+import junker.disco.zoo.solver.board.solve.DiscoZooSolver;
 import junker.disco.zoo.solver.model.animals.Animal;
 import junker.disco.zoo.solver.board.Game;
-import junker.disco.zoo.solver.model.solver.Solution;
 
 // TODO Optimizations:
 //  - ignore discobux

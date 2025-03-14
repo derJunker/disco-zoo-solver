@@ -1,4 +1,4 @@
-package junker.disco.zoo.solver.board.probabiltiy;
+package junker.disco.zoo.solver.board.util;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -6,13 +6,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import junker.disco.zoo.solver.model.animals.Animal;
-import junker.disco.zoo.solver.board.BoardService;
 import junker.disco.zoo.solver.board.Coords;
 import junker.disco.zoo.solver.board.Game;
 import junker.disco.zoo.solver.board.Tile;
+import junker.disco.zoo.solver.model.animals.Animal;
 
-public class PermutationService {
+public class PermutationUtil {
 
 
 
@@ -39,8 +38,8 @@ public class PermutationService {
         }
         var placements = getPossiblePlacements(board, animals.getFirst());
         for (var placement : placements) {
-            var newBoard = BoardService.cloneBoard(board);
-            BoardService.placeAnimal(newBoard, animals.getFirst(), placement);
+            var newBoard = BoardUtil.cloneBoard(board);
+            BoardUtil.placeAnimal(newBoard, animals.getFirst(), placement);
             var newAnimals = animals.subList(1, animals.size());
             if (newAnimals.isEmpty()) {
                 permutations.add(newBoard);

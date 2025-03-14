@@ -5,12 +5,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import junker.disco.zoo.solver.board.util.BoardUtil;
+import junker.disco.zoo.solver.board.util.PermutationUtil;
 import junker.disco.zoo.solver.model.animals.Animal;
-import junker.disco.zoo.solver.board.probabiltiy.PermutationService;
 
-import static junker.disco.zoo.solver.board.BoardService.cloneBoard;
-import static junker.disco.zoo.solver.board.probabiltiy.PermutationService.canClickAndPlace;
-import static junker.disco.zoo.solver.util.DoubleArrayUtil.arrayAsCoordinatesString;
+import static junker.disco.zoo.solver.board.util.BoardUtil.cloneBoard;
+import static junker.disco.zoo.solver.board.util.PermutationUtil.canClickAndPlace;
+import static junker.disco.zoo.solver.board.util.DoubleArrayUtil.arrayAsCoordinatesString;
 
 public class Game {
     public static final int BOARD_SIZE = 5;
@@ -55,7 +56,7 @@ public class Game {
     public static Game of(Tile[][] board) {
         Game game = new Game(new ArrayList<>());
         game.board = board;
-        game.containedAnimals.addAll(BoardService.getContainedAnimals(board));
+        game.containedAnimals.addAll(BoardUtil.getContainedAnimals(board));
         return game;
     }
 
@@ -125,9 +126,9 @@ public class Game {
 
     private void placeAnimalsRandomly(List<Animal> animalsToPlace) {
         for (Animal animal : animalsToPlace) {
-            Coords coords = PermutationService.getRandomPlacement(board, animal);
+            Coords coords = PermutationUtil.getRandomPlacement(board, animal);
             if (coords != null) {
-                BoardService.placeAnimal(board, animal, coords);
+                BoardUtil.placeAnimal(board, animal, coords);
             } else {
                 throw new IllegalArgumentException("Cannot place animal: " + animal.name());
             }

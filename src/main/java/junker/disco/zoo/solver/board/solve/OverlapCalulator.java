@@ -1,4 +1,4 @@
-package junker.disco.zoo.solver.board.probabiltiy;
+package junker.disco.zoo.solver.board.solve;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -9,9 +9,10 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import junker.disco.zoo.solver.board.AnimalBoardInstance;
-import junker.disco.zoo.solver.board.BoardService;
+import junker.disco.zoo.solver.board.util.BoardUtil;
 import junker.disco.zoo.solver.board.Coords;
 import junker.disco.zoo.solver.board.Game;
+import junker.disco.zoo.solver.board.util.PermutationUtil;
 import junker.disco.zoo.solver.board.Tile;
 import junker.disco.zoo.solver.model.animals.Animal;
 import junker.disco.zoo.solver.model.solver.Overlaps;
@@ -53,7 +54,7 @@ public class OverlapCalulator {
     public static Overlaps calculateOverlaps(Game game) {
         var board = game.getBoard();
         var containedAnimals = game.getContainedAnimals();
-        var permutations = PermutationService.calculateBoardPermutations(board, containedAnimals);
+        var permutations = PermutationUtil.calculateBoardPermutations(board, containedAnimals);
         return calculateOverlaps(permutations, board.length, board[0].length);
     }
 
@@ -137,7 +138,7 @@ public class OverlapCalulator {
                 boardHasSameAnimalOfDifferentOrigin(board, animalToPlace, potentialAnimalInstances));
         return newPermutations.stream().map(
                 permBoard -> {
-                    var clonedBoard = BoardService.cloneBoard(permBoard);
+                    var clonedBoard = BoardUtil.cloneBoard(permBoard);
                     var clickedTile = clonedBoard[coords.x()][coords.y()];
                     clickedTile.setRevealed(true);
                     clickedTile.setAnimalBoardInstance(null);

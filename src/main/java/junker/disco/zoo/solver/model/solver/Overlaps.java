@@ -7,7 +7,7 @@ import java.util.Set;
 import junker.disco.zoo.solver.board.AnimalBoardInstance;
 import junker.disco.zoo.solver.board.Tile;
 import junker.disco.zoo.solver.model.animals.Animal;
-import junker.disco.zoo.solver.util.DoubleArrayUtil;
+import junker.disco.zoo.solver.board.util.DoubleArrayUtil;
 
 public record Overlaps(
         List<AnimalBoardInstance>[][] overallOverlap,

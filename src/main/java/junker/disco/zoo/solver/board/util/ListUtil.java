@@ -1,13 +1,10 @@
-package junker.disco.zoo.solver.util;
+package junker.disco.zoo.solver.board.util;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import junker.disco.zoo.solver.board.Coords;
-import junker.disco.zoo.solver.board.probabiltiy.PermutationService;
 
 public class ListUtil {
     public static <T> List<T> putFirst(List<T> list, T element) {
@@ -50,7 +47,7 @@ public class ListUtil {
     public static <T> Set<List<T>> putFirstAndPermuteRest(List<T> list, T element) {
         var remainingList = new ArrayList<T>(list);
         remainingList.remove(element);
-        var remainingListPerms = PermutationService.getPermutationOfCollection(remainingList);
+        var remainingListPerms = PermutationUtil.getPermutationOfCollection(remainingList);
         remainingListPerms.forEach(perm -> perm.addFirst(element));
         return remainingListPerms;
     }
