@@ -44,6 +44,17 @@ public record Animal(
                 .toList();
     }
 
+
+    public static List<Animal> getAnimalsByNames(List<String> names) {
+        var res = ALL_ANIMALS.stream()
+                .filter(animal -> names.contains(animal.name()))
+                .toList();
+        if (res.size() != names.size()) {
+            throw new IllegalArgumentException("Not all animals found");
+        }
+        return res;
+    }
+
     public static void initAnimals() {
         ALL_ANIMALS.addAll(List.of(
 //            new Animal( "Discobux", Rarity.BUX, List.of(coords(0, 0)), Region.ANY),

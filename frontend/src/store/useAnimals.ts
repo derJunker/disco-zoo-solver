@@ -13,8 +13,16 @@ export const useAnimals = defineStore('animals', () => {
         return await resp.json();
     }
 
+    async function getAnimalsByNames(names: string[]): Promise<Animal[]> {
+        const resp = await api.fetchUrl("/animals/byName?names=" + names.join(","));
+        if (!resp.ok) {
+            throw new Error(`Error fetching animals: ${resp.statusText}`);
+        }
+        return await resp.json();
+    }
+
     function getAnimalPictureUrl(animal: Animal): string {
         return `/animals/${animal.name.toLowerCase()}.png`;
     }
-    return {getAnimalsOfRegion, getAnimalPictureUrl}
+    return {getAnimalsOfRegion, getAnimalPictureUrl, getAnimalsByNames}
 })

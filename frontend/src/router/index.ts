@@ -7,14 +7,19 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import(/* webpackChunkName: "about" */ '../views/ReconstructView.vue')
   },
   {
+    path: '/reconstruct/:region',
+    name: 'reconstruct-region',
+    component: () => import('../views/ReconstructView.vue')
+  },
+  {
+    path: '/reconstruct/:region/play',
+    name: 'reconstruct-play',
+    component: () => import('../views/ReconstructPlayView.vue')
+  },
+  {
     path: '/accuracy',
     name: 'accuracy',
     component: () => import(/* webpackChunkName: "about" */ '../views/AccuracyView.vue')
-  },
-  {
-    path: '/battle',
-    name: 'battle',
-    component: () => import(/* webpackChunkName: "about" */ '../views/BattleView.vue')
   },
   {
     path: '/stats',
@@ -29,7 +34,7 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
     name: 'home',
-    component: () => import(/* webpackChunkName: "about" */ '../views/AboutView.vue')
+    component: () => import(/* webpackChunkName: "about" */ '../views/HomeVue.vue')
   }
 ]
 

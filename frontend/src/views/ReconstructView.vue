@@ -1,98 +1,71 @@
 <template>
-  <div>
-    <div id="reconstruct-view-content">
-      <reconstruction-board
-          id="reconstruction-board" :selected-animals="selectedAnimals"
-          :selected-region="selectedRegion" :initialGame="game" :animalForHeatmap="animalForHeatmap"
-          :animalToPlace="animalToPlace"/>
-      <reconstruction-config
-          v-if="!game" id="reconstruction-config"
-          @selected-animals-changed="(val : Animal[]) => selectedAnimals = val"
-          @region-changed="(val : string) => selectedRegion = val"
-          @start="start" />
-      <reconstruction-play-config
-          v-if="game" id="reconstruction-play-config" :animals="selectedAnimals"
-          @animal-to-place-changed="updatePlaceAnimal"
-          @animal-for-heatmap-changed="updateHeatmapAnimal" />
-    </div>
+<div class="content">
+  <div class="menus">
+    <RegionSelect v-if="!$route.params.region" @region-select="onRegionSelect" class="dock-bottom"/>
+    <AnimalSelect v-else-if="$route.params.region" @animal-select="onAnimalSelect"
+                  :region="$route.params.region" class="dock-bottom"/>
   </div>
+  <MenuBar :on-first-button-click="onBack" :on-second-button-click="onPlay" second-button-name="play"
+           first-button-name="back" first-color-class="color-action-neutral-1"
+           second-color-class="color-action-neutral-2"
+  />
+</div>
 </template>
 <script lang="ts">
 import {defineComponent} from "vue";
-import ReconstructionBoard from "@/components/ReconstructionBoard.vue";
-import ReconstructionConfig from "@/components/ReconstructionConfig.vue";
+import RegionSelect from "@/components/RegionSelect.vue";
+import MenuBar from "@/components/MenuBar.vue";
+import AnimalSelect from "@/components/AnimalSelect.vue";
 import {Animal} from "@/types/Animal";
-import {useGame} from "@/store/useGame";
-import {Game} from "@/types/Game";
-import ReconstructionPlayConfig from "@/components/ReconstructionPlayConfig.vue";
+import router from "@/router";
 
-let gameStore = useGame();
 
 export default defineComponent({
-  components: {ReconstructionPlayConfig, ReconstructionConfig, ReconstructionBoard},
-  methods: {
-    async start() {
-      this.game = await gameStore.startReconstruct(this.selectedAnimals)
-    },
-
-    updateHeatmapAnimal(animal: Animal) {
-      this.animalForHeatmap = animal;
-    },
-
-    updatePlaceAnimal(animal: Animal) {
-      this.animalToPlace = animal;
-    }
-  },
-
+  name: "ReconstructView",
+  components: {AnimalSelect, MenuBar, RegionSelect},
   data() {
     return {
-      selectedAnimals: [] as Animal[],
-      selectedRegion: '' as string,
-      game: null as Game | null,
-      animalToPlace: null as Animal | null,
-      animalForHeatmap: null as Animal | null,
+      selectedAnimals: [] as Animal[]
     }
   },
+
+  methods: {
+    onRegionSelect(region: string) {
+      router.push({name: "reconstruct-region", params: {region}})
+    },
+
+    onAnimalSelect(animals: Animal[]) {
+      console.log("animal select")
+      console.log(animals)
+      this.selectedAnimals = animals;
+    },
+
+    onPlay() {
+      console.log("play")
+      console.log(this.selectedAnimals)
+      if (this.selectedAnimals.length === 0) {
+        return;
+      }
+      router.push({name: "reconstruct-play", query: {animals: this.selectedAnimals.map(animal => animal.name)}})
+    },
+
+    onBack() {
+      console.log("back")
+    },
+  }
 })
 </script>
 
 <style scoped>
-
-#reconstruct-view-content {
-  height: 100%;
+.content {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
-
-#reconstruct-view-content > #reconstruction-board {
-  width: 100%;
-  height: 100%;
+.menus {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: end;
 }
-
-#reconstruct-view-content > #reconstruction-config, #reconstruct-view-content > #reconstruction-play-config {
-  display: none;
-}
-
-@media (min-width: 900px) {
-  #reconstruct-view-content {
-    place-items: center;
-    display: grid;
-    grid-template-columns: 5fr 7fr 5fr;
-  }
-
-  #reconstruct-view-content > #reconstruction-board {
-    grid-column: 2;
-  }
-
-  #reconstruct-view-content > #reconstruction-config, #reconstruct-view-content > #reconstruction-play-config {
-    display: flex;
-    flex-direction: column;
-    margin-right: 2rem;
-    margin-left: 2rem;
-    min-height: fit-content;
-    align-self: end;
-  }
-}
-
-
-
-
 </style>
