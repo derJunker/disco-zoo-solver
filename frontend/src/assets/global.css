@@ -111,9 +111,13 @@ html, body, #app, #router-view {
 .btn {
     border-radius: var(--border-radius);
     padding: .4rem 0.75rem;
-    box-shadow:inset 0px 0px 0px var(--border-small) rgba(0, 0, 0, var(--border-dark-opacity)), var(--btn-shadow);
+    box-shadow:var(--btn-shadow-and-border);
     background: linear-gradient(to top, rgba(0, 0, 0, 0.275), rgba(0, 0, 0, 0));
     cursor: pointer;
+}
+
+.border-dark {
+    border: var(--border-medium) solid rgba(0, 0, 0, 0.5);
 }
 
 .dock-top {

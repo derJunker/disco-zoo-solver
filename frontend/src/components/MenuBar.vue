@@ -13,15 +13,7 @@ import {defineComponent} from 'vue'
 export default defineComponent({
   name: "MenuBar",
   props: {
-    firstButtonName: {
-      type: String,
-      required: true
-    },
     secondButtonName: {
-      type: String,
-      required: true
-    },
-    firstColorClass: {
       type: String,
       required: true
     },
@@ -29,14 +21,22 @@ export default defineComponent({
       type: String,
       required: true
     },
+    onSecondButtonClick: {
+      type: Function,
+      required: true
+    },
+    firstButtonName: {
+      type: String,
+      required: true
+    },
+    firstColorClass: {
+      type: String,
+      required: true
+    },
     onFirstButtonClick: {
       type: Function,
       required: true
     },
-    onSecondButtonClick: {
-      type: Function,
-      required: true
-    }
   }
 })
 </script>
