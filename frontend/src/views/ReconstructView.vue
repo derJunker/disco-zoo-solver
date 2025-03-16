@@ -1,5 +1,6 @@
 <template>
 <div class="content">
+  {{updateRegion($route.params.region)}}
   <div class="menus">
     <RegionSelect v-if="!$route.params.region" @region-select="onRegionSelect" class="dock-bottom"/>
     <AnimalSelect v-else @animal-select="onAnimalSelect"
@@ -40,10 +41,9 @@ export default defineComponent({
   name: "ReconstructView",
   components: {AnimalSelect, MenuBar, RegionSelect},
 
-
-
   methods: {
     onRegionSelect(region: string) {
+      this.updateRegion(region)
       router.push({name: "reconstruct-region", params: {region}})
     },
 
@@ -57,6 +57,14 @@ export default defineComponent({
     onBack() {
       console.log("back")
     },
+
+    // Function is a complete hack, bc for some reason i can't access $route.params in the script
+    // so i call it in the template to update the region and then return an empty string 👍
+    updateRegion(region: string) {
+      console.log("update region", region)
+      state.selectedRegion = region
+      return ""
+    }
   }
 })
 </script>
