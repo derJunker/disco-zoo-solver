@@ -1,6 +1,11 @@
-export function getHeatmapColor(value: number, min: number, max: number): string {
+export function getHeatmapColor(value: number, minVal: number, maxVal: number): string {
+
+    const adjustValue = 0.15
+
+    const lowerBound = minVal > 0 ? Math.min(adjustValue, minVal) : 0
+    const upperBound = maxVal < 1 ? Math.max(1-adjustValue, maxVal): 1
     // Ensure value is within range
-    const normalized = Math.max(0, Math.min(1, (value - min) / (max - min)));
+    const normalized = Math.max(lowerBound, Math.min(upperBound, (value - minVal) / (maxVal - minVal)));
 
     // Define color stops
     const colors = [
@@ -22,5 +27,5 @@ export function getHeatmapColor(value: number, min: number, max: number): string
         }
     }
 
-    return `rgb(0,255,0)`; // Fallback bright green
+    return "rgb(0,255,0)"; // Fallback bright green
 }

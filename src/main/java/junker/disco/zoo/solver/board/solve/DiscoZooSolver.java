@@ -40,7 +40,9 @@ public class DiscoZooSolver {
     private static List<Solution> getBestSolutions(Animal animalToSolve, Game game, Overlaps overlaps) {
         var clonedGame = new Game(game, true);
         var highestOverlapCoords = findHighestOverlapCoords(overlaps, animalToSolve);
-        if (highestOverlapCoords.size() == 1) {
+        if (highestOverlapCoords.isEmpty())
+            return List.of();
+        else if (highestOverlapCoords.size() == 1) {
             return List.of(new Solution(List.of(highestOverlapCoords.getFirst())));
         }
         return emulateClicks(overlaps, animalToSolve, clonedGame, List.of(), highestOverlapCoords, Integer.MAX_VALUE);
@@ -83,7 +85,7 @@ public class DiscoZooSolver {
             var worstSolutionLengthForDifferentAnimals = 0;
             var worstProbabilityForDifferentAnimals = 1.0d;
             for (var animalToPlace : placeableAnimals) {
-                var nextOverlaps = emulateOverlapClick(overlaps, animalToPlace, animalInstances, coords);
+                var nextOverlaps = emulateOverlapClick(overlaps, animalToPlace, animalInstances, coords, game);
                 var nextGame = new Game(game, true);
                 nextGame.setTile(coords.x(), coords.y(), true, animalToPlace);
 
@@ -168,7 +170,7 @@ public class DiscoZooSolver {
                 Animal animalToPlace = null;
                 if (placeableAnimals.size() == 1)
                     animalToPlace = placeableAnimals.iterator().next();
-                nextOverlaps = emulateOverlapClick(nextOverlaps, animalToPlace, animalInstances, click);
+                nextOverlaps = emulateOverlapClick(nextOverlaps, animalToPlace, animalInstances, click, nextGame);
                 nextGame = new Game(nextGame, true);
                 nextGame.setTile(click.x(), click.y(), true, animalToPlace);
             }

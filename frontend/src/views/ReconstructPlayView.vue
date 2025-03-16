@@ -45,7 +45,7 @@
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   gap: 3px;
-  padding: .4rem;
+  padding: 3px;
 }
 
 .tile {
@@ -147,8 +147,13 @@ export default defineComponent({
       const info = await solver.solve(this.game!, this.animalForHeatmap!)
       this.probabilities = info.probabilities
       this.bestClicks = info.bestClicks
-      this.maxProb = Math.max(...info.probabilities.flat())
-      this.minProb = Math.min(...info.probabilities.flat())
+      if (!info.probabilities) {
+        this.maxProb = 0
+        this.minProb = 0
+      } else {
+        this.maxProb = Math.max(...info.probabilities.flat())
+        this.minProb = Math.min(...info.probabilities.flat())
+      }
     },
 
     onBack() {

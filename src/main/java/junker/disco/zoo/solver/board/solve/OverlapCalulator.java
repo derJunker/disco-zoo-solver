@@ -42,26 +42,31 @@ public class OverlapCalulator {
     }
 
     public static Overlaps emulateOverlapClick(Overlaps current, Animal animalToPlace,
-                                               Set<AnimalBoardInstance> placeableAnimalInstances, Coords coords) {
+                                               Set<AnimalBoardInstance> placeableAnimalInstances, Coords coords,
+                                               Game game) {
         var placeableAnimalInstancesWithoutCurrent = placeableAnimalInstances.stream()
                 .filter(animalBoardInstance -> (animalBoardInstance == null && animalToPlace != null) || (animalBoardInstance != null && !animalBoardInstance.animal().equals(animalToPlace)))
                 .collect(Collectors.toSet());
 
         var newPermutations = getNewPermutations(current, placeableAnimalInstancesWithoutCurrent, coords, animalToPlace);
-        return calculateOverlaps(newPermutations, current.overallOverlap().length, current.overallOverlap()[0].length);
+        return calculateOverlaps(newPermutations, game);
     }
 
     public static Overlaps calculateOverlaps(Game game) {
         var board = game.getBoard();
         var containedAnimals = game.getContainedAnimals();
         var permutations = PermutationUtil.calculateBoardPermutations(board, containedAnimals);
-        return calculateOverlaps(permutations, board.length, board[0].length);
+        return calculateOverlaps(permutations, game);
     }
 
-    private static Overlaps calculateOverlaps(Set<Tile[][]> permutations, int boardWidth, int boardHeight) {
+    private static Overlaps calculateOverlaps(Set<Tile[][]> permutations, Game game) {
+        var board = game.getBoard();
+        final var boardWidth = board.length;
+        final var boardHeight = board[0].length;
+
         List<AnimalBoardInstance>[][] overallOverlap = new List[boardWidth][boardHeight];
         Map<Animal, Set<AnimalBoardInstance>[][]> animalOverlap = new java.util.HashMap<>();
-        setOverlaps(overallOverlap, animalOverlap, permutations, boardWidth, boardHeight);
+        setOverlaps(overallOverlap, animalOverlap, permutations, boardWidth, boardHeight, board);
 
         Map<Animal, Integer> animalMaxOverlaps = new java.util.HashMap<>();
         Map<Animal, Double[][]> animalOverlapProbabilities = new java.util.HashMap<>();
@@ -72,19 +77,21 @@ public class OverlapCalulator {
     }
 
     private static void setOverlaps(List<AnimalBoardInstance>[][] overallOverlap,
-                                    Map<Animal, Set<AnimalBoardInstance>[][]> animalOverlap, Set<Tile[][]> permutations
-            , int boardWidth, int boardHeight) {
+                                    Map<Animal, Set<AnimalBoardInstance>[][]> animalOverlap,
+                                    Set<Tile[][]> permutations, int boardWidth, int boardHeight,  Tile[][] board) {
         for (int x = 0; x < boardWidth; x++) {
             for (int y = 0; y < boardHeight; y++) {
                 var tileOverlaps = new ArrayList<AnimalBoardInstance>();
-                for (var permutation : permutations) {
-                    var animalBoardInstance = permutation[x][y].getAnimalBoardInstance();
-                    tileOverlaps.add(animalBoardInstance);
-                    if (animalBoardInstance != null) {
-                        var animal = animalBoardInstance.animal();
-                        createNewListArrayIfNotPresent(animal, animalOverlap, boardWidth, boardHeight);
-                        var animalOverlapForAnimal = animalOverlap.get(animal);
-                        animalOverlapForAnimal[x][y].add(animalBoardInstance);
+                if (!board[x][y].isRevealed()) {
+                    for (var permutation : permutations) {
+                        var animalBoardInstance = permutation[x][y].getAnimalBoardInstance();
+                        tileOverlaps.add(animalBoardInstance);
+                        if (animalBoardInstance != null) {
+                            var animal = animalBoardInstance.animal();
+                            createNewListArrayIfNotPresent(animal, animalOverlap, boardWidth, boardHeight);
+                            var animalOverlapForAnimal = animalOverlap.get(animal);
+                            animalOverlapForAnimal[x][y].add(animalBoardInstance);
+                        }
                     }
                 }
                 overallOverlap[x][y] = tileOverlaps;
