@@ -1,12 +1,13 @@
 <template>
-  <div class="reconstruct-play-view">
+  <div class="reconstruct-play-view" :style="getBackgroundStyle()">
     <div class="reconstruct-content">
       <AnimalDisplay :animals="animals" class="animal-display"/>
       <div class="board" :style="getBoardStyle()">
         <div v-for="coords in getCoords()" :key="coords" class="tile" :style="getTileStyle(coords)"
              :class="bestClicks.filter((click: Coords) => click.x === coords.x && click.y === coords.y).length > 0 ?
              'best-click' : ''" @click="clickedCoords(coords)" @contextmenu="rightClickedCoords($event)">
-
+          <AnimalSquare v-if="game && game.board[coords.x][coords.y].occupied && game.board[coords.x][coords.y].revealed"
+                        :animal="game.board[coords.x][coords.y].animalBoardInstance.animal" class="animal-square"/>
         </div>
       </div>
       <config-menu :style="!showConfig ? 'display: none;' : ''" class="config-menu dock-bottom" :animals="animals"
@@ -29,8 +30,6 @@
   flex: 1;
   display: grid;
   place-items: center;
-  max-width: min(90%, 400px);
-  margin: auto;
 }
 
 .animal-display {
@@ -40,7 +39,9 @@
 }
 
 .board {
-  margin-top: 8rem;
+  max-width: min(90%, 400px);
+  margin-inline: auto;
+  margin-top: 3rem;
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   gap: 3px;
@@ -48,6 +49,7 @@
 }
 
 .tile {
+  position: relative;
   display: grid;
   place-items: center;
   background-color: gray;
@@ -64,8 +66,16 @@
   position: absolute;
   bottom: 0;
   left: 0;
-  width: 100%;
+  right: 0;
+  margin: auto;
+  max-width: min(70%, 400px);
   z-index: 1;
+}
+
+.animal-square {
+  max-width: 100%;
+  max-height: 100%;
+  position: absolute;
 }
 
 </style>
@@ -85,6 +95,7 @@ import {useSolver} from "@/store/useSolver";
 import {getHeatmapColor} from "@/util/heatmap-colors";
 import ConfigMenu from "@/views/ConfigMenu.vue";
 import {sortAnimalsByRarity} from "@/util/animal-sorter";
+import AnimalSquare from "@/components/Basic/AnimalSquare.vue";
 
 
 const state = useState()
@@ -93,7 +104,7 @@ const solver = useSolver()
 
 export default defineComponent({
   name: "ReconstructPlayView",
-  components: {ConfigMenu, MenuBar, AnimalDisplay},
+  components: {AnimalSquare, ConfigMenu, MenuBar, AnimalDisplay},
   data() {
     return {
       animals: state.selectedAnimals as Animal[],
@@ -121,7 +132,7 @@ export default defineComponent({
 
   async created() {
     if (this.animals.length === 0) {
-      await router.push({name: "reconstruct-region", params: {region: state.selectedRegion}})
+      await router.push({name: "reconstruct-region", params: {region: state.selectedRegion?.toLowerCase()}})
       return
     }
     this.game = await gameStore.startReconstruct(this.animals)
@@ -141,7 +152,7 @@ export default defineComponent({
     },
 
     onBack() {
-      router.push({name: "reconstruct-region", params: {region: state.selectedRegion}})
+      router.push({name: "reconstruct-region", params: {region: state.selectedRegion?.toLowerCase()}})
     },
     onConfig() {
       this.showConfig = !this.showConfig
@@ -206,6 +217,14 @@ export default defineComponent({
         dark: "black", light: "white", primary: "gray"
       }
       return {backgroundColor: regionColors.dark}
+    },
+
+    getBackgroundStyle() {
+      if (!state.selectedRegion) {
+        return {}
+      }
+      const regionColors = getRegionColors(state.selectedRegion)
+      return {backgroundColor: regionColors.light}
     }
   }
 })

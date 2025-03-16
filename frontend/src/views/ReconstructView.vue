@@ -54,6 +54,7 @@ export default defineComponent({
 
   methods: {
     onRegionSelect(region: string) {
+      region = region.toLowerCase()
       this.updateRegion(region)
       router.push({name: "reconstruct-region", params: {region}})
     },
@@ -66,7 +67,12 @@ export default defineComponent({
     },
 
     onBack() {
-      router.push({name: "home"})
+      if (state.selectedRegion) {
+        router.push({name: "reconstruct"})
+        state.selectedRegion = null
+      }
+      else
+        router.push({name: "home"})
     },
 
     // Function is a complete hack, bc for some reason i can't access $route.params in the script

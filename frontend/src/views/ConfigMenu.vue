@@ -6,7 +6,7 @@
       <div class="animals">
         <div v-for="animal in animals" class="rounded animal" :key="animal" @click="onAnimalHeatmapSelected(animal)"
              :style="(heatMapAnimal === animal) ? 'border-color: var(--border-highlight)' : ''">
-          {{ animal.name }}
+          <animal-square :animal="animal" class="animal-square"/>
         </div>
       </div>
     </div>
@@ -15,7 +15,7 @@
       <div class="animals">
         <div v-for="animal in animals" class="rounded animal" :key="animal" @click="onAnimalPlaceSelected(animal)"
              :style="(placeAnimal === animal) ? 'border-color: var(--border-highlight)' : ''">
-          {{ animal.name }}
+          <animal-square :animal="animal" class="animal-square"/>
         </div>
       </div>
     </div>
@@ -44,14 +44,20 @@ h3 {
 .animal {
   border: var(--border-small) solid black;
 }
+
+.animal-square {
+  max-width: 3rem;
+}
 </style>
 
 <script lang="ts">
 import {defineComponent} from "vue";
 import {Animal} from "@/types/Animal";
+import AnimalSquare from "@/components/Basic/AnimalSquare.vue";
 
 export default defineComponent ({
   name: 'ConfigMenu',
+  components: {AnimalSquare},
   props: {
     animals: {
       type: Array as () => Animal[],
@@ -67,7 +73,7 @@ export default defineComponent ({
   },
 
   beforeMount() {
-    this.heatMapAnimal = this.animals[0]
+    this.heatMapAnimal = this.animals[this.animals.length - 1]
     console.log("created")
     this.$emit('animal-heatmap-select', this.heatMapAnimal)
   },

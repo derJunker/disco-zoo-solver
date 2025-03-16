@@ -131,7 +131,7 @@ public class Game {
             if (coords != null) {
                 BoardUtil.placeAnimal(board, animal, coords);
             } else {
-                throw new IllegalArgumentException("Cannot place animal: " + animal.name());
+                throw new IllegalArgumentException("Cannot place animal: " + animal.name() + " all: " + animalsToPlace);
             }
         }
     }

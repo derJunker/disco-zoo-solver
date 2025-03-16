@@ -6,7 +6,7 @@
         <div class="common-animals animals">
           <div v-for="animal in commonAnimals" class="rounded animal" :key="animal" @click="onAnimalSelected(animal)"
                :style="isHighlighted(animal) ? 'border-color: var(--border-highlight)' : ''">
-            <img :src="getAnimalPicture(animal)" :alt="animal.name" class="animal-picture"/>
+            <animal-square :animal="animal" class="animal-picture"/>
           </div>
         </div>
       </div>
@@ -15,7 +15,7 @@
         <div class="rare-animals animals">
           <div v-for="animal in rareAnimals" class="rounded animal" :key="animal" @click="onAnimalSelected(animal)"
                :style="isHighlighted(animal) ? 'border-color: var(--border-highlight)' : ''">
-            <img :src="getAnimalPicture(animal)" :alt="animal.name" class="animal-picture"/>
+            <animal-square :animal="animal" class="animal-picture"/>
           </div>
         </div>
       </div>
@@ -24,7 +24,7 @@
         <div class="epic-animals animals">
           <div class="rounded animal" @click="onAnimalSelected(epicAnimal)"
                :style="isHighlighted(epicAnimal) ? 'border-color: var(--border-highlight)' : ''">
-            <img :src="getAnimalPicture(epicAnimal)" :alt="epicAnimal.name" class="animal-picture"/>
+            <animal-square :animal="epicAnimal" class="animal-picture"/>
           </div>
         </div>
       </div>
@@ -33,7 +33,7 @@
         <div class="timeless-animals animals">
           <div class="rounded animal" @click="onAnimalSelected(timelessAnimal)"
                :style="isHighlighted(timelessAnimal) ? 'border-color: var(--border-highlight)' : ''">
-            <img :src="getAnimalPicture(timelessAnimal)" :alt="timelessAnimal.name" class="animal-picture"/>
+            <animal-square :animal="timelessAnimal" class="animal-picture"/>
           </div>
         </div>
       </div>
@@ -84,7 +84,7 @@ h3 {
 }
 
 .animal-picture {
-  width: 40px;
+  width: 3rem;
   max-width: 100%;
   max-height: 100%;
 }
@@ -96,12 +96,14 @@ import {defineComponent} from 'vue'
 import {useAnimals} from "@/store/useAnimals";
 import {Animal} from "@/types/Animal";
 import {useState} from "@/store/useState";
+import AnimalSquare from "@/components/Basic/AnimalSquare.vue";
 
 const animalStore = useAnimals()
 const state = useState()
 
 export default defineComponent({
   name: "AnimalSelect",
+  components: {AnimalSquare},
   data() {
     return {
       commonAnimals: [] as Animal[],

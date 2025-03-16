@@ -40,49 +40,53 @@
     --farm-dark: #497018;
     --farm-light: #628E34;
 
-    --outback-primary: #D7261C;
-    --outback-dark: #6F0F0D;
-    --outback-light: #A8221A;
+    --outback-primary: #da9e79;
+    --outback-dark: #76503d;
+    --outback-light: #c18f52;
 
-    --savanna-primary: #FF8913;
-    --savanna-dark: #A64F0A;
-    --savanna-light: #C06D0D;
+    --savanna-primary: #ddb553;
+    --savanna-dark: #745f34;
+    --savanna-light: #a38950;
 
-    --northern-primary: #00A6F0;
-    --northern-dark: #005C8A;
-    --northern-light: #0079B5;
+    --northern-primary: #73a156;
+    --northern-dark: #4a5f38;
+    --northern-light: #59852c;
 
-    --polar-primary: #A822CF;
-    --polar-dark: #6F0F7A;
-    --polar-light: #8A1E9A;
+    --polar-primary: #83c1c0;
+    --polar-dark: #4d6f70;
+    --polar-light: #8fc6cb;
 
-    --jungle-primary: #7CD61C;
-    --jungle-dark: #497F0D;
-    --jungle-light: #5E9E14;
+    --jungle-primary: #4b9f52;
+    --jungle-dark: #26532c;
+    --jungle-light: #235814;
 
-    --jurassic-primary: #E7650D;
-    --jurassic-dark: #A64F0A;
-    --jurassic-light: #C06D0D;
+    --jurassic-primary: #804b39;
+    --jurassic-dark: #442b24;
+    --jurassic-light: #2f0e05;
 
-    --ice-age-primary: #00A6F0;
-    --ice-age-dark: #005C8A;
-    --ice-age-light: #0079B5;
+    --ice-age-primary: #b1c7ba;
+    --ice-age-dark: #63726b;
+    --ice-age-light: #92a399;
 
-    --city-primary: #A822CF;
-    --city-dark: #6F0F7A;
-    --city-light: #8A1E9A;
+    --city-primary: #6f7072;
+    --city-dark: #3b3c3e;
+    --city-light: #515254;
 
-    --mountain-primary: #7CD61C;
-    --mountain-dark: #497F0D;
-    --mountain-light: #5E9E14;
+    --mountain-primary: #839b8e;
+    --mountain-dark: #495e5f;
+    --mountain-light: #6a7d7b;
 
-    --moon-primary: #E7650D;
-    --moon-dark: #A64F0A;
-    --moon-light: #C06D0D;
+    --moon-primary: #7d7573;
+    --moon-dark: #4a4643;
+    --moon-light: #64605d;
 
-    --mars-primary: #00A6F0;
-    --mars-dark: #005C8A;
-    --mars-light: #0079B5;
+    --mars-primary: #d47e6d;
+    --mars-dark: #693e37;
+    --mars-light: #9e6659;
+
+    --constellation-primary: #506874;
+    --constellation-dark: #253646;
+    --constellation-light: #516468;
 }
 
 /* CSS Reset */
