@@ -1,6 +1,7 @@
 <template>
  <div class="region-select rounded border-light">
-   <div v-for="region in regions" class="rounded" :key="region" @click="$emit('region-select', region)">
+   <div v-for="region in regions" class="rounded btn" :key="region" @click="$emit('region-select', region)"
+        :style="'background-color: ' + regionColors[region].primary">
      {{region}}
    </div>
  </div>
@@ -9,6 +10,7 @@
 <script lang="ts">
 import {defineComponent} from "vue";
 import {useRegions} from "@/store/useRegions";
+import {getRegionColors} from "@/util/region-colors";
 
 const regionStore = useRegions()
 
@@ -16,11 +18,15 @@ export default defineComponent({
   name: "RegionSelect",
   data() {
     return {
-      regions: [] as string[]
+      regions: [] as string[],
+      regionColors: {} as  {[key: string]: {dark: string, light: string, primary: string}}
     }
   },
   async created() {
     this.regions = await regionStore.getAllRegions()
+    for (const region of this.regions) {
+      this.regionColors[region] = getRegionColors(region)
+    }
   }
 })
 </script>

@@ -1,7 +1,7 @@
 <template>
   <div class="reconstruct-play-view" :style="getBackgroundStyle()">
     <div class="reconstruct-content">
-      <AnimalDisplay :animals="animals" class="animal-display"/>
+      <AnimalDisplay :animals="animals" :tracker="animalTracker" class="animal-display"/>
       <div class="board" :style="getBoardStyle()">
         <div v-for="coords in getCoords()" :key="coords" class="tile" :style="getTileStyle(coords)"
              :class="bestClicks.filter((click: Coords) => click.x === coords.x && click.y === coords.y).length > 0 ?
@@ -115,7 +115,8 @@ export default defineComponent({
       bestClicks: [] as Coords[],
       showConfig: false,
       animalToPlace: null as Animal | null,
-      animalForHeatmap: null as Animal | null
+      animalForHeatmap: null as Animal | null,
+      animalTracker: new Map<Animal, number>()
     }
   },
 
@@ -124,6 +125,7 @@ export default defineComponent({
       async handler(game: Game | null) {
         if (game) {
           this.updateProbabilityInfo()
+          this.updateTracker()
         }
       },
       immediate: true
@@ -155,6 +157,16 @@ export default defineComponent({
         this.minProb = Math.min(...info.probabilities.flat())
       }
     },
+
+    updateTracker() {
+      this.animalTracker = new Map()
+      for (const animal of this.animals) {
+        this.animalTracker.set(animal, this.game?.board.flat().filter(tile => tile.occupied &&
+            tile.animalBoardInstance.animal.name === animal.name).length || 0)
+      }
+      console.log(this.animalTracker)
+    },
+
 
     onBack() {
       router.push({name: "reconstruct-region", params: {region: state.selectedRegion?.toLowerCase()}})
