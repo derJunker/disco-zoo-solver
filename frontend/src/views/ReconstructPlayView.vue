@@ -5,10 +5,12 @@
       <div class="board" :style="getBoardStyle()">
         <div v-for="coords in getCoords()" :key="coords" class="tile" :style="getTileStyle(coords)"
              :class="bestClicks.filter((click: Coords) => click.x === coords.x && click.y === coords.y).length > 0 ?
-             'best-click' : ''">
+             'best-click' : ''" @click="clickedCoords(coords)" @contextmenu="rightClickedCoords($event)">
 
         </div>
       </div>
+      <config-menu :style="!showConfig ? 'display: none;' : ''" class="config-menu dock-bottom" :animals="animals"
+      @animal-heatmap-select="onHeatMapSelectChange" @animal-place-select="onPlaceSelectChange"/>
     </div>
     <menu-bar :on-first-button-click="onBack" first-color-class="color-action-neutral-1" first-button-name="back"
               :on-second-button-click="onConfig" second-color-class="color-action-neutral-2"
@@ -56,6 +58,16 @@
 .best-click {
   border: white solid 2px;
 }
+
+
+.config-menu {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1;
+}
+
 </style>
 
 <script lang="ts">
@@ -71,6 +83,8 @@ import {Coords} from "@/types/Coords";
 import {getRegionColors} from "@/util/region-colors";
 import {useSolver} from "@/store/useSolver";
 import {getHeatmapColor} from "@/util/heatmap-colors";
+import ConfigMenu from "@/views/ConfigMenu.vue";
+import {sortAnimalsByRarity} from "@/util/animal-sorter";
 
 
 const state = useState()
@@ -79,7 +93,7 @@ const solver = useSolver()
 
 export default defineComponent({
   name: "ReconstructPlayView",
-  components: {MenuBar, AnimalDisplay},
+  components: {ConfigMenu, MenuBar, AnimalDisplay},
   data() {
     return {
       animals: state.selectedAnimals as Animal[],
@@ -87,7 +101,10 @@ export default defineComponent({
       probabilities: null as number[][] | null,
       maxProb: null as number | null,
       minProb: null as number | null,
-      bestClicks: [] as Coords[]
+      bestClicks: [] as Coords[],
+      showConfig: false,
+      animalToPlace: null as Animal | null,
+      animalForHeatmap: null as Animal | null
     }
   },
 
@@ -95,12 +112,7 @@ export default defineComponent({
     game: {
       async handler(game: Game | null) {
         if (game) {
-          const info = await solver.solve(game, this.animals[0])
-          this.probabilities = info.probabilities
-          this.bestClicks = info.bestClicks
-          console.log(this.bestClicks)
-          this.maxProb = Math.max(...info.probabilities.flat())
-          this.minProb = Math.min(...info.probabilities.flat())
+          this.updateProbabilityInfo()
         }
       },
       immediate: true
@@ -113,14 +125,44 @@ export default defineComponent({
       return
     }
     this.game = await gameStore.startReconstruct(this.animals)
+    sortAnimalsByRarity(this.animals)
   },
 
   methods: {
+    async updateProbabilityInfo() {
+      if (!this.game || !this.animalForHeatmap) {
+        return
+      }
+      const info = await solver.solve(this.game!, this.animalForHeatmap!)
+      this.probabilities = info.probabilities
+      this.bestClicks = info.bestClicks
+      this.maxProb = Math.max(...info.probabilities.flat())
+      this.minProb = Math.min(...info.probabilities.flat())
+    },
+
     onBack() {
       router.push({name: "reconstruct-region", params: {region: state.selectedRegion}})
     },
     onConfig() {
-      console.log("config")
+      this.showConfig = !this.showConfig
+    },
+
+    onHeatMapSelectChange(animal: Animal) {
+      this.animalForHeatmap = animal
+      this.updateProbabilityInfo()
+    },
+
+    onPlaceSelectChange(animal: Animal) {
+      this.animalToPlace = animal
+    },
+
+    async clickedCoords(coords: Coords) {
+      this.game = await gameStore.clickReconstruct(this.game!, this.animalToPlace, coords)
+    },
+
+    async rightClickedCoords(event: MouseEvent, coords: Coords) {
+      event.preventDefault()
+      this.game = await gameStore.clickReconstruct(this.game!, null, coords)
     },
 
     getCoords() {

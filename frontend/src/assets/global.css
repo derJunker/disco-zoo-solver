@@ -120,6 +120,11 @@ html, body, #app, #router-view {
     border: var(--border-medium) solid rgba(0, 0, 0, 0.5);
 }
 
+.border-light {
+    border: var(--border-medium) solid rgba(255, 255, 255, 0.5);
+}
+
+
 .dock-top {
     border-top: none;
     border-top-left-radius: 0!important;

@@ -1,38 +1,40 @@
 <template>
-  <div class="animal-select">
-    <div class="common-animals-container">
-      <h3>Common:</h3>
-      <div class="common-animals animals">
-        <div v-for="animal in commonAnimals" class="rounded animal" :key="animal" @click="onAnimalSelected(animal)"
-        :style="isHighlighted(animal) ? 'border-color: var(--border-highlight)' : ''">
-          <img :src="getAnimalPicture(animal)" :alt="animal.name" class="animal-picture"/>
+  <div class="animal-select rounded border-light">
+    <div class="animal-select-container">
+      <div class="common-animals-container">
+        <h3>Common:</h3>
+        <div class="common-animals animals">
+          <div v-for="animal in commonAnimals" class="rounded animal" :key="animal" @click="onAnimalSelected(animal)"
+               :style="isHighlighted(animal) ? 'border-color: var(--border-highlight)' : ''">
+            <img :src="getAnimalPicture(animal)" :alt="animal.name" class="animal-picture"/>
+          </div>
         </div>
       </div>
-    </div>
-    <div class="rare-animals-container">
-      <h3>Rare:</h3>
-      <div class="rare-animals animals">
-        <div v-for="animal in rareAnimals" class="rounded animal" :key="animal" @click="onAnimalSelected(animal)"
-             :style="isHighlighted(animal) ? 'border-color: var(--border-highlight)' : ''">
-          <img :src="getAnimalPicture(animal)" :alt="animal.name" class="animal-picture"/>
+      <div class="rare-animals-container">
+        <h3>Rare:</h3>
+        <div class="rare-animals animals">
+          <div v-for="animal in rareAnimals" class="rounded animal" :key="animal" @click="onAnimalSelected(animal)"
+               :style="isHighlighted(animal) ? 'border-color: var(--border-highlight)' : ''">
+            <img :src="getAnimalPicture(animal)" :alt="animal.name" class="animal-picture"/>
+          </div>
         </div>
       </div>
-    </div>
-    <div v-if="epicAnimal" class="epic-animal-container">
-      <h3>Epic:</h3>
-      <div class="epic-animals animals">
-        <div class="rounded animal" @click="onAnimalSelected(epicAnimal)"
-             :style="isHighlighted(epicAnimal) ? 'border-color: var(--border-highlight)' : ''">
-          <img :src="getAnimalPicture(epicAnimal)" :alt="epicAnimal.name" class="animal-picture"/>
+      <div v-if="epicAnimal" class="epic-animal-container">
+        <h3>Epic:</h3>
+        <div class="epic-animals animals">
+          <div class="rounded animal" @click="onAnimalSelected(epicAnimal)"
+               :style="isHighlighted(epicAnimal) ? 'border-color: var(--border-highlight)' : ''">
+            <img :src="getAnimalPicture(epicAnimal)" :alt="epicAnimal.name" class="animal-picture"/>
+          </div>
         </div>
       </div>
-    </div>
-    <div v-if="timelessAnimal" class="timeless-animal-container">
-      <h3>Timeless:</h3>
-      <div class="timeless-animals animals">
-        <div class="rounded animal" @click="onAnimalSelected(timelessAnimal)"
-             :style="isHighlighted(timelessAnimal) ? 'border-color: var(--border-highlight)' : ''">
-          <img :src="getAnimalPicture(timelessAnimal)" :alt="timelessAnimal.name" class="animal-picture"/>
+      <div v-if="timelessAnimal" class="timeless-animal-container">
+        <h3>Timeless:</h3>
+        <div class="timeless-animals animals">
+          <div class="rounded animal" @click="onAnimalSelected(timelessAnimal)"
+               :style="isHighlighted(timelessAnimal) ? 'border-color: var(--border-highlight)' : ''">
+            <img :src="getAnimalPicture(timelessAnimal)" :alt="timelessAnimal.name" class="animal-picture"/>
+          </div>
         </div>
       </div>
     </div>
@@ -42,9 +44,14 @@
 <style scoped>
 
 .animal-select {
-  background-color: gray;
+  max-width: min(80%, 400px);
+  background-color: var(--wood-color-dark);
+  display: grid;
+  align-self: stretch;
+}
+
+.animal-select-container {
   padding: 1rem 0;
-  margin-inline: 1.5rem;
   user-select: none;
   display: grid;
   grid-template-columns: auto auto;

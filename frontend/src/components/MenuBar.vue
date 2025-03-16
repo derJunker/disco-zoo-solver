@@ -46,7 +46,7 @@ export default defineComponent({
   width: 100%;
   display: flex;
   justify-content: space-between;
-  background-color: var(--wood-color-dark)
+  background-color: var(--wood-color-light)
 }
 
 .menu-bar > span {

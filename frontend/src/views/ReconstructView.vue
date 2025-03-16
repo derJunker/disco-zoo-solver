@@ -1,10 +1,10 @@
 <template>
-<div class="content">
+<div class="reconstruction-view">
   {{updateRegion($route.params.region)}}
   <div class="menus">
     <RegionSelect v-if="!$route.params.region" @region-select="onRegionSelect" class="dock-bottom"/>
-    <AnimalSelect v-else @animal-select="onAnimalSelect"
-                  :region="$route.params.region" class="dock-bottom"/>
+    <AnimalSelect v-else
+                  :region="$route.params.region" class="dock-bottom animal-select"/>
   </div>
   <menu-bar :on-first-button-click="onBack" :on-second-button-click="onPlay" second-button-name="play"
            first-button-name="back" first-color-class="color-action-neutral-1"
@@ -14,16 +14,27 @@
 </template>
 
 <style scoped>
-.content {
+.reconstruction-view {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
 }
 .menus {
+  position: relative;
   flex: 1;
   display: flex;
   flex-direction: column;
   justify-content: end;
+}
+
+.animal-select {
+  position: absolute;
+  bottom: 0;
+  margin-inline: auto;
+  left: 0;
+  right: 0;
+  width: 100%;
+  z-index: 1;
 }
 </style>
 
@@ -55,13 +66,12 @@ export default defineComponent({
     },
 
     onBack() {
-      console.log("back")
+      router.push({name: "home"})
     },
 
     // Function is a complete hack, bc for some reason i can't access $route.params in the script
     // so i call it in the template to update the region and then return an empty string 👍
     updateRegion(region: string) {
-      console.log("update region", region)
       state.selectedRegion = region
       return ""
     }
