@@ -16,10 +16,11 @@ public enum Region {
     ICE_AGE("Ice Age", 7),
     CITY("City", 8),
     MOUNTAIN("Mountain", 9),
+    NOCTURNAL("Nocturnal", 10),
 
-    MOON("Moon", 10),
-
-    MARS("Mars", 11),
+    MOON("Moon", 15),
+    MARS("Mars", 16),
+    CONSTELLATION("Constellation", 17),
 
     ANY("Any", 100);
 

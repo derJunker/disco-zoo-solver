@@ -1,5 +1,5 @@
 <template>
- <div class="region-select rounded">
+ <div class="region-select rounded border-light">
    <div v-for="region in regions" class="rounded" :key="region" @click="$emit('region-select', region)">
      {{region}}
    </div>
@@ -27,7 +27,7 @@ export default defineComponent({
 
 <style scoped>
 .region-select {
-  background-color: gray;
+  background-color: var(--wood-color-dark);
   display: grid;
   place-items: center;
   gap: .3rem;
@@ -40,7 +40,7 @@ export default defineComponent({
 .region-select > div {
   text-align: center;
   background-color: #707070;
-  padding: .3rem;
+  padding: .5rem;
   min-width: 75%;
 }
 </style>
