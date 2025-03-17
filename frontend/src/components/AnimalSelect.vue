@@ -1,8 +1,9 @@
 <template>
-  <div class="animal-select rounded border-light">
+  <div class="animal-select wood-menu">
+    <h3> Select Animals -  {{region}}</h3>
     <div class="animal-select-container">
       <div class="common-animals-container">
-        <h3>Common:</h3>
+        <h4>Common:</h4>
         <div class="common-animals animals">
           <div v-for="animal in commonAnimals" class="rounded animal" :key="animal" @click="onAnimalSelected(animal)"
                :style="isHighlighted(animal) ? 'border-color: var(--border-highlight)' : ''">
@@ -11,7 +12,7 @@
         </div>
       </div>
       <div class="rare-animals-container">
-        <h3>Rare:</h3>
+        <h4>Rare:</h4>
         <div class="rare-animals animals">
           <div v-for="animal in rareAnimals" class="rounded animal" :key="animal" @click="onAnimalSelected(animal)"
                :style="isHighlighted(animal) ? 'border-color: var(--border-highlight)' : ''">
@@ -20,7 +21,7 @@
         </div>
       </div>
       <div v-if="epicAnimal" class="epic-animal-container">
-        <h3>Epic:</h3>
+        <h4>Epic:</h4>
         <div class="epic-animals animals">
           <div class="rounded animal" @click="onAnimalSelected(epicAnimal)"
                :style="isHighlighted(epicAnimal) ? 'border-color: var(--border-highlight)' : ''">
@@ -29,7 +30,7 @@
         </div>
       </div>
       <div v-if="timelessAnimal" class="timeless-animal-container">
-        <h3>Timeless:</h3>
+        <h4>Timeless:</h4>
         <div class="timeless-animals animals">
           <div class="rounded animal" @click="onAnimalSelected(timelessAnimal)"
                :style="isHighlighted(timelessAnimal) ? 'border-color: var(--border-highlight)' : ''">
@@ -44,8 +45,6 @@
 <style scoped>
 
 .animal-select {
-  max-width: min(80%, 400px);
-  background-color: var(--wood-color-dark);
   display: grid;
   align-self: stretch;
 }
@@ -59,7 +58,7 @@
   gap: .3rem;
 }
 
-h3 {
+h4 {
   margin-bottom: .5rem;
 }
 
@@ -80,7 +79,7 @@ h3 {
 }
 
 .animal {
-  border: var(--border-small) solid black;
+  border: var(--border-medium) solid rgba(0, 0, 0, var(--border-dark-opacity));
 }
 
 .animal-picture {

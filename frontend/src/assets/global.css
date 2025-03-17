@@ -14,13 +14,13 @@
 
     /* Border widths */
     --border-small: 2px;
-    --border-medium: 4px;
+    --border-medium: 3px;
     --border-large: 6px;
 
     --border-dark-opacity: 0.5;
     --border-light-opacity: 0.3;
 
-    --border-radius: 0.35rem;
+    --border-radius: 5px;
 
     --btn-shadow: 4px 4px 10px rgba(0, 0, 0, 0.2);
     --btn-shadow-and-border: inset 0px 0px 0px var(--border-small) rgba(0, 0, 0, var(--border-dark-opacity)), var(--btn-shadow);
@@ -112,6 +112,18 @@ html {
 
 html, body, #app, #router-view {
     height: 100%;
+}
+
+.wood-menu {
+    padding: .5rem .8rem;
+    background-color: var(--wood-color-dark);
+    border: var(--border-medium) solid rgba(255, 255, 255, 0.5);
+    border-radius: var(--border-radius);
+}
+
+.wood-menu > h3 {
+    text-align: center;
+    margin-bottom: 1rem;
 }
 
 

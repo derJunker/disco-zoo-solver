@@ -1,5 +1,5 @@
 <template>
-  <div class="config-menu rounded border-light">
+  <div class="config-menu wood-menu">
     <h3>Reconstruct - Config</h3>
     <div class="heatmap-config-container">
       <h4>Heatmap:</h4>
@@ -23,13 +23,8 @@
 </template>
 
 <style scoped>
-h3 {
-  text-align: center;
-  margin-bottom: 1rem;
-}
-.config-menu {
-  padding: 1rem;
-  background-color: var(--wood-color-dark);
+h4 {
+  margin-bottom: .5rem;
 }
 
 .place-animal-container {
@@ -42,7 +37,7 @@ h3 {
 }
 
 .animal {
-  border: var(--border-small) solid black;
+  border: var(--border-medium) solid rgba(0, 0, 0, var(--border-dark-opacity));
 }
 
 .animal-square {
@@ -74,7 +69,6 @@ export default defineComponent ({
 
   beforeMount() {
     this.heatMapAnimal = this.animals[this.animals.length - 1]
-    console.log("created")
     this.$emit('animal-heatmap-select', this.heatMapAnimal)
   },
 

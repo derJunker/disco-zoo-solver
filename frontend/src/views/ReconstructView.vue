@@ -2,7 +2,7 @@
 <div class="reconstruction-view">
   {{updateRegion($route.params.region)}}
   <div class="menus">
-    <RegionSelect v-if="!$route.params.region" @region-select="onRegionSelect" class="dock-bottom"/>
+    <RegionSelect v-if="!$route.params.region" @region-select="onRegionSelect" class="region-select dock-bottom"/>
     <AnimalSelect v-else
                   :region="$route.params.region" class="dock-bottom animal-select"/>
   </div>
@@ -27,14 +27,22 @@
   justify-content: end;
 }
 
-.animal-select {
+.animal-select, .region-select {
   position: absolute;
   bottom: 0;
   margin-inline: auto;
   left: 0;
   right: 0;
-  width: 100%;
   z-index: 1;
+}
+
+.animal-select {
+  max-width: min(80%, 400px);
+}
+
+.region-select {
+  max-width: min(90%, 700px);
+
 }
 </style>
 

@@ -5,7 +5,7 @@
       <div class="board" :style="getBoardStyle()">
         <div v-for="coords in getCoords()" :key="coords" class="tile" :style="getTileStyle(coords)"
              :class="bestClicks.filter((click: Coords) => click.x === coords.x && click.y === coords.y).length > 0 ?
-             'best-click' : ''" @click="clickedCoords(coords)" @contextmenu="rightClickedCoords($event)">
+             'best-click' : ''" @click="clickedCoords(coords)" @contextmenu="rightClickedCoords($event, coords)">
           <AnimalSquare v-if="game && game.board[coords.x][coords.y].occupied && game.board[coords.x][coords.y].revealed"
                         :animal="game.board[coords.x][coords.y].animalBoardInstance.animal" class="animal-square"/>
         </div>
@@ -164,7 +164,6 @@ export default defineComponent({
         this.animalTracker.set(animal, this.game?.board.flat().filter(tile => tile.occupied &&
             tile.animalBoardInstance.animal.name === animal.name).length || 0)
       }
-      console.log(this.animalTracker)
     },
 
 
