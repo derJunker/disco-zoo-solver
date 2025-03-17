@@ -1,8 +1,9 @@
 <template>
-  <span class="menu-bar">
-    <span :class="firstColorClass + ' btn dock-bottom dock-left'" @click="onFirstButtonClick">{{ firstButtonName
+  <span class="menu-bar wood-menu dock-bottom dock-left dock-left">
+    <span :class="firstColorClass + ' btn btn-gradient dock-bottom dock-left first'" @click="onFirstButtonClick">{{ firstButtonName
                                                                                              }}</span>
-    <span :class="secondColorClass + ' btn dock-bottom dock-right'" @click="onSecondButtonClick">{{ secondButtonName
+    <span :class="secondColorClass + ' btn btn-gradient dock-bottom dock-right second'" @click="onSecondButtonClick">{{
+        secondButtonName
                                                                                             }}</span>
   </span>
 </template>
@@ -46,10 +47,24 @@ export default defineComponent({
   width: 100%;
   display: flex;
   justify-content: space-between;
-  background-color: var(--wood-color-light)
+  background-color: var(--wood-color-light);
+  padding: 0;
+  position: relative;
+  height: 3rem;
 }
 
-.menu-bar > span {
+.first, .second {
   padding: 1rem;
+  z-index: 1;
+  bottom: -3px;
+  position: fixed;
+}
+
+.first {
+  left: -5px;
+}
+
+.second {
+  right: -5px;
 }
 </style>

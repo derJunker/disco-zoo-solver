@@ -117,7 +117,7 @@ html, body, #app, #router-view {
 .wood-menu {
     padding: .5rem .8rem;
     background-color: var(--wood-color-dark);
-    border: var(--border-medium) solid rgba(255, 255, 255, 0.5);
+    border: var(--border-large) solid rgba(255, 255, 255, var(--border-light-opacity));
     border-radius: var(--border-radius);
 }
 
@@ -129,11 +129,13 @@ html, body, #app, #router-view {
 
 
 .btn {
-    border-radius: var(--border-radius);
     padding: .4rem 0.75rem;
-    box-shadow:var(--btn-shadow-and-border);
-    background: linear-gradient(to top, rgba(0, 0, 0, 0.275), rgba(0, 0, 0, 0));
+    box-shadow:var(--btn-shadow);
     cursor: pointer;
+}
+
+.btn-gradient {
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.1) 45%, rgba(0, 0, 0, 0) 46%);
 }
 
 .border-dark {
@@ -210,3 +212,185 @@ html, body, #app, #router-view {
     background-color: var(--rarity-common);
 }
 
+.rounded,
+.rounded--wrapper, .btn {
+    clip-path: polygon(0px calc(100% - 4px),
+    2px calc(100% - 4px),
+    2px calc(100% - 2px),
+    4px calc(100% - 2px),
+    4px 100%,
+    calc(100% - 4px) 100%,
+    calc(100% - 4px) calc(100% - 2px),
+    calc(100% - 2px) calc(100% - 2px),
+    calc(100% - 2px) calc(100% - 4px),
+    100% calc(100% - 4px),
+    100% 4px,
+    calc(100% - 2px) 4px,
+    calc(100% - 2px) 2px,
+    calc(100% - 4px) 2px,
+    calc(100% - 4px) 0px,
+    4px 0px,
+    4px 2px,
+    2px 2px,
+    2px 4px,
+    0px 4px);
+    position: relative;
+}
+.rounded, .btn {
+    border: 2px solid transparent;
+}
+.rounded--wrapper {
+    width: fit-content;
+    height: fit-content;
+}
+.rounded--wrapper .rounded {
+    display: block;
+    clip-path: polygon(2px 4px,
+    4px 4px,
+    4px 2px,
+    calc(100% - 4px) 2px,
+    calc(100% - 4px) 4px,
+    calc(100% - 2px) 4px,
+    calc(100% - 2px) calc(100% - 4px),
+    calc(100% - 4px) calc(100% - 4px),
+    calc(100% - 4px) calc(100% - 2px),
+    4px calc(100% - 2px),
+    4px calc(100% - 4px),
+    2px calc(100% - 4px));
+}
+.rounded::after,
+.rounded--wrapper::after, .btn::after {
+    content: "";
+    position: absolute;
+    clip-path: polygon(0px calc(100% - 4px),
+    2px calc(100% - 4px),
+    2px calc(100% - 2px),
+    4px calc(100% - 2px),
+    4px 100%,
+    calc(100% - 4px) 100%,
+    calc(100% - 4px) calc(100% - 2px),
+    calc(100% - 2px) calc(100% - 2px),
+    calc(100% - 2px) calc(100% - 4px),
+    100% calc(100% - 4px),
+    100% 4px,
+    calc(100% - 2px) 4px,
+    calc(100% - 2px) 2px,
+    calc(100% - 4px) 2px,
+    calc(100% - 4px) 0px,
+    4px 0px,
+    4px 2px,
+    2px 2px,
+    2px 4px,
+    0px 4px,
+    0px 50%,
+    2px 50%,
+    2px 4px,
+    4px 4px,
+    4px 2px,
+    calc(100% - 4px) 2px,
+    calc(100% - 4px) 4px,
+    calc(100% - 2px) 4px,
+    calc(100% - 2px) calc(100% - 4px),
+    calc(100% - 4px) calc(100% - 4px),
+    calc(100% - 4px) calc(100% - 2px),
+    4px calc(100% - 2px),
+    4px calc(100% - 4px),
+    2px calc(100% - 4px),
+    2px 50%,
+    0px 50%);
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: block;
+    pointer-events: none;
+    background: rgba(0, 0, 0, var(--border-dark-opacity));
+}
+
+.btn::after {
+    background: rgba(0, 0, 0, var(--border-dark-opacity));
+}
+.rounded::after, .btn::after {
+    margin: -2px;
+}
+
+
+
+
+.btn {
+    clip-path: polygon(0px calc(100% - 4px),
+    2px calc(100% - 4px),
+    2px calc(100% - 2px),
+    4px calc(100% - 2px),
+    4px 100%,
+    calc(100% - 4px) 100%,
+    calc(100% - 4px) calc(100% - 2px),
+    calc(100% - 2px) calc(100% - 2px),
+    calc(100% - 2px) calc(100% - 4px),
+    100% calc(100% - 4px),
+    100% 4px,
+    calc(100% - 2px) 4px,
+    calc(100% - 2px) 2px,
+    calc(100% - 4px) 2px,
+    calc(100% - 4px) 0px,
+    4px 0px,
+    4px 2px,
+    2px 2px,
+    2px 4px,
+    0px 4px);
+    position: relative;
+}
+.btn {
+    border: 2px solid transparent;
+}
+.btn::before {
+    content: "";
+    position: absolute;
+    clip-path: polygon(0px calc(100% - 4px),
+    2px calc(100% - 4px),
+    2px calc(100% - 2px),
+    4px calc(100% - 2px),
+    4px 100%,
+    calc(100% - 4px) 100%,
+    calc(100% - 4px) calc(100% - 2px),
+    calc(100% - 2px) calc(100% - 2px),
+    calc(100% - 2px) calc(100% - 4px),
+    100% calc(100% - 4px),
+    100% 4px,
+    calc(100% - 2px) 4px,
+    calc(100% - 2px) 2px,
+    calc(100% - 4px) 2px,
+    calc(100% - 4px) 0px,
+    4px 0px,
+    4px 2px,
+    2px 2px,
+    2px 4px,
+    0px 4px,
+    0px 50%,
+    2px 50%,
+    2px 4px,
+    4px 4px,
+    4px 2px,
+    calc(100% - 4px) 2px,
+    calc(100% - 4px) 4px,
+    calc(100% - 2px) 4px,
+    calc(100% - 2px) calc(100% - 4px),
+    calc(100% - 4px) calc(100% - 4px),
+    calc(100% - 4px) calc(100% - 2px),
+    4px calc(100% - 2px),
+    4px calc(100% - 4px),
+    2px calc(100% - 4px),
+    2px 50%,
+    0px 50%);
+    top: 2px;
+    bottom: 2px;
+    left: 2px;
+    right: 2px;
+    display: block;
+    pointer-events: none;
+    background: rgba(255, 255, 255, 0.25);
+}
+
+.btn::before {
+    margin: -2px;
+}

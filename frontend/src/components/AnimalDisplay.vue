@@ -1,6 +1,6 @@
 <template>
   <div class="animal-display">
-    <div v-for="animal in animals" :key="animal.name" class="animal-container rounded dock-top border-dark"
+    <div v-for="animal in animals" :key="animal.name" class="animal-container dock-top border-dark"
          :style="'background-color: ' + calcRegionColors($route.params.region).dark + ';'">
       <img :src="getAnimalPicture(animal)" :alt="animal.name" class="animal-picture"/>
       <div class="animal-name">
@@ -29,6 +29,7 @@
   place-items: center;
   width: 8rem;
   min-height: 7rem;
+  border-radius: var(--border-radius);
 }
 
 .animal-picture {

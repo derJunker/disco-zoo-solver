@@ -1,5 +1,5 @@
 <template>
-  <span class="btn" @click="onClick" :class = "selected ? selectedColorClass : 'unselected'">
+  <span class="btn btn-gradient" @click="onClick" :class = "selected ? selectedColorClass : 'unselected'">
     {{ title }}
   </span>
 </template>
