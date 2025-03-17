@@ -5,7 +5,7 @@
       <div class="common-animals-container">
         <h4>Common:</h4>
         <div class="common-animals animals">
-          <div v-for="animal in commonAnimals" class="rounded animal" :key="animal" @click="onAnimalSelected(animal)"
+          <div v-for="animal in commonAnimals" class="animal" :key="animal" @click="onAnimalSelected(animal)"
                :style="isHighlighted(animal) ? 'border-color: var(--border-highlight)' : ''">
             <animal-square :animal="animal" class="animal-picture"/>
           </div>
@@ -14,7 +14,7 @@
       <div class="rare-animals-container">
         <h4>Rare:</h4>
         <div class="rare-animals animals">
-          <div v-for="animal in rareAnimals" class="rounded animal" :key="animal" @click="onAnimalSelected(animal)"
+          <div v-for="animal in rareAnimals" class="animal" :key="animal" @click="onAnimalSelected(animal)"
                :style="isHighlighted(animal) ? 'border-color: var(--border-highlight)' : ''">
             <animal-square :animal="animal" class="animal-picture"/>
           </div>
@@ -23,7 +23,7 @@
       <div v-if="epicAnimal" class="epic-animal-container">
         <h4>Epic:</h4>
         <div class="epic-animals animals">
-          <div class="rounded animal" @click="onAnimalSelected(epicAnimal)"
+          <div class="animal" @click="onAnimalSelected(epicAnimal)"
                :style="isHighlighted(epicAnimal) ? 'border-color: var(--border-highlight)' : ''">
             <animal-square :animal="epicAnimal" class="animal-picture"/>
           </div>
@@ -32,7 +32,7 @@
       <div v-if="timelessAnimal" class="timeless-animal-container">
         <h4>Timeless:</h4>
         <div class="timeless-animals animals">
-          <div class="rounded animal" @click="onAnimalSelected(timelessAnimal)"
+          <div class="animal" @click="onAnimalSelected(timelessAnimal)"
                :style="isHighlighted(timelessAnimal) ? 'border-color: var(--border-highlight)' : ''">
             <animal-square :animal="timelessAnimal" class="animal-picture"/>
           </div>
@@ -80,6 +80,7 @@ h4 {
 
 .animal {
   border: var(--border-medium) solid rgba(0, 0, 0, var(--border-dark-opacity));
+  border-radius: var(--border-radius);
 }
 
 .animal-picture {
@@ -100,15 +101,43 @@ import AnimalSquare from "@/components/Basic/AnimalSquare.vue";
 const animalStore = useAnimals()
 const state = useState()
 
+const loadingCommonAnimal: Animal = {
+  name: "",
+  rarity: "COMMON",
+  region: "Loading...",
+  pattern: []
+}
+
+const loadingRareAnimal: Animal = {
+  name: "",
+  rarity: "RARE",
+  region: "Loading...",
+  pattern: []
+}
+
+const loadingEpicAnimal: Animal = {
+  name: "",
+  rarity: "EPIC",
+  region: "Loading...",
+  pattern: []
+}
+
+const loadingTimelessAnimal: Animal = {
+  name: "",
+  rarity: "TIMELESS",
+  region: "Loading...",
+  pattern: []
+}
+
 export default defineComponent({
   name: "AnimalSelect",
   components: {AnimalSquare},
   data() {
     return {
-      commonAnimals: [] as Animal[],
-      rareAnimals: [] as Animal[],
-      epicAnimal: null as Animal | null,
-      timelessAnimal: null as Animal | null,
+      commonAnimals: [loadingCommonAnimal, loadingCommonAnimal, loadingCommonAnimal] as Animal[],
+      rareAnimals: [loadingRareAnimal, loadingCommonAnimal] as Animal[],
+      epicAnimal: loadingEpicAnimal as Animal | null,
+      timelessAnimal: loadingTimelessAnimal as Animal | null,
       selectedAnimals: [] as Animal[]
     }
   },
@@ -155,10 +184,6 @@ export default defineComponent({
 
     syncLocalSelectedAnimals() {
       this.selectedAnimals = state.selectedAnimals
-    },
-
-    getAnimalPicture(animal: Animal) {
-      return animalStore.getAnimalPictureUrl(animal)
     },
 
     isHighlighted(animal: Animal) {

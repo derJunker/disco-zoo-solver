@@ -5,6 +5,8 @@ export const useRegions = defineStore('regions', () => {
     const api = useApi();
     let cachedRegions: string[] | null = null;
 
+    const hardcodedRegions = ["Farm", "Outback", "Savanna", "Northern", "Polar", "Jungle", "Jurassic", "Ice Age", "City", "Mountain", "Nocturnal", "Moon", "Mars", "Constellation"];
+
     async function getAllRegions(allowAny = true): Promise<string[]> {
         let allRegions: string[] = []
         if (cachedRegions) {
@@ -24,5 +26,5 @@ export const useRegions = defineStore('regions', () => {
         return allRegions;
     }
 
-    return {getAllRegions}
+    return {getAllRegions, hardcodedRegions}
 })

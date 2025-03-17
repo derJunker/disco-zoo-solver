@@ -1,7 +1,8 @@
 <template>
   <div class="reconstruct-play-view" :style="getBackgroundStyle()">
     <div class="reconstruct-content">
-      <AnimalDisplay :animals="animals" :tracker="animalTracker" class="animal-display"/>
+      <AnimalDisplay :animals="animals" :tracker="animalTracker" class="animal-display"
+                     @animal-click="onPlaceSelectChange" :animal-to-place="animalToPlace"/>
       <div class="board" :style="getBoardStyle()">
         <div v-for="coords in getCoords()" :key="coords" class="tile" :style="getTileStyle(coords)"
              :class="bestClicks.filter((click: Coords) => click.x === coords.x && click.y === coords.y).length > 0 ?
@@ -11,6 +12,7 @@
         </div>
       </div>
       <config-menu :style="!showConfig ? 'display: none;' : ''" class="config-menu dock-bottom" :animals="animals"
+                   :heat-map-animal="animalForHeatmap" :place-animal="animalToPlace"
       @animal-heatmap-select="onHeatMapSelectChange" @animal-place-select="onPlaceSelectChange"/>
     </div>
     <menu-bar :on-first-button-click="onBack" first-color-class="color-action-neutral-1" first-button-name="back"
@@ -139,6 +141,9 @@ export default defineComponent({
     }
     this.game = await gameStore.startReconstruct(this.animals)
     sortAnimalsByRarity(this.animals)
+
+    this.animalForHeatmap = this.animals[this.animals.length - 1]
+    this.animalToPlace = null
   },
 
   methods: {
@@ -179,17 +184,37 @@ export default defineComponent({
       this.updateProbabilityInfo()
     },
 
-    onPlaceSelectChange(animal: Animal) {
+    onPlaceSelectChange(animal: Animal | null) {
+      if (this.animalToPlace === animal) {
+        animal = null
+      }
       this.animalToPlace = animal
     },
 
     async clickedCoords(coords: Coords) {
-      this.game = await gameStore.clickReconstruct(this.game!, this.animalToPlace, coords)
+      let newGame = await gameStore.clickReconstruct(this.game!, this.animalToPlace, coords)
+      this.updateGame(newGame)
     },
 
     async rightClickedCoords(event: MouseEvent, coords: Coords) {
       event.preventDefault()
-      this.game = await gameStore.clickReconstruct(this.game!, null, coords)
+      let newGame = await gameStore.clickReconstruct(this.game!, null, coords)
+      this.updateGame(newGame)
+    },
+
+    updateGame(newGame: Game) {
+      if (JSON.stringify(this.game) !== JSON.stringify(newGame)) {
+        this.game = newGame
+        if (this.game.completelyRevealedAnimals.filter(animal => animal.name === this.animalForHeatmap?.name).length > 0) {
+          if (this.game.notCompletelyRevealedAnimalsWithoutBux.length > 0)
+            this.animalForHeatmap = this.game.notCompletelyRevealedAnimalsWithoutBux[0]
+          else
+            this.animalForHeatmap = null
+        }
+        if (this.game.completelyRevealedAnimals.filter(animal => animal.name === this.animalToPlace?.name).length > 0)
+          this.animalToPlace = null
+
+      }
     },
 
     getCoords() {
@@ -209,7 +234,6 @@ export default defineComponent({
       const tile = this.game.board[coords.x][coords.y]
       if (tile.revealed) {
         if (tile.occupied) {
-          const animalRarity = tile.animalBoardInstance.animal.rarity
           return {}
         } else {
           return {backgroundColor: "rgba(0,0,0,0.5)"}

@@ -4,8 +4,8 @@
     <div class="heatmap-config-container">
       <h4>Heatmap:</h4>
       <div class="animals">
-        <div v-for="animal in animals" class="rounded animal" :key="animal" @click="onAnimalHeatmapSelected(animal)"
-             :style="(heatMapAnimal === animal) ? 'border-color: var(--border-highlight)' : ''">
+        <div v-for="animal in animals" class="animal" :key="animal" @click="onAnimalHeatmapSelected(animal)"
+             :style="(heatMapAnimal?.name === animal.name) ? 'border-color: var(--border-highlight)' : ''">
           <animal-square :animal="animal" class="animal-square"/>
         </div>
       </div>
@@ -13,8 +13,8 @@
     <div class="place-animal-container">
       <h4>Animal to Place:</h4>
       <div class="animals">
-        <div v-for="animal in animals" class="rounded animal" :key="animal" @click="onAnimalPlaceSelected(animal)"
-             :style="(placeAnimal === animal) ? 'border-color: var(--border-highlight)' : ''">
+        <div v-for="animal in animals" class="animal" :key="animal" @click="onAnimalPlaceSelected(animal)"
+             :style="(placeAnimal?.name === animal.name) ? 'border-color: var(--border-highlight)' : ''">
           <animal-square :animal="animal" class="animal-square"/>
         </div>
       </div>
@@ -38,6 +38,7 @@ h4 {
 
 .animal {
   border: var(--border-medium) solid rgba(0, 0, 0, var(--border-dark-opacity));
+  border-radius: var(--border-radius);
 }
 
 .animal-square {
@@ -57,32 +58,31 @@ export default defineComponent ({
     animals: {
       type: Array as () => Animal[],
       required: true
+    },
+    heatMapAnimal: {
+      type: Object as () => Animal | null,
+      required: false,
+      default: null
+    },
+    placeAnimal: {
+      type: Object as () => Animal | null,
+      required: false,
+      default: null
     }
   },
 
   data() {
     return {
-      heatMapAnimal: null as Animal | null,
-      placeAnimal: null as Animal | null
     }
   },
 
-  beforeMount() {
-    this.heatMapAnimal = this.animals[this.animals.length - 1]
-    this.$emit('animal-heatmap-select', this.heatMapAnimal)
-  },
 
   methods: {
     onAnimalHeatmapSelected(animal: Animal) {
-      this.heatMapAnimal = animal
       this.$emit('animal-heatmap-select', animal)
     },
 
     onAnimalPlaceSelected(animal: Animal | null) {
-      if (this.placeAnimal === animal) {
-        animal = null
-      }
-      this.placeAnimal = animal
       this.$emit('animal-place-select', animal)
     },
   }

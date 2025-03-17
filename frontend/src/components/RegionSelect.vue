@@ -26,10 +26,20 @@ export default defineComponent({
     }
   },
   async created() {
-    this.regions = await regionStore.getAllRegions()
+    this.regions = regionStore.hardcodedRegions
+    regionStore.getAllRegions().then(list => {
+      if (JSON.stringify(this.regions) !== JSON.stringify(list)) {
+        this.regions = list;
+        for (const region of this.regions) {
+          this.regionColors[region] = getRegionColors(region);
+        }
+      }
+    })
+    console.log(this.regions)
     for (const region of this.regions) {
       this.regionColors[region] = getRegionColors(region)
     }
+
   }
 })
 </script>

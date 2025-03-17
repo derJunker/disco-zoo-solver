@@ -3,6 +3,8 @@ import {Animal} from "@/types/Animal";
 export interface Game {
     board: Tile[][],
     containedAnimals: Animal[],
+    completelyRevealedAnimals: Animal[],
+    notCompletelyRevealedAnimalsWithoutBux: Animal[]
 }
 
 export interface Tile {

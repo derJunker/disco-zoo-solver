@@ -1,8 +1,10 @@
 <template>
   <div class="animal-display">
     <div v-for="animal in animals" :key="animal.name" class="animal-container dock-top border-dark"
-         :style="'background-color: ' + calcRegionColors($route.params.region).dark + ';'">
-      <img :src="getAnimalPicture(animal)" :alt="animal.name" class="animal-picture"/>
+         :class="animalToPlace?.name === animal.name ? 'highlighted' : ''"
+         :style="'background-color: ' + calcRegionColors($route.params.region).dark + ';'"
+         @click="$emit('animal-click', animal)">
+      <img :src="getAnimalPicture(animal)" :alt="animal.name" class="animal-picture" rel="preload"/>
       <div class="animal-name">
         {{animal.name}}
       </div>
@@ -22,6 +24,10 @@
   gap: .3rem;
   justify-content: center;
   position: relative;
+}
+
+.highlighted {
+  border-color: white;
 }
 
 .animal-container {
@@ -82,6 +88,11 @@ export default defineComponent({
     tracker: {
       type: Object as () => Map<Animal, number>,
       required: true
+    },
+    animalToPlace: {
+      type: Object as () => Animal | null,
+      required: false,
+      default: null
     }
   },
 

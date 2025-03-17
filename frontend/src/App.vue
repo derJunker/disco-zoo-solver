@@ -8,9 +8,6 @@
 export default {
   name: 'App',
   methods: {
-    clickedLogo() {
-      this.$router.push('/');
-    }
   }
 }
 </script>

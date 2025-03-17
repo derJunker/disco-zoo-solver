@@ -1,6 +1,6 @@
 <template>
  <div class="animal-square" :style="getStyle()">
-    <img :src="getAnimalPictureUrl(animal)" :alt="animal.name"/>
+    <img :src="getAnimalPictureUrl(animal)" :alt="animal.name" rel="preload"/>
  </div>
 </template>
 
@@ -41,6 +41,8 @@ export default defineComponent({
       }
     },
     getAnimalPictureUrl(animal: Animal) {
+      if (animal.name.length == 0)
+        return ""
       return animalStore.getAnimalPictureUrl(animal)
     }
   }
