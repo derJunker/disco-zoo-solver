@@ -48,9 +48,9 @@
 
 <script lang="ts">
 import {defineComponent} from "vue";
-import RegionSelect from "@/components/RegionSelect.vue";
+import RegionSelect from "@/components/Overlays/RegionSelect.vue";
 import MenuBar from "@/components/MenuBar.vue";
-import AnimalSelect from "@/components/AnimalSelect.vue";
+import AnimalSelect from "@/components/Overlays/AnimalSelect.vue";
 import router from "@/router";
 import {useState} from "@/store/useState";
 

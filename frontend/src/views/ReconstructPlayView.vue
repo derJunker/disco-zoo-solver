@@ -9,7 +9,7 @@
              'best-click' : ''" @click="clickedCoords(coords)" @contextmenu="rightClickedCoords($event, coords)">
           <AnimalSquare v-if="game && game.board[coords.x][coords.y].occupied && game.board[coords.x][coords.y].revealed"
                         :animal="game.board[coords.x][coords.y].animalBoardInstance.animal" class="animal-square"/>
-<!--          <div v-else-if="game && probabilities">{{probabilities[coords.x][coords.y].toFixed(3)}}</div>-->
+<!--          <div style="user-select: none;" v-else-if="game && probabilities">{{probabilities[coords.x][coords.y].toFixed(3)}}</div>-->
         </div>
       </div>
       <config-menu :style="!showConfig ? 'display: none;' : ''" class="config-menu dock-bottom dock-bottom-shadow" :animals="animals"
@@ -17,8 +17,8 @@
       @animal-heatmap-select="onHeatMapSelectChange" @animal-place-select="onPlaceSelectChange"/>
     </div>
     <menu-bar :on-first-button-click="onBack" first-color-class="color-action-neutral-1" first-button-name="back"
-              :on-second-button-click="onConfig" second-color-class="color-action-neutral-2"
-              second-button-name="config"/>
+              :on-second-button-click="onConfig" :second-color-class="getConfigMenuColorClass()"
+              :second-button-name="getConfigMenuName()"/>
   </div>
 </template>
 
@@ -281,6 +281,14 @@ export default defineComponent({
       }
       const regionColors = getRegionColors(state.selectedRegion)
       return {backgroundColor: regionColors.light}
+    },
+
+    getConfigMenuName() {
+      return this.showConfig ? "close" : "config"
+    },
+
+    getConfigMenuColorClass() {
+      return this.showConfig ? "color-action-bad" : "color-action-neutral-2"
     }
   }
 })

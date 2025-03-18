@@ -6,8 +6,11 @@
   </div>
 </template>
 <style scoped>
-* {
-  margin: 1rem;
+.about {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
 }
 .btn {
   padding-top: 0.7rem;

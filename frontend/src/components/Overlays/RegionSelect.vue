@@ -35,7 +35,6 @@ export default defineComponent({
         }
       }
     })
-    console.log(this.regions)
     for (const region of this.regions) {
       this.regionColors[region] = getRegionColors(region)
     }
