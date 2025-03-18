@@ -2,9 +2,9 @@
 <div class="reconstruction-view">
   {{updateRegion($route.params.region)}}
   <div class="menus">
-    <RegionSelect v-if="!$route.params.region" @region-select="onRegionSelect" class="region-select dock-bottom"/>
+    <RegionSelect v-if="!$route.params.region" @region-select="onRegionSelect" class="region-select dock-bottom dock-bottom-shadow"/>
     <AnimalSelect v-else
-                  :region="$route.params.region" class="dock-bottom animal-select"/>
+                  :region="$route.params.region" class="dock-bottom dock-bottom-shadow animal-select"/>
   </div>
   <menu-bar :on-first-button-click="onBack" :on-second-button-click="onPlay" second-button-name="play"
            first-button-name="back" first-color-class="color-action-neutral-1"

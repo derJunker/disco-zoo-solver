@@ -11,7 +11,7 @@
                         :animal="game.board[coords.x][coords.y].animalBoardInstance.animal" class="animal-square"/>
         </div>
       </div>
-      <config-menu :style="!showConfig ? 'display: none;' : ''" class="config-menu dock-bottom" :animals="animals"
+      <config-menu :style="!showConfig ? 'display: none;' : ''" class="config-menu dock-bottom dock-bottom-shadow" :animals="animals"
                    :heat-map-animal="animalForHeatmap" :place-animal="animalToPlace"
       @animal-heatmap-select="onHeatMapSelectChange" @animal-place-select="onPlaceSelectChange"/>
     </div>

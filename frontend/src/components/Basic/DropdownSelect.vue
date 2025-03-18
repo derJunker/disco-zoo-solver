@@ -1,5 +1,5 @@
 <template>
-  <span :class="'dropdown btn btn-gradient btn-action-neutral-2 ' + (isOpen? 'dock-bottom' : '')" @click="isOpen =
+  <span :class="'dropdown btn btn-gradient btn-action-neutral-2 ' + (isOpen? 'dock-bottom dock-bottom-shadow' : '')" @click="isOpen =
   !isOpen"
        :style="'min-width:'  +
   getLongestItemSize()/1.2 + 'rem'"
