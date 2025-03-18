@@ -125,6 +125,7 @@ public class Game {
     }
 
 
+    // TODO is flawed. look at lynx, chamaeleon and corvus
     private void placeAnimalsRandomly(List<Animal> animalsToPlace) {
         for (Animal animal : animalsToPlace) {
             Coords coords = PermutationUtil.getRandomPlacement(board, animal);

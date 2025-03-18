@@ -27,7 +27,8 @@
 
 
     /* Highlight color */
-    --highlight-color: #ffcc00;
+    --animal-highlight-color: #ee47fa;
+    --animal-highlight-color-dark: #9912a2;
 
     /* Rarity colors */
     --rarity-common: #7FFF6C;
@@ -220,7 +221,7 @@ html, body, #app, #router-view {
 }
 
 .rounded,
-.rounded--wrapper, .btn {
+.rounded--wrapper, .btn, .animal-square {
     clip-path: polygon(0px calc(100% - 4px),
     2px calc(100% - 4px),
     2px calc(100% - 2px),
@@ -243,7 +244,7 @@ html, body, #app, #router-view {
     0px 4px);
     position: relative;
 }
-.rounded, .btn {
+.rounded, .btn, .animal-square {
     border: 2px solid transparent;
 }
 .rounded--wrapper {
@@ -266,7 +267,7 @@ html, body, #app, #router-view {
     2px calc(100% - 4px));
 }
 .rounded::after,
-.rounded--wrapper::after, .btn::after {
+.rounded--wrapper::after, .btn::after, .animal-square::after {
     content: "";
     position: absolute;
     clip-path: polygon(0px calc(100% - 4px),
@@ -314,43 +315,17 @@ html, body, #app, #router-view {
     background: rgba(0, 0, 0, var(--border-dark-opacity));
 }
 
+.animal-square::after {
+    background: rgba(255, 255, 255, var(--border-dark-opacity));
+}
+
 .btn::after {
     background: rgba(0, 0, 0, var(--border-dark-opacity));
 }
-.rounded::after, .btn::after {
+.rounded::after, .btn::after, .animal-square::after {
     margin: -2px;
 }
-
-
-
-
-.btn {
-    clip-path: polygon(0px calc(100% - 4px),
-    2px calc(100% - 4px),
-    2px calc(100% - 2px),
-    4px calc(100% - 2px),
-    4px 100%,
-    calc(100% - 4px) 100%,
-    calc(100% - 4px) calc(100% - 2px),
-    calc(100% - 2px) calc(100% - 2px),
-    calc(100% - 2px) calc(100% - 4px),
-    100% calc(100% - 4px),
-    100% 4px,
-    calc(100% - 2px) 4px,
-    calc(100% - 2px) 2px,
-    calc(100% - 4px) 2px,
-    calc(100% - 4px) 0px,
-    4px 0px,
-    4px 2px,
-    2px 2px,
-    2px 4px,
-    0px 4px);
-    position: relative;
-}
-.btn {
-    border: 2px solid transparent;
-}
-.btn::before {
+.btn::before, .animal-square::before {
     content: "";
     position: absolute;
     clip-path: polygon(0px calc(100% - 4px),
@@ -397,7 +372,19 @@ html, body, #app, #router-view {
     pointer-events: none;
     background: rgba(255, 255, 255, 0.25);
 }
-
-.btn::before {
+.btn::before, .animal-square::before {
     margin: -2px;
+}
+
+
+.animal-square::before {
+    background: rgba(0, 0, 0, 0.3);
+}
+
+.animal-highlighted::after {
+    background: var(--animal-highlight-color);
+}
+
+.animal-highlighted::before {
+    background: var(--animal-highlight-color-dark);
 }

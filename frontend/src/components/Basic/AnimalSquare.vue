@@ -9,6 +9,7 @@
   aspect-ratio: 1;
   display: grid;
   place-items: center;
+  padding: 6px;
 }
 img {
   max-width: 100%;

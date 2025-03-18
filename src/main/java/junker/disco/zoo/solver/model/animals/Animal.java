@@ -218,7 +218,7 @@ public record Animal(
                     Region.CONSTELLATION),
             new Animal("Capricornus", Rarity.RARE,  List.of(coords(0, 0), coords(2, 1), coords(3, 0)),
                     Region.CONSTELLATION),
-            new Animal("Pegasus", Rarity.EPIC,  List.of(coords(0,0), coords(-2, -2)), Region.CONSTELLATION),
+            new Animal("Pegasus", Rarity.EPIC,  List.of(coords(0,0), coords(2, -2)), Region.CONSTELLATION),
             new Animal("Horologium", Rarity.TIMELESS,  List.of(coords(0, 0), coords(2, 1), coords(2, 2)),
                     Region.CONSTELLATION)
         ));

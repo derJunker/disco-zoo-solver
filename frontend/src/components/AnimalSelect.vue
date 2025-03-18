@@ -5,36 +5,32 @@
       <div class="common-animals-container">
         <h4>Common:</h4>
         <div class="common-animals animals">
-          <div v-for="animal in commonAnimals" class="animal" :key="animal" @click="onAnimalSelected(animal)"
-               :style="isHighlighted(animal) ? 'border-color: var(--border-highlight)' : ''">
-            <animal-square :animal="animal" class="animal-picture"/>
+          <div v-for="animal in commonAnimals" class="animal" :key="animal" @click="onAnimalSelected(animal)">
+            <animal-square :animal="animal" class="animal-picture" :class="isHighlighted(animal) ? 'animal-highlighted' : ''"/>
           </div>
         </div>
       </div>
       <div class="rare-animals-container">
         <h4>Rare:</h4>
         <div class="rare-animals animals">
-          <div v-for="animal in rareAnimals" class="animal" :key="animal" @click="onAnimalSelected(animal)"
-               :style="isHighlighted(animal) ? 'border-color: var(--border-highlight)' : ''">
-            <animal-square :animal="animal" class="animal-picture"/>
+          <div v-for="animal in rareAnimals" class="animal" :key="animal" @click="onAnimalSelected(animal)">
+            <animal-square :animal="animal" class="animal-picture" :class="isHighlighted(animal) ? 'animal-highlighted' : ''"/>
           </div>
         </div>
       </div>
       <div v-if="epicAnimal" class="epic-animal-container">
         <h4>Epic:</h4>
         <div class="epic-animals animals">
-          <div class="animal" @click="onAnimalSelected(epicAnimal)"
-               :style="isHighlighted(epicAnimal) ? 'border-color: var(--border-highlight)' : ''">
-            <animal-square :animal="epicAnimal" class="animal-picture"/>
+          <div class="animal" @click="onAnimalSelected(epicAnimal)">
+            <animal-square :animal="epicAnimal" class="animal-picture" :class="isHighlighted(epicAnimal) ? 'animal-highlighted' : ''"/>
           </div>
         </div>
       </div>
       <div v-if="timelessAnimal" class="timeless-animal-container">
         <h4>Timeless:</h4>
         <div class="timeless-animals animals">
-          <div class="animal" @click="onAnimalSelected(timelessAnimal)"
-               :style="isHighlighted(timelessAnimal) ? 'border-color: var(--border-highlight)' : ''">
-            <animal-square :animal="timelessAnimal" class="animal-picture"/>
+          <div class="animal" @click="onAnimalSelected(timelessAnimal)">
+            <animal-square :animal="timelessAnimal" class="animal-picture" :class="isHighlighted(timelessAnimal) ? 'animal-highlighted' : ''"/>
           </div>
         </div>
       </div>
@@ -79,12 +75,15 @@ h4 {
 }
 
 .animal {
-  border: var(--border-medium) solid rgba(0, 0, 0, var(--border-dark-opacity));
-  border-radius: var(--border-radius);
+  filter: drop-shadow(0 0 4px rgba(0, 0, 0, 0.5));
+}
+
+.animal:has(.animal-highlighted)  {
+  filter: drop-shadow(0 0 4px var(--animal-highlight-color));
 }
 
 .animal-picture {
-  width: 3rem;
+  width: 4rem;
   max-width: 100%;
   max-height: 100%;
 }

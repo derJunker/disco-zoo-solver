@@ -37,7 +37,7 @@
 }
 
 .animal-select {
-  max-width: min(80%, 400px);
+  max-width: min(90%, 500px);
 }
 
 .region-select {

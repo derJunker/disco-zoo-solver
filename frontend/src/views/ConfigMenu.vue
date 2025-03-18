@@ -4,18 +4,18 @@
     <div class="heatmap-config-container">
       <h4>Heatmap:</h4>
       <div class="animals">
-        <div v-for="animal in animals" class="animal" :key="animal" @click="onAnimalHeatmapSelected(animal)"
-             :style="(heatMapAnimal?.name === animal.name) ? 'border-color: var(--border-highlight)' : ''">
-          <animal-square :animal="animal" class="animal-square"/>
+        <div v-for="animal in animals" class="animal" :key="animal" @click="onAnimalHeatmapSelected(animal)">
+          <animal-square :animal="animal" class="animal-square" :class="(heatMapAnimal?.name === animal.name) ?
+          'animal-highlighted' : ''"/>
         </div>
       </div>
     </div>
     <div class="place-animal-container">
       <h4>Animal to Place:</h4>
       <div class="animals">
-        <div v-for="animal in animals" class="animal" :key="animal" @click="onAnimalPlaceSelected(animal)"
-             :style="(placeAnimal?.name === animal.name) ? 'border-color: var(--border-highlight)' : ''">
-          <animal-square :animal="animal" class="animal-square"/>
+        <div v-for="animal in animals" class="animal" :key="animal" @click="onAnimalPlaceSelected(animal)">
+          <animal-square :animal="animal" class="animal-square" :class="(placeAnimal?.name === animal.name) ?
+          'animal-highlighted' : ''"/>
         </div>
       </div>
     </div>
@@ -37,12 +37,16 @@ h4 {
 }
 
 .animal {
-  border: var(--border-medium) solid rgba(0, 0, 0, var(--border-dark-opacity));
-  border-radius: var(--border-radius);
+  filter: drop-shadow(0 0 4px rgba(0, 0, 0, 0.5));
 }
 
+.animal:has(.animal-highlighted)  {
+  filter: drop-shadow(0 0 4px var(--animal-highlight-color));
+}
+
+
 .animal-square {
-  max-width: 3rem;
+  max-width: 4rem;
 }
 </style>
 
