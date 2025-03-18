@@ -38,7 +38,8 @@ export default defineComponent({
   methods: {
     getStyle() {
       return {
-        backgroundColor: getRarityColor(this.animal.rarity)
+        background:
+            `linear-gradient(to bottom, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0) 100%), ${getRarityColor(this.animal.rarity)}`
       }
     },
     getAnimalPictureUrl(animal: Animal) {

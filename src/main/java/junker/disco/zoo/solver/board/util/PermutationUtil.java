@@ -13,17 +13,6 @@ import junker.disco.zoo.solver.model.animals.Animal;
 
 public class PermutationUtil {
 
-
-
-    public static Coords getRandomPlacement(Tile[][] board, Animal animalToPlace) {
-        List<Coords> possiblePlacements = getPossiblePlacements(board, animalToPlace);
-        if (possiblePlacements.isEmpty()) {
-            return null;
-        }
-        return possiblePlacements.get((int) (Math.random() * possiblePlacements.size()));
-    }
-
-
     public static boolean canClickAndPlace(Game game, int x, int y, Animal animal) {
         var wipedGame = new Game(game, true);
         wipedGame.setTile(x, y, true, animal);

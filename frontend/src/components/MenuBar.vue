@@ -51,6 +51,7 @@ export default defineComponent({
   padding: 0;
   position: relative;
   height: 3rem;
+  border-width: 4px;
 }
 
 .first, .second {

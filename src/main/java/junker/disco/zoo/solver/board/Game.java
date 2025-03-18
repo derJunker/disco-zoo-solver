@@ -8,12 +8,13 @@ import java.util.Map;
 import junker.disco.zoo.solver.board.util.BoardUtil;
 import junker.disco.zoo.solver.board.util.PermutationUtil;
 import junker.disco.zoo.solver.model.animals.Animal;
-import junker.disco.zoo.solver.model.animals.Rarity;
+import lombok.Getter;
 
 import static junker.disco.zoo.solver.board.util.BoardUtil.cloneBoard;
 import static junker.disco.zoo.solver.board.util.PermutationUtil.canClickAndPlace;
 import static junker.disco.zoo.solver.board.util.DoubleArrayUtil.arrayAsCoordinatesString;
 
+@Getter
 public class Game {
     public static final int BOARD_SIZE = 5;
 
@@ -39,7 +40,11 @@ public class Game {
                 board[x][y] = new Tile();
             }
         }
-        placeAnimalsRandomly(animalsToPlace);
+        var permutations = new ArrayList<>(PermutationUtil.calculateBoardPermutations(board, animalsToPlace));
+        if (permutations.isEmpty()) {
+            throw new IllegalArgumentException("Cannot place animals: " + animalsToPlace);
+        }
+        board = permutations.get((int) (Math.random() * permutations.size()));
         containedAnimals = new ArrayList<>(animalsToPlace);
     }
 
@@ -122,27 +127,6 @@ public class Game {
         var allAnimals = new ArrayList<>(containedAnimals);
         allAnimals.removeAll(getCompletelyRevealedAnimals());
         return allAnimals;
-    }
-
-
-    // TODO is flawed. look at lynx, chamaeleon and corvus
-    private void placeAnimalsRandomly(List<Animal> animalsToPlace) {
-        for (Animal animal : animalsToPlace) {
-            Coords coords = PermutationUtil.getRandomPlacement(board, animal);
-            if (coords != null) {
-                BoardUtil.placeAnimal(board, animal, coords);
-            } else {
-                throw new IllegalArgumentException("Cannot place animal: " + animal.name() + " all: " + animalsToPlace);
-            }
-        }
-    }
-
-    public List<Animal> getContainedAnimals() {
-        return containedAnimals;
-    }
-
-    public Tile[][] getBoard() {
-        return board;
     }
 
     public Tile[][] calcWipedBoard() {
