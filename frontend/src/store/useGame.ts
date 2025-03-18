@@ -1,7 +1,7 @@
 import {defineStore} from 'pinia'
 import {useApi} from "@/store/useApi";
 import {Animal} from "@/types/Animal";
-import {Game} from "@/types/Game";
+import {ClickChangeInfo, Game} from "@/types/Game";
 import {Coords} from "@/types/Coords";
 
 export const useGame = defineStore('game', () => {
@@ -11,7 +11,7 @@ export const useGame = defineStore('game', () => {
         return resp.json();
     }
 
-    async function clickReconstruct(game: Game, animal: Animal | null, coords: Coords): Promise<Game> {
+    async function clickReconstruct(game: Game, animal: Animal | null, coords: Coords): Promise<ClickChangeInfo> {
         const resp = await api.postUrl("/reconstruct/click", {
             "game": game,
             "animal": animal,

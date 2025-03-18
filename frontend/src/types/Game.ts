@@ -7,6 +7,13 @@ export interface Game {
     notCompletelyRevealedAnimalsWithoutBux: Animal[]
 }
 
+export interface ClickChangeInfo {
+    updatedTile: Tile;
+    wasValidClick: boolean;
+    completelyRevealedAnimals: Animal[];
+    notCompletelyRevealedAnimalsWithoutBux: Animal[];
+}
+
 export interface Tile {
     animalBoardInstance: {
         animal: Animal,

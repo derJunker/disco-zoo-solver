@@ -84,14 +84,15 @@ public class Game {
             tile.setAnimalBoardInstance(new AnimalBoardInstance(animal, "", new Coords(-1, -1)));
     }
 
-    public void setTileIfValid(int x, int y, boolean shouldReveal, Animal animal) {
+    public boolean setTileIfValid(int x, int y, boolean shouldReveal, Animal animal) {
         if(shouldReveal) {
             boolean isValid = canClickAndPlace(this, x, y, animal);
             if (!isValid) {
-                return;
+                return false;
             }
         }
         setTile(x, y, shouldReveal, animal);
+        return true;
     }
 
     public void printGame() {
@@ -131,5 +132,9 @@ public class Game {
 
     public Tile[][] calcWipedBoard() {
         return Game.getWipedBoard(board);
+    }
+
+    public Tile getTile(Coords coords) {
+        return board[coords.x()][coords.y()];
     }
 }

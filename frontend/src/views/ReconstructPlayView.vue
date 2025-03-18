@@ -9,6 +9,7 @@
              'best-click' : ''" @click="clickedCoords(coords)" @contextmenu="rightClickedCoords($event, coords)">
           <AnimalSquare v-if="game && game.board[coords.x][coords.y].occupied && game.board[coords.x][coords.y].revealed"
                         :animal="game.board[coords.x][coords.y].animalBoardInstance.animal" class="animal-square"/>
+<!--          <div v-else-if="game && probabilities">{{probabilities[coords.x][coords.y].toFixed(3)}}</div>-->
         </div>
       </div>
       <config-menu :style="!showConfig ? 'display: none;' : ''" class="config-menu dock-bottom dock-bottom-shadow" :animals="animals"
@@ -90,7 +91,7 @@ import {useState} from "@/store/useState";
 import MenuBar from "@/components/MenuBar.vue";
 import router from "@/router";
 import {useGame} from "@/store/useGame";
-import {Game} from "@/types/Game";
+import {ClickChangeInfo, Game} from "@/types/Game";
 import {Coords} from "@/types/Coords";
 import {getRegionColors} from "@/util/region-colors";
 import {useSolver} from "@/store/useSolver";
@@ -149,7 +150,8 @@ export default defineComponent({
   methods: {
     async updateProbabilityInfo() {
       if (!this.game || !this.animalForHeatmap) {
-        return
+        this.probabilities = null;
+        this.bestClicks = []
       }
       const info = await solver.solve(this.game!, this.animalForHeatmap!)
       this.probabilities = info.probabilities
@@ -192,27 +194,41 @@ export default defineComponent({
     },
 
     async clickedCoords(coords: Coords) {
-      let newGame = await gameStore.clickReconstruct(this.game!, this.animalToPlace, coords)
-      this.updateGame(newGame)
+      let clickInfo = await gameStore.clickReconstruct(this.game!, this.animalToPlace, coords)
+      this.updateGame(clickInfo, coords)
     },
 
     async rightClickedCoords(event: MouseEvent, coords: Coords) {
       event.preventDefault()
-      let newGame = await gameStore.clickReconstruct(this.game!, null, coords)
-      this.updateGame(newGame)
+      let clickInfo = await gameStore.clickReconstruct(this.game!, null, coords)
+      this.updateGame(clickInfo, coords)
     },
 
-    updateGame(newGame: Game) {
-      if (JSON.stringify(this.game) !== JSON.stringify(newGame)) {
-        this.game = newGame
+    updateGame(clickInfo : ClickChangeInfo, coords: Coords) {
+      if (!this.game)
+        return
+      if (clickInfo.wasValidClick) {
+        this.game.board[coords.x][coords.y] = clickInfo.updatedTile
+
+        if (this.game.notCompletelyRevealedAnimalsWithoutBux.length == 0 &&
+            clickInfo.notCompletelyRevealedAnimalsWithoutBux.length != 0)
+          this.animalForHeatmap = clickInfo.notCompletelyRevealedAnimalsWithoutBux[0]
+
+        this.game.completelyRevealedAnimals = clickInfo.completelyRevealedAnimals
+        this.game.notCompletelyRevealedAnimalsWithoutBux = clickInfo.notCompletelyRevealedAnimalsWithoutBux
+
         if (this.game.completelyRevealedAnimals.filter(animal => animal.name === this.animalForHeatmap?.name).length > 0) {
           if (this.game.notCompletelyRevealedAnimalsWithoutBux.length > 0)
             this.animalForHeatmap = this.game.notCompletelyRevealedAnimalsWithoutBux[0]
           else
             this.animalForHeatmap = null
         }
-        if (this.game.completelyRevealedAnimals.filter(animal => animal.name === this.animalToPlace?.name).length > 0)
+        if (this.game.completelyRevealedAnimals.filter(animal => animal.name === this.animalToPlace?.name).length > 0
+            && this.game.notCompletelyRevealedAnimalsWithoutBux.length > 0)
           this.animalToPlace = null
+
+        this.updateProbabilityInfo()
+        this.updateTracker()
 
       }
     },
