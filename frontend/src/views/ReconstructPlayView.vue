@@ -3,15 +3,11 @@
     <div class="reconstruct-content">
       <AnimalDisplay :animals="animals" :tracker="animalTracker" class="animal-display"
                      @animal-click="onPlaceSelectChange" :animal-to-place="animalToPlace"/>
-      <div class="board" :style="getBoardStyle()">
-        <div v-for="coords in getCoords()" :key="coords" class="tile" :style="getTileStyle(coords)"
-             :class="bestClicks.filter((click: Coords) => click.x === coords.x && click.y === coords.y).length > 0 ?
-             'best-click' : ''" @click="clickedCoords(coords)" @contextmenu="rightClickedCoords($event, coords)">
-          <AnimalSquare v-if="game && game.board[coords.x][coords.y].occupied && game.board[coords.x][coords.y].revealed"
-                        :animal="game.board[coords.x][coords.y].animalBoardInstance.animal" class="animal-square"/>
-<!--          <div style="user-select: none;" v-else-if="game && probabilities">{{probabilities[coords.x][coords.y].toFixed(3)}}</div>-->
-        </div>
-      </div>
+      <disco-board
+          :game="game" :best-clicks="bestClicks" :region="getSelectedRegion()"
+          :probabilities="probabilities" :min-prob="minProb" :max-prob="maxProb"
+          @clicked-coords="onCoordsClicked"
+          @right-clicked-coords="rightClickedCoords($event, coords)"/>
       <config-menu :style="!showConfig ? 'display: none;' : ''" class="config-menu dock-bottom dock-bottom-shadow" :animals="animals"
                    :heat-map-animal="animalForHeatmap" :place-animal="animalToPlace"
       @animal-heatmap-select="onHeatMapSelectChange" @animal-place-select="onPlaceSelectChange"/>
@@ -23,6 +19,11 @@
 </template>
 
 <style scoped>
+.disco-board {
+  max-width: min(90%, 400px);
+  margin-inline: auto;
+  margin-top: 3rem;
+}
 .reconstruct-play-view {
   display: flex;
   flex-direction: column;
@@ -41,29 +42,6 @@
   top: 0;
 }
 
-.board {
-  max-width: min(90%, 400px);
-  margin-inline: auto;
-  margin-top: 3rem;
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 3px;
-  padding: 3px;
-}
-
-.tile {
-  position: relative;
-  display: grid;
-  place-items: center;
-  background-color: gray;
-  aspect-ratio: 1;
-  min-width: 4rem;
-}
-
-.best-click {
-  border: white solid 2px;
-}
-
 
 .config-menu {
   position: absolute;
@@ -73,12 +51,6 @@
   margin: auto;
   max-width: min(70%, 400px);
   z-index: 1;
-}
-
-.animal-square {
-  max-width: 100%;
-  max-height: 100%;
-  position: absolute;
 }
 
 </style>
@@ -95,10 +67,9 @@ import {ClickChangeInfo, Game} from "@/types/Game";
 import {Coords} from "@/types/Coords";
 import {getRegionColors} from "@/util/region-colors";
 import {useSolver} from "@/store/useSolver";
-import {getHeatmapColor} from "@/util/heatmap-colors";
 import ConfigMenu from "@/views/ConfigMenu.vue";
 import {sortAnimalsByRarity} from "@/util/animal-sorter";
-import AnimalSquare from "@/components/Basic/AnimalSquare.vue";
+import DiscoBoard from "@/views/DiscoBoard.vue";
 
 
 const state = useState()
@@ -107,7 +78,7 @@ const solver = useSolver()
 
 export default defineComponent({
   name: "ReconstructPlayView",
-  components: {AnimalSquare, ConfigMenu, MenuBar, AnimalDisplay},
+  components: {DiscoBoard, ConfigMenu, MenuBar, AnimalDisplay},
   data() {
     return {
       animals: state.selectedAnimals as Animal[],
@@ -193,7 +164,7 @@ export default defineComponent({
       this.animalToPlace = animal
     },
 
-    async clickedCoords(coords: Coords) {
+    async onCoordsClicked(coords: Coords) {
       let clickInfo = await gameStore.clickReconstruct(this.game!, this.animalToPlace, coords)
       this.updateGame(clickInfo, coords)
     },
@@ -233,48 +204,6 @@ export default defineComponent({
       }
     },
 
-    getCoords() {
-      if (!this.game) {
-        return []
-      }
-      return this.game.board.flatMap((row, y) => row.map((animal, x) => ({x, y} as Coords)))
-    },
-
-    getTileStyle(coords: Coords) {
-      const regionColors = state.selectedRegion ? getRegionColors(state.selectedRegion) : {
-        dark: "black", light: "white", primary: "gray"
-      }
-      if (!this.game) {
-        return {}
-      }
-      const tile = this.game.board[coords.x][coords.y]
-      if (tile.revealed) {
-        if (tile.occupied) {
-          return {}
-        } else {
-          return {backgroundColor: "rgba(0,0,0,0.5)"}
-        }
-      }
-      else {
-        if (!this.probabilities) {
-          return {backgroundColor: regionColors.primary}
-        } else {
-          const probability = this.probabilities[coords.x][coords.y]
-          return {backgroundColor: getHeatmapColor(probability, this.minProb!, this.maxProb!)}
-        }
-      }
-    },
-
-    getBoardStyle() {
-      if (!this.game) {
-        return {}
-      }
-      const regionColors = state.selectedRegion ? getRegionColors(state.selectedRegion) : {
-        dark: "black", light: "white", primary: "gray"
-      }
-      return {backgroundColor: regionColors.dark}
-    },
-
     getBackgroundStyle() {
       if (!state.selectedRegion) {
         return {}
@@ -289,6 +218,10 @@ export default defineComponent({
 
     getConfigMenuColorClass() {
       return this.showConfig ? "color-action-bad" : "color-action-neutral-2"
+    },
+
+    getSelectedRegion() {
+      return state.selectedRegion
     }
   }
 })
