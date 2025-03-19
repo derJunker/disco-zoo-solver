@@ -19,9 +19,4 @@ public class AnimalController {
     public List<Animal> getAnimalsOfRegion(@RequestParam("region") String region) {
         return Animal.getAnimalListByRegion(Region.byRepr(region), true);
     }
-
-    @GetMapping("/byName")
-    public List<Animal> getAnimalsByNames(@RequestParam("names") List<String> names) {
-        return Animal.getAnimalsByNames(names);
-    }
 }

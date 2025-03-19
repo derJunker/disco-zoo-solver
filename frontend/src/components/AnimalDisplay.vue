@@ -46,6 +46,7 @@
 
 .animal-name {
   margin-bottom: .4rem;
+  text-align: center;
 }
 
 .cover-tracker {
