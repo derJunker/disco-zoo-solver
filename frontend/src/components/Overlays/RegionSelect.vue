@@ -19,6 +19,13 @@ const regionStore = useRegions()
 
 export default defineComponent({
   name: "RegionSelect",
+  props: {
+    anyOptionAvailable: {
+      type: Boolean,
+      default: false,
+      required: false
+    }
+  },
   data() {
     return {
       regions: [] as string[],
@@ -27,8 +34,12 @@ export default defineComponent({
   },
   async created() {
     this.regions = regionStore.hardcodedRegions
+    if (this.anyOptionAvailable)
+      this.regions.unshift("Any")
+
     regionStore.getAllRegions().then(list => {
-      if (JSON.stringify(this.regions) !== JSON.stringify(list)) {
+      if (JSON.stringify(regionStore.hardcodedRegions) !== JSON.stringify(list)) {
+        list.unshift("Any")
         this.regions = list;
         for (const region of this.regions) {
           this.regionColors[region] = getRegionColors(region);
@@ -39,7 +50,7 @@ export default defineComponent({
       this.regionColors[region] = getRegionColors(region)
     }
 
-  }
+  },
 })
 </script>
 
