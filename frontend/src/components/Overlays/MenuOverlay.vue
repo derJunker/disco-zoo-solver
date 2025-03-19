@@ -1,6 +1,6 @@
 <template>
-  <div class="menu-overlay">
-    <h3>Menu</h3>
+  <div class="menu-overlay wood-menu">
+    <h1>Menu</h1>
     <div class="menu-buttons">
       <div class="btn btn-gradient color-action-neutral-2" @click="clickedSettings()">Settings</div>
       <div class="btn btn-gradient color-action-neutral-3" @click="clickedAbout()">About</div>

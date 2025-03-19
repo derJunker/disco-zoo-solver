@@ -1,6 +1,6 @@
 <template>
  <div class="region-select wood-menu">
-   <h3>Regions</h3>
+   <h1>Regions</h1>
    <div class="regions">
      <div v-for="region in regions" class="rounded btn btn-gradient" :key="region" @click="$emit('region-select', region)"
           :style="'background-color: ' + regionColors[region].primary">

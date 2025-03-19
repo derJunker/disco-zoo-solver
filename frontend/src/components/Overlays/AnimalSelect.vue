@@ -1,6 +1,6 @@
 <template>
   <div class="animal-select wood-menu">
-    <h3> Select Animals -  {{region}}</h3>
+    <h1> Select Animals -  {{region}}</h1>
     <div class="animal-select-container">
       <div class="common-animals-container">
         <h4>Common:</h4>

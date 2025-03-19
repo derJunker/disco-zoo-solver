@@ -2,8 +2,8 @@
   <div class="home-view">
     <div class="home-view-content">
       <h1>Disco Zoo Solver</h1>
-      <menu-overlay v-if="showMenuOverlay" class="menu-overlay dock-bottom wood-menu"/>
-      <play-overlay v-if="showPlayOverlay" class="play-overlay dock-bottom wood-menu"/>
+      <menu-overlay v-if="showMenuOverlay" class="menu-overlay dock-bottom menu-bottom"/>
+      <play-overlay v-if="showPlayOverlay" class="play-overlay dock-bottom menu-bottom"/>
     </div>
     <menu-bar :on-first-button-click="onMenuClick" first-color-class="color-action-neutral-1" first-button-name="Menu"
               :on-second-button-click="onPlayClick" second-color-class="color-action-neutral-2"

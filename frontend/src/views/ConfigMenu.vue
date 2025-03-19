@@ -1,6 +1,6 @@
 <template>
   <div class="config-menu wood-menu">
-    <h3>Reconstruct - Config</h3>
+    <h1>Reconstruct - Config</h1>
     <div class="heatmap-config-container">
       <h4>Heatmap:</h4>
       <div class="animals">
