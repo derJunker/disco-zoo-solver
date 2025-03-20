@@ -51,7 +51,7 @@
   left: 0;
   right: 0;
   margin: auto;
-  max-width: min(70%, 400px);
+  max-width: min(90%, 400px);
   z-index: 1;
 }
 

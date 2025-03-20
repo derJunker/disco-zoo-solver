@@ -1,12 +1,26 @@
 <template>
   <div class="accuracy-single-click-result-view">
     <div class="accuracy-single-click-result-content">
-      <h1>Accuracy Single Click Result</h1>
-      <p>{{overallAccuracy}}</p>
-      <p>{{grade}}</p>
+      <div id="overview-menu" class="wood-menu dock-bottom menu-bottom">
+        <h1>Results</h1>
+        <div class="wood-menu-group">
+          <h2>Grade</h2>
+          <div id="grade" :style="gradeColor()">{{grade}}</div>
+          <div id="accuracy">Accuracy: {{(score*100).toFixed(2)}}%</div>
+        </div>
+        <div class="nav-buttons">
+          <div class="btn btn-gradient color-action-good" @click="onRetryClick">
+            Retry
+          </div>
+          <div class="btn btn-gradient color-action-neutral-2">
+            Details
+          </div>
+        </div>
+      </div>
     </div>
-    <menu-bar :on-first-button-click="console.log" first-color-class="color-action-neutral-1" first-button-name="sth"
-              :on-second-button-click="console.log" second-color-class="color-action-neutral-2" second-button-name="sth"/>
+    <menu-bar :on-first-button-click="onHomeClick" first-color-class="color-action-neutral-1" first-button-name="Home"
+              :on-second-button-click="console.log" second-color-class="color-action-neutral-2"
+              second-button-name="Back"/>
   </div>
 </template>
 
@@ -22,6 +36,39 @@
   flex: 1;
   display: grid;
   place-items: center;
+}
+
+#overview-menu {
+  max-width: min(90%, 400px);
+}
+
+.wood-menu-group {
+  margin-inline: 1.5rem;
+}
+
+#grade {
+  font-size: 10rem;
+  line-height: 8rem;
+  padding-bottom: 2rem;
+  text-align: center;
+}
+
+#accuracy {
+  text-align: center;
+}
+
+h2 {
+  text-align: center;
+}
+
+.nav-buttons {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 3rem;
+  margin-bottom: 1rem;
+}
+.btn {
+  padding: 1rem;
 }
 </style>
 
@@ -40,23 +87,49 @@ export default defineComponent({
     return {
       overallAccuracy: null as number | null,
       percentageBestClicks: null as number | null,
-      grade: "" as string
+      grade: "" as string,
+      score: null as number | null
     }
   },
 
   methods: {
     calculateGrade(overallAccuracy: number, percentageBestClicks: number): string {
       // 89% of the score is based on overallAccuracy, 11% from percentageBestClicks
-      const score = (overallAccuracy * 0.89) + (percentageBestClicks * 0.11);
+      this.score = (overallAccuracy * 0.89) + (percentageBestClicks * 0.11);
 
       // Determine grade based on score with user's specified thresholds
-      if (score >= 1) return "S+";
-      if (score >= 0.90) return "S";
-      if (score >= 0.80) return "A";
-      if (score >= 0.70) return "B";
-      if (score >= 0.50) return "C";
-      if (score >= 0.35) return "D";
+      if (this.score >= 1) return "S+";
+      if (this.score >= 0.90) return "S";
+      if (this.score >= 0.80) return "A";
+      if (this.score >= 0.70) return "B";
+      if (this.score >= 0.50) return "C";
+      if (this.score >= 0.35) return "D";
       return "F";
+    },
+
+    gradeColor() {
+      switch (this.grade) {
+        case "S+":
+        case "S":
+          return {color: "#FFD700"}; // golden
+        case "A":
+          return {color: "#32CD32"}; // green
+        case "B":
+          return {color: "#1E90FF"}; // blue
+        case "C":
+          return {color: "#9370DB"}; // purple
+        case "D":
+          return {color: "#FFA500"}; // orange
+        case "F":
+          return {color: "#FF6347"}; // red
+      }
+    },
+    onHomeClick() {
+      router.push({name: 'home'})
+    },
+
+    onRetryClick() {
+      router.push({name: 'accuracy'})
     }
   },
 

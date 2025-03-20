@@ -110,6 +110,7 @@ export default defineComponent({
     },
 
     async onCoordsClicked(coords: Coords) {
+      const maxRounds = 2
       gameApi.accuracyPerformance(this.game!, this.animalToFind!, coords).then(resp => {
         this.accuracyHistory.push({
           performance: resp,
@@ -117,13 +118,13 @@ export default defineComponent({
           region: this.region!,
           animalToFind: this.animalToFind!
         })
-        if (this.accuracyHistory.length >= 1) {
+        if (this.accuracyHistory.length >= maxRounds) {
           accuracyState.singleClickHistory = this.accuracyHistory
           router.push({name: 'accuracy-single-click-result', params: {seed: this.seed!.toString(), region: this.region!}})
         }
       })
       this.gameRound++
-      if (this.gameRound < 1) {
+      if (this.gameRound < maxRounds) {
         await this.nextGame()
       }
     }

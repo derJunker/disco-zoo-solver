@@ -143,6 +143,13 @@ html, body, #app, #router-view {
     font-size: var(--font-size-larger);
 }
 
+.wood-menu-group {
+    background-color: #8A5416;
+    border-radius: var(--border-radius);
+    box-shadow: inset 0px 0px 5px rgba(0, 0, 0, 0.4);
+    padding: .5rem;
+}
+
 .menu-bottom {
     position: absolute;
     bottom: 0;

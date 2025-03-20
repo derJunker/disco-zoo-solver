@@ -23,6 +23,9 @@
 </template>
 
 <style scoped>
+.config-menu {
+  padding-inline: 1.25rem;
+}
 h4 {
   margin-bottom: .5rem;
 }

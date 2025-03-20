@@ -33,7 +33,7 @@ export default defineComponent({
     }
   },
   async created() {
-    this.regions = regionStore.hardcodedRegions
+    this.regions = [...regionStore.hardcodedRegions]
     if (this.anyOptionAvailable)
       this.regions.unshift("Any")
 
