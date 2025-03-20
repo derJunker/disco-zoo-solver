@@ -4,8 +4,7 @@
         v-for="coords in getCoords()" :key="coords" class="tile" :style="getTileStyle(coords)"
         :class="bestClicks && bestClicks.filter((click: Coords) => click.x === coords.x && click.y === coords.y).length
         > 0 ?
-             'best-click' : ''" @click="onCoordsClicked(coords)" @contextmenu="$emit('right-clicked-coords', $event,
-             coords)">
+             'best-click' : ''" @click="onCoordsClicked(coords)" @contextmenu="onCoordsRightClick($event, coords)">
       <AnimalSquare
           v-if="game.board[coords.x][coords.y].occupied && game.board[coords.x][coords.y].revealed"
           :animal="game.board[coords.x][coords.y].animalBoardInstance.animal" class="animal-square" />
@@ -63,6 +62,11 @@ export default defineComponent({
 
     onCoordsClicked(coords: Coords) {
       this.$emit('clicked-coords', coords)
+    },
+
+    onCoordsRightClick(event: MouseEvent, coords: Coords) {
+      event.preventDefault()
+      this.$emit('right-clicked-coords', coords)
     },
 
     getBoardStyle() {

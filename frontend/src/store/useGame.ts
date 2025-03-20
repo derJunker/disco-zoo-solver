@@ -3,6 +3,7 @@ import {useApi} from "@/store/useApi";
 import {Animal} from "@/types/Animal";
 import {ClickChangeInfo, Game} from "@/types/Game";
 import {Coords} from "@/types/Coords";
+import {AccuracySingleClickResponse} from "@/types/AccuracySingleClickResponse";
 
 export const useGame = defineStore('game', () => {
     const api = useApi();
@@ -20,5 +21,14 @@ export const useGame = defineStore('game', () => {
         return resp.json();
     }
 
-    return {startReconstruct, clickReconstruct}
+    async function accuracySingleClick(seed: number, region: string, timeless: boolean, gameNumber: number): Promise<AccuracySingleClickResponse> {
+        const resp = await api.fetchUrl(`/accuracy/single-click/${seed}`, {
+            region: region,
+            timeless: timeless,
+            gameNumber: gameNumber
+        });
+        return resp.json();
+    }
+
+    return {startReconstruct, clickReconstruct, accuracySingleClick}
 })

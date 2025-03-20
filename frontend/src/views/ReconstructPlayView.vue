@@ -7,7 +7,7 @@
           :game="game" :best-clicks="bestClicks" :region="getSelectedRegion()"
           :probabilities="probabilities" :min-prob="minProb" :max-prob="maxProb"
           @clicked-coords="onCoordsClicked"
-          @right-clicked-coords="rightClickedCoords($event, coords)"/>
+          @right-clicked-coords="rightClickedCoords" class="disco-board"/>
       <config-menu :style="!showConfig ? 'display: none;' : ''" class="config-menu dock-bottom dock-bottom-shadow" :animals="animals"
                    :heat-map-animal="animalForHeatmap" :place-animal="animalToPlace"
       @animal-heatmap-select="onHeatMapSelectChange" @animal-place-select="onPlaceSelectChange"/>
@@ -19,11 +19,6 @@
 </template>
 
 <style scoped>
-.disco-board {
-  max-width: min(90%, 400px);
-  margin-inline: auto;
-  margin-top: 3rem;
-}
 .reconstruct-play-view {
   display: flex;
   flex-direction: column;
@@ -35,6 +30,13 @@
   display: grid;
   place-items: center;
 }
+
+.disco-board {
+  max-width: min(90%, 400px);
+  margin-inline: auto;
+  margin-top: 3rem;
+}
+
 
 .animal-display {
   position: absolute;
@@ -169,8 +171,7 @@ export default defineComponent({
       this.updateGame(clickInfo, coords)
     },
 
-    async rightClickedCoords(event: MouseEvent, coords: Coords) {
-      event.preventDefault()
+    async rightClickedCoords(coords: Coords) {
       let clickInfo = await gameStore.clickReconstruct(this.game!, null, coords)
       this.updateGame(clickInfo, coords)
     },

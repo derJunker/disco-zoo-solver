@@ -26,19 +26,20 @@ public class AccuracyController {
 
     @GetMapping("/single-click/{seed}")
     public ResponseEntity<AccuracySingleClickResponse> getGame(@PathVariable Long seed,
-                                                               @RequestParam(required = true) Region region,
+                                                               @RequestParam(required = true, name = "region") String regionStr,
                                                                @RequestParam(required = true) boolean timeless,
                                                                @RequestParam(defaultValue = "0", required = false) int gameNumber) {
-        var resp = handleInvalidParams(seed, gameNumber);
+        var resp = handleInvalidParams(seed, gameNumber, regionStr);
         if (resp != null) return resp;
 
+        var region = Region.byRepr(regionStr);
 
         var game = accuracyService.getSingleClickGame(seed, gameNumber, region, timeless);
         return new ResponseEntity<>(game, HttpStatus.OK);
     }
 
-    private ResponseEntity<AccuracySingleClickResponse> handleInvalidParams(Long seed, int gameNumber) {
-        if (seed == null || gameNumber < 0 || gameNumber > 10) {
+    private ResponseEntity<AccuracySingleClickResponse> handleInvalidParams(Long seed, int gameNumber, String regionStr) {
+        if (seed == null || gameNumber < 0 || gameNumber > 10 || Region.byRepr(regionStr) == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         return null;

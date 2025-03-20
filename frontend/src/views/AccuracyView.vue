@@ -7,7 +7,7 @@
                        @timeless-changed="onTimelessChanged"
                        @region-clicked="onRegionClicked" @game-type-selected="onGameTypeSelected"/>
       <region-select v-if="showRegionSelect"  @region-select="onRegionSelect"
-                      class="region-select dock-bottom dock-bottom-shadow menu-bottom" any-option-available="true"/>
+                      class="region-select dock-bottom dock-bottom-shadow menu-bottom" :any-option-available="true"/>
     </div>
     <menu-bar :on-first-button-click="onBack" :on-second-button-click="onPlay" second-button-name="play"
               first-button-name="back" first-color-class="color-action-neutral-1"
@@ -66,7 +66,7 @@ export default defineComponent({
     },
     onPlay() {
       router.push({name: 'accuracy-' + this.selectedGameType +'-play', params: {seed: this.generateSeed(), region:
-          this.selectedRegion}})
+          this.selectedRegion}, query: {timeless: this.timeless + ""}})
     },
 
     onRegionClicked() {
