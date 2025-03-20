@@ -49,7 +49,7 @@ import MenuBar from "@/components/MenuBar.vue";
 import router from "@/router";
 import {Game} from "@/types/Game";
 import {useGame} from "@/store/useGame";
-import {AccuracySingleClickResponse} from "@/types/AccuracySingleClickResponse";
+import {AccuracySingleClickGameResponse} from "@/types/AccuracySingleClickGameResponse";
 import {Animal} from "@/types/Animal";
 import AnimalDisplay from "@/components/AnimalDisplay.vue";
 import DiscoBoard from "@/views/DiscoBoard.vue";
@@ -103,7 +103,7 @@ export default defineComponent({
       await router.push({name: 'accuracy'})
       return
     }
-    let response: AccuracySingleClickResponse = await gameApi.accuracySingleClick(this.seed!, this.region!,
+    let response: AccuracySingleClickGameResponse = await gameApi.accuracySingleClick(this.seed!, this.region!,
         this.timeless, this.gameRound)
     this.game = response.game
     this.animalToFind = response.animalToFind
