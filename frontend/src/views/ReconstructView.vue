@@ -2,8 +2,10 @@
 <div class="reconstruction-view">
   {{updateRegion($route.params.region)}}
   <div class="menus">
+<!--    TODO change this to same as accuracy view no router pushing-->
     <RegionSelect v-if="!$route.params.region" @region-select="onRegionSelect"
                   class="region-select dock-bottom dock-bottom-shadow menu-bottom"/>
+
     <AnimalSelect v-else
                   :region="$route.params.region" class="dock-bottom dock-bottom-shadow animal-select menu-bottom"/>
   </div>
@@ -34,7 +36,6 @@
 
 .region-select {
   max-width: min(90%, 700px);
-
 }
 </style>
 

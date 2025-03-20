@@ -39,7 +39,8 @@ export default defineComponent({
 
     regionStore.getAllRegions().then(list => {
       if (JSON.stringify(regionStore.hardcodedRegions) !== JSON.stringify(list)) {
-        list.unshift("Any")
+        if (this.anyOptionAvailable)
+          list.unshift("Any")
         this.regions = list;
         for (const region of this.regions) {
           this.regionColors[region] = getRegionColors(region);

@@ -22,6 +22,11 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import(/* webpackChunkName: "about" */ '../views/AccuracyView.vue')
   },
   {
+    path: '/accuracy/:gameType/:region/:seed',
+    name: 'accuracy-play',
+    component: () => import('../views/AccuracyPlayView.vue')
+  },
+  {
     path: '/stats',
     name: 'stats',
     component: () => import(/* webpackChunkName: "about" */ '../views/StatsView.vue')

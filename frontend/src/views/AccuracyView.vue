@@ -61,7 +61,7 @@ export default defineComponent({
       router.push({name: 'home'})
     },
     onPlay() {
-      console.log()
+      router.push({name: 'accuracy-play', params: {seed: 1, region: this.selectedRegion, gameType: this.selectedGameType}})
     },
 
     onRegionClicked() {

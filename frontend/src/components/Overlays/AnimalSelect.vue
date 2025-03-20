@@ -134,7 +134,7 @@ export default defineComponent({
   data() {
     return {
       commonAnimals: [loadingCommonAnimal, loadingCommonAnimal, loadingCommonAnimal] as Animal[],
-      rareAnimals: [loadingRareAnimal, loadingCommonAnimal] as Animal[],
+      rareAnimals: [loadingRareAnimal, loadingRareAnimal] as Animal[],
       epicAnimal: loadingEpicAnimal as Animal | null,
       timelessAnimal: loadingTimelessAnimal as Animal | null,
       selectedAnimals: [] as Animal[]
