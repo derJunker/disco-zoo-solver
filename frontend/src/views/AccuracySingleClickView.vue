@@ -2,7 +2,7 @@
   <div class="accuracy-single-click-view" :style="getBackgroundStyle()">
     {{setRouteValuesToVars($route.params.seed, $route.params.region,  $route.query.timeless)}}
     <div class="accuracy-single-click-content" v-if="game && animalToFind">
-      <animal-display :tracker="new Map()" :animals="game.containedAnimals" class="animal-display"/>
+      <animal-display :tracker="new Map()" :animals="game.containedAnimals" class="animal-display" :animal-to-place="animalToFind"/>
       <disco-board :game="game" :region="region"
                    class="disco-board" @clicked-coords="onCoordsClicked"
                    @right-clicked-coords="onCoordsClicked"/>

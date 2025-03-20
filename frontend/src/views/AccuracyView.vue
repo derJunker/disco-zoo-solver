@@ -1,6 +1,5 @@
 <template>
   <div class="accuracy-view">
-    {{timeless + ""}}
     <div class="accuracy-content">
       <accuracy-config class="accuracy-config dock-bottom menu-bottom"
                        :selected-region="selectedRegion" :selected-game-type="selectedGameType" :timeless="timeless"
