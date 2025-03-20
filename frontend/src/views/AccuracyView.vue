@@ -45,6 +45,7 @@ import MenuBar from "@/components/MenuBar.vue";
 import AccuracyConfig from "@/components/Overlays/AccuracyConfig.vue";
 import router from "@/router";
 import RegionSelect from "@/components/Overlays/RegionSelect.vue";
+import {AccuracyGameType} from "@/types/AccuracyGameType";
 
 export default defineComponent({
   name: "AccuracyView",
@@ -52,7 +53,7 @@ export default defineComponent({
   data() {
     return {
       selectedRegion: "farm" as string | null,
-      selectedGameType: "single-click" as string | null,
+      selectedGameType: AccuracyGameType.SINGLE_CLICK as string | null,
       showRegionSelect: false
     }
   },

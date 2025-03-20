@@ -18,15 +18,13 @@
         </h2>
         <div class="game-types-container">
           <div id="single-click-game-type" class="btn btn-gradient color-action-neutral-1" :class="selectedGameType
-          === 'single-click' ? 'animal-highlighted' : ''"
-               @click="$emit('game-type-selected',
-        'single-click')">
+          === gameType.SINGLE_CLICK ? 'animal-highlighted' : ''"
+               @click="$emit('game-type-selected', gameType.SINGLE_CLICK)">
             Single Click
           </div>
           <div id="single-game-game-type" class="btn btn-gradient color-action-neutral-3" :class="selectedGameType
-          === 'single-game' ? 'animal-highlighted' : ''"
-               @click="$emit('game-type-selected',
-        'single-game')">
+          === gameType.SINGLE_GAME ? 'animal-highlighted' : ''"
+               @click="$emit('game-type-selected', gameType.SINGLE_GAME)">
             Single Game
           </div>
         </div>
@@ -60,6 +58,7 @@
 <script lang="ts">
 import {defineComponent} from 'vue'
 import {getRegionColors} from "@/util/region-colors";
+import {AccuracyGameType} from "@/types/AccuracyGameType";
 
 export default defineComponent({
   name: "AccuracyConfig",
@@ -77,6 +76,12 @@ export default defineComponent({
   methods: {
     calcRegionColors(region: string) {
       return getRegionColors(region)
+    }
+  },
+
+  data() {
+    return {
+      gameType: AccuracyGameType
     }
   }
 })
