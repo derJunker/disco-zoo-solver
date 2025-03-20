@@ -56,8 +56,10 @@ import DiscoBoard from "@/views/DiscoBoard.vue";
 import {getRegionColors} from "@/util/region-colors";
 import {Coords} from "@/types/Coords";
 import {AccuracyGameHistoryElement} from "@/types/AccuracyGameHistoryElement";
+import {useAccuracyState, useState} from "@/store/useState";
 
 const gameApi = useGame()
+const accuracyState = useAccuracyState()
 
 export default defineComponent({
   name: "AccuracyPlayView",
@@ -115,13 +117,15 @@ export default defineComponent({
           region: this.region!,
           animalToFind: this.animalToFind!
         })
+        if (this.accuracyHistory.length >= 1) {
+          accuracyState.singleClickHistory = this.accuracyHistory
+          router.push({name: 'accuracy-single-click-result', params: {seed: this.seed!.toString(), region: this.region!}})
+        }
       })
       this.gameRound++
-      if (this.gameRound >= 1) {
-        await router.push({name: 'accuracy-single-click-result', params: {seed: this.seed!.toString(), region: this.region!}})
-        return;
+      if (this.gameRound < 1) {
+        await this.nextGame()
       }
-      await this.nextGame()
     }
   },
 
