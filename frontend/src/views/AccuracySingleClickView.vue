@@ -55,6 +55,7 @@ import AnimalDisplay from "@/components/AnimalDisplay.vue";
 import DiscoBoard from "@/views/DiscoBoard.vue";
 import {getRegionColors} from "@/util/region-colors";
 import {Coords} from "@/types/Coords";
+import {AccuracyGameHistoryElement} from "@/types/AccuracyGameHistoryElement";
 
 const gameApi = useGame()
 
@@ -69,7 +70,8 @@ export default defineComponent({
       timeless: false,
 
       game: null as Game | null,
-      animalToFind: null as Animal | null
+      animalToFind: null as Animal | null,
+      accuracyHistory: [] as AccuracyGameHistoryElement[]
     }
   },
   methods: {
@@ -93,20 +95,38 @@ export default defineComponent({
       const regionColors = getRegionColors(this.region)
       return {backgroundColor: regionColors.light}
     },
-    onCoordsClicked(coords: Coords) {
-      console.log(coords)
+
+    async nextGame() {
+      if (this.seed === null || this.region === null) {
+        await router.push({name: 'accuracy'})
+        return
+      }
+      let response: AccuracySingleClickGameResponse = await gameApi.accuracySingleClick(this.seed!, this.region!,
+          this.timeless, this.gameRound)
+      this.game = response.game
+      this.animalToFind = response.animalToFind
+    },
+
+    async onCoordsClicked(coords: Coords) {
+      gameApi.accuracyPerformance(this.game!, this.animalToFind!, coords).then(resp => {
+        this.accuracyHistory.push({
+          performance: resp,
+          game: this.game!,
+          region: this.region!,
+          animalToFind: this.animalToFind!
+        })
+      })
+      this.gameRound++
+      if (this.gameRound >= 1) {
+        await router.push({name: 'accuracy-single-click-result', params: {seed: this.seed!.toString(), region: this.region!}})
+        return;
+      }
+      await this.nextGame()
     }
   },
 
   async mounted() {
-    if (this.seed === null || this.region === null) {
-      await router.push({name: 'accuracy'})
-      return
-    }
-    let response: AccuracySingleClickGameResponse = await gameApi.accuracySingleClick(this.seed!, this.region!,
-        this.timeless, this.gameRound)
-    this.game = response.game
-    this.animalToFind = response.animalToFind
+    await this.nextGame()
   }
 })
 </script>

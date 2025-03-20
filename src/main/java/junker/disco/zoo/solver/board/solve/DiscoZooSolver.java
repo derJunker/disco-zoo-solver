@@ -27,14 +27,16 @@ import static junker.disco.zoo.solver.board.solve.OverlapCalulator.findHighestOv
 public class DiscoZooSolver {
 
     public static BestMoveInformation getBestMoveInformation(Animal animalToSolve, Game game) {
-        var overlaps = calculateOverlaps(game);
-        var solutions = getBestSolutions(animalToSolve, game, overlaps);
+        var wipedGame = new Game(game, true);
+        var overlaps = calculateOverlaps(wipedGame);
+        var solutions = getBestSolutions(animalToSolve, wipedGame, overlaps);
         return new BestMoveInformation(overlaps.animalOverlapProbability().get(animalToSolve), solutions);
     }
 
     public static List<Solution> getBestSolutions(Animal animalToSolve, Game game) {
-        var overlaps = calculateOverlaps(game);
-        return getBestSolutions(animalToSolve, game, overlaps);
+        var wipedGame = new Game(game, true);
+        var overlaps = calculateOverlaps(wipedGame);
+        return getBestSolutions(animalToSolve, wipedGame, overlaps);
     }
 
     private static List<Solution> getBestSolutions(Animal animalToSolve, Game game, Overlaps overlaps) {
