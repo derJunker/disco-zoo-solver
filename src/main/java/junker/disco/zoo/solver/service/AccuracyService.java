@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import junker.disco.zoo.solver.board.Game;
-import junker.disco.zoo.solver.model.accuracy.AccuracyGameType;
 import junker.disco.zoo.solver.model.animals.Animal;
 import junker.disco.zoo.solver.model.animals.Region;
+import junker.disco.zoo.solver.requests.return_objects.AccuracySingleClickResponse;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -16,8 +16,8 @@ public class AccuracyService {
     // calls for each "getRandomGame()
     private static final int RANDOM_CALLS_UPPER_BOUND = 20;
 
-    public Game getRandomGame(Long seed,
-                              int gameNumber, Region region, boolean timeless) {
+    public AccuracySingleClickResponse getSingleClickGame(Long seed,
+                                                          int gameNumber, Region region, boolean timeless) {
         var random = new java.util.Random(seed);
 
         skipRandomAhead(gameNumber, random);
@@ -37,7 +37,9 @@ public class AccuracyService {
             var animal = remainingAnimals.remove(chosenAnimalIndex);
             animalsToPlace.add(animal);
         }
-        return new Game(animalsToPlace);
+        var animalToSearch = animalsToPlace.get(random.nextInt(animalsToPlace.size()));
+        var game = new Game(animalsToPlace);
+        return new AccuracySingleClickResponse(game, animalToSearch);
     }
 
     private void skipRandomAhead(int gameNumber, Random random) {
