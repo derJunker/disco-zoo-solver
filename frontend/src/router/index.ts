@@ -1,4 +1,6 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
+import {AccuracyGameType} from "@/types/AccuracyGameType";
+
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -22,9 +24,14 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import(/* webpackChunkName: "about" */ '../views/AccuracyView.vue')
   },
   {
-    path: '/accuracy/:gameType/:region/:seed',
-    name: 'accuracy-play',
-    component: () => import('../views/AccuracyPlayView.vue')
+    path: '/accuracy/' + AccuracyGameType.SINGLE_CLICK + '/:region/:seed',
+    name: 'accuracy-' + AccuracyGameType.SINGLE_CLICK +'-play',
+    component: () => import('../views/AccuracySingleClickView.vue')
+  },
+  {
+    path: '/accuracy/' + AccuracyGameType.SINGLE_GAME + '/:region/:seed',
+    name: 'accuracy-' + AccuracyGameType.SINGLE_GAME +'-play',
+    component: () => import('../views/AccuracySingleGameView.vue')
   },
   {
     path: '/stats',

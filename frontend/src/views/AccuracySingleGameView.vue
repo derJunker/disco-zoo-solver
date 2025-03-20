@@ -1,8 +1,8 @@
 <template>
-  <div class="accuracy-play-view">
-    <div class="accuracy-play-content">
+  <div class="accuracy-single-game-view">
+    <div class="accuracy-single-game-content">
       <h1>
-        Something
+        Single Game
       </h1>
     </div>
     <menu-bar :on-first-button-click="onBack" first-color-class="color-action-neutral-1" first-button-name="back"
@@ -12,13 +12,13 @@
 </template>
 
 <style scoped>
-.accuracy-play-view {
+.accuracy-single-game-view {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
 }
 
-.accuracy-play-content {
+.accuracy-single-game-content {
   position: relative;
   flex: 1;
   display: flex;

@@ -1,4 +1,4 @@
 export enum AccuracyGameType {
-    SINGLE_GAME = 'SINGLE_GAME',
-    SINGLE_CLICK = 'SINGLE_CLICK'
+    SINGLE_GAME = 'single-game',
+    SINGLE_CLICK = 'single-click'
 }

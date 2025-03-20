@@ -53,7 +53,7 @@ export default defineComponent({
   data() {
     return {
       selectedRegion: "farm" as string | null,
-      selectedGameType: AccuracyGameType.SINGLE_CLICK as string | null,
+      selectedGameType: AccuracyGameType.SINGLE_CLICK as string,
       showRegionSelect: false
     }
   },
@@ -62,7 +62,8 @@ export default defineComponent({
       router.push({name: 'home'})
     },
     onPlay() {
-      router.push({name: 'accuracy-play', params: {seed: 1, region: this.selectedRegion, gameType: this.selectedGameType}})
+      router.push({name: 'accuracy-' + this.selectedGameType +'-play', params: {seed: this.generateSeed(), region:
+          this.selectedRegion}})
     },
 
     onRegionClicked() {
@@ -76,6 +77,10 @@ export default defineComponent({
     onRegionSelect(region: string) {
       this.selectedRegion = region
       this.showRegionSelect = false
+    },
+
+    generateSeed() {
+      return Math.floor(Math.random() * 1000000)
     }
   }
 })
