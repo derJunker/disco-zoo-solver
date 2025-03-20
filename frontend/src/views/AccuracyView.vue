@@ -1,8 +1,10 @@
 <template>
   <div class="accuracy-view">
+    {{timeless + ""}}
     <div class="accuracy-content">
       <accuracy-config class="accuracy-config dock-bottom menu-bottom"
-                       :selected-region="selectedRegion" :selected-game-type="selectedGameType"
+                       :selected-region="selectedRegion" :selected-game-type="selectedGameType" :timeless="timeless"
+                       @timeless-changed="onTimelessChanged"
                        @region-clicked="onRegionClicked" @game-type-selected="onGameTypeSelected"/>
       <region-select v-if="showRegionSelect"  @region-select="onRegionSelect"
                       class="region-select dock-bottom dock-bottom-shadow menu-bottom" any-option-available="true"/>
@@ -54,7 +56,8 @@ export default defineComponent({
     return {
       selectedRegion: "farm" as string | null,
       selectedGameType: AccuracyGameType.SINGLE_CLICK as string,
-      showRegionSelect: false
+      showRegionSelect: false,
+      timeless: false
     }
   },
   methods: {
@@ -72,6 +75,10 @@ export default defineComponent({
 
     onGameTypeSelected(gameType: string) {
       this.selectedGameType = gameType
+    },
+
+    onTimelessChanged(timeless: boolean) {
+      this.timeless = timeless
     },
 
     onRegionSelect(region: string) {

@@ -12,6 +12,10 @@
           {{selectedRegion? selectedRegion : 'Select Region'}}
         </div>
       </div>
+      <div class="toggle-select-container">
+        <toggle-select title="timeless" selected-color-class="timeless" class="toggle-select"
+                       @selected="(newVal:boolean) => $emit('timeless-changed', newVal)" :default-value="timeless"/>
+      </div>
       <div>
         <h2>
           Gametype:
@@ -52,6 +56,10 @@
 #select-region-btn {
   min-width: 15rem;
 }
+.toggle-select-container {
+  display: grid;
+  place-items: end;
+}
 </style>
 
 
@@ -59,9 +67,11 @@
 import {defineComponent} from 'vue'
 import {getRegionColors} from "@/util/region-colors";
 import {AccuracyGameType} from "@/types/AccuracyGameType";
+import ToggleSelect from "@/components/Basic/ToggleSelect.vue";
 
 export default defineComponent({
   name: "AccuracyConfig",
+  components: {ToggleSelect},
   props: {
     selectedRegion: {
       type: String,
@@ -69,14 +79,18 @@ export default defineComponent({
     },
     selectedGameType: {
       type: String,
-      required: false
+      required: true
+    },
+    timeless: {
+      type: Boolean,
+      required: true
     }
   },
 
   methods: {
     calcRegionColors(region: string) {
       return getRegionColors(region)
-    }
+    },
   },
 
   data() {

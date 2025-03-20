@@ -1,5 +1,5 @@
 <template>
-  <span class="btn btn-gradient" @click="onClick" :class = "selected ? selectedColorClass : 'unselected'">
+  <span class="toggle-select btn btn-gradient" @click="onClick" :class = "selected ? selectedColorClass : 'unselected'">
     {{ title }}
   </span>
 </template>
@@ -54,12 +54,5 @@ export default defineComponent({
 <style scoped>
 .unselected {
   background-color: gray;
-}
-
-.btn {
-  user-select: none;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
 }
 </style>
