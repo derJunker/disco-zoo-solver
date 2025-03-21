@@ -57,6 +57,7 @@ import {getRegionColors} from "@/util/region-colors";
 import {Coords} from "@/types/Coords";
 import {AccuracyGameHistoryElement} from "@/types/AccuracyGameHistoryElement";
 import {useAccuracyState} from "@/store/useState";
+import {calculateScore} from "@/util/score-calculator";
 
 const gameApi = useGame()
 const accuracyState = useAccuracyState()
@@ -111,16 +112,20 @@ export default defineComponent({
 
     async onCoordsClicked(coords: Coords) {
       const maxRounds = 2
+      const game = this.game
+      const region = this.region
+      const animalToFind = this.animalToFind
       gameApi.accuracyPerformance(this.game!, this.animalToFind!, coords).then(resp => {
         this.accuracyHistory.push({
           performance: resp,
-          game: this.game!,
-          region: this.region!,
-          animalToFind: this.animalToFind!
+          score: calculateScore(resp.accuracy, resp.wasBestClick ? 1 : 0),
+          game: game!,
+          region: region!,
+          animalToFind: animalToFind!
         })
         if (this.accuracyHistory.length >= maxRounds) {
           accuracyState.singleClickHistory = this.accuracyHistory
-          router.push({name: 'accuracy-single-click-result', params: {seed: this.seed!.toString(), region: this.region!}})
+          router.push({name: 'accuracy-single-click-result'})
         }
       })
       this.gameRound++

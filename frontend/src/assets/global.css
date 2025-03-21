@@ -126,7 +126,7 @@ html, body, #app, #router-view {
 }
 
 .wood-menu {
-    padding: .5rem .8rem;
+    padding: .5rem .8rem 1.2rem .8rem;
     background-color: var(--wood-color-dark);
     border: var(--border-large) solid rgba(255, 255, 255, var(--border-light-opacity));
     border-radius: var(--border-radius);
@@ -136,10 +136,12 @@ html, body, #app, #router-view {
     text-align: center;
     margin-bottom: 1rem;
     font-size: var(--font-size-large);
+    font-weight: normal;
 }
 
 .wood-menu h2 {
     margin-bottom: .2rem;
+    font-weight: normal;
     font-size: var(--font-size-larger);
 }
 
@@ -148,6 +150,13 @@ html, body, #app, #router-view {
     border-radius: var(--border-radius);
     box-shadow: inset 0px 0px 5px rgba(0, 0, 0, 0.4);
     padding: .5rem;
+}
+
+.wood-menu-group h2 {
+    margin-bottom: .1rem;
+    font-size: var(--font-size);
+    color: rgba(255, 255, 255, 0.7);
+    font-weight: bold;
 }
 
 .menu-bottom {

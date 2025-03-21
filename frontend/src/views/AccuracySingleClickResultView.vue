@@ -12,7 +12,7 @@
           <div class="btn btn-gradient color-action-good" @click="onRetryClick">
             Retry
           </div>
-          <div class="btn btn-gradient color-action-neutral-2">
+          <div class="btn btn-gradient color-action-neutral-2" @click="onDetailsClick">
             Details
           </div>
         </div>
@@ -77,6 +77,8 @@ import {defineComponent} from 'vue'
 import MenuBar from "@/components/MenuBar.vue";
 import {useAccuracyState} from "@/store/useState";
 import router from "@/router";
+import {AccuracyGameType} from "@/types/AccuracyGameType";
+import {calculateScore} from "@/util/score-calculator";
 
 const accuracyState = useAccuracyState()
 
@@ -95,7 +97,7 @@ export default defineComponent({
   methods: {
     calculateGrade(overallAccuracy: number, percentageBestClicks: number): string {
       // 89% of the score is based on overallAccuracy, 11% from percentageBestClicks
-      this.score = (overallAccuracy * 0.89) + (percentageBestClicks * 0.11);
+      this.score = calculateScore(overallAccuracy, percentageBestClicks)
 
       // Determine grade based on score with user's specified thresholds
       if (this.score >= 1) return "S+";
@@ -105,6 +107,10 @@ export default defineComponent({
       if (this.score >= 0.50) return "C";
       if (this.score >= 0.35) return "D";
       return "F";
+    },
+
+    onDetailsClick() {
+      router.push({name: 'accuracy-' + AccuracyGameType.SINGLE_CLICK + '-stats-details'})
     },
 
     gradeColor() {

@@ -4,6 +4,7 @@ import {Animal} from "@/types/Animal";
 
 export interface AccuracyGameHistoryElement {
     performance: AccuracySingleClickPerformanceResponse,
+    score: number,
     game: Game,
     region: string,
     animalToFind: Animal

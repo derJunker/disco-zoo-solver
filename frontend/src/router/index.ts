@@ -34,6 +34,11 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import('../views/AccuracySingleClickResultView.vue')
   },
   {
+    path: '/accuracy/' + AccuracyGameType.SINGLE_GAME + '/stats/details',
+    name: 'accuracy-' + AccuracyGameType.SINGLE_CLICK + '-stats-details',
+    component: () => import('../views/AccuracySingleClickResultDetailsView.vue')
+  },
+  {
     path: '/stats',
     name: 'stats',
     component: () => import(/* webpackChunkName: "about" */ '../views/StatsView.vue')
