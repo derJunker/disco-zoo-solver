@@ -37,3 +37,7 @@ dependencies {
 tasks.test {
     useJUnitPlatform()
 }
+
+tasks.bootWar {
+    archiveFileName="disco-solver#api.war"
+}
