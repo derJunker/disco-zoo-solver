@@ -28,7 +28,7 @@ export default defineComponent({
   props: {
     game: {
       type: Object as () => Game | null,
-      required: true
+      required: false
     },
     bestClicks: {
       type: Array as () => Coords[],
