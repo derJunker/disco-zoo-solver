@@ -85,7 +85,7 @@ export default defineComponent({
   components: {DiscoBoard, ConfigMenu, MenuBar, AnimalDisplay},
   data() {
     return {
-      animals: [] as Animal[], // TODO
+      animals: [] as Animal[],
       animalNames: [] as string[],
       region: null as string | null,
       game: null as Game | null,
