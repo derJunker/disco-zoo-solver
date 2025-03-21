@@ -17,6 +17,26 @@ java {
     sourceCompatibility = JavaVersion.VERSION_23
 }
 
+tasks.processResources {
+    dependsOn("copyFrontend")
+}
+
+tasks.register<Copy>("copyFrontend") {
+    dependsOn("npmBuild")
+    from("./frontend/dist") {
+        include("**/*")
+    }
+    into("/build/resources/main/static")
+}
+
+tasks.register("npmBuild") {
+    exec {
+        errorOutput = System.err
+        workingDir = file("./frontend")
+        commandLine ("cmd", "/c", "npm", "run", "build")
+    }
+}
+
 dependencies {
     testImplementation(platform("org.junit:junit-bom:5.10.0"))
     testImplementation("org.junit.jupiter:junit-jupiter")
