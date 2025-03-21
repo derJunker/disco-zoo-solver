@@ -1,6 +1,5 @@
 <template>
-  <div class="animal-select wood-menu">
-    <h1> Select Animals -  {{region}}</h1>
+  <div class="animal-select">
     <div class="animal-select-container">
       <div class="common-animals-container">
         <h4>Common:</h4>
@@ -26,11 +25,13 @@
           </div>
         </div>
       </div>
-      <div v-if="timelessAnimal" class="timeless-animal-container">
+      <div v-if="timelessAnimal && timeless" class="timeless-animal-container">
         <h4>Timeless:</h4>
         <div class="timeless-animals animals">
           <div class="animal" @click="onAnimalSelected(timelessAnimal)">
-            <animal-square :animal="timelessAnimal" class="animal-picture" :class="isHighlighted(timelessAnimal) ? 'animal-highlighted' : ''"/>
+            <animal-square :animal="timelessAnimal" class="animal-picture"
+                           :class="isHighlighted(timelessAnimal) ?
+            'animal-highlighted' : ''"/>
           </div>
         </div>
       </div>
@@ -39,18 +40,11 @@
 </template>
 
 <style scoped>
-
-.animal-select {
-  display: grid;
-  align-self: stretch;
-}
-
 .animal-select-container {
   padding: 1rem 0;
   user-select: none;
   display: grid;
   grid-template-columns: auto auto;
-  padding-inline: 1rem;
   gap: .3rem;
 }
 
@@ -94,11 +88,9 @@ h4 {
 import {defineComponent} from 'vue'
 import {useAnimals} from "@/store/useAnimals";
 import {Animal} from "@/types/Animal";
-import {useState} from "@/store/useState";
 import AnimalSquare from "@/components/Basic/AnimalSquare.vue";
 
 const animalStore = useAnimals()
-const state = useState()
 
 const loadingCommonAnimal: Animal = {
   name: "",
@@ -137,13 +129,21 @@ export default defineComponent({
       rareAnimals: [loadingRareAnimal, loadingRareAnimal] as Animal[],
       epicAnimal: loadingEpicAnimal as Animal | null,
       timelessAnimal: loadingTimelessAnimal as Animal | null,
-      selectedAnimals: [] as Animal[]
     }
   },
   props: {
     region: {
       type: String,
       required: true
+    },
+    selectedAnimals: {
+      type: Array as () => Animal[],
+      required: true
+    },
+    timeless: {
+      type: Boolean,
+      required: false,
+      default: false
     }
   },
 
@@ -164,29 +164,26 @@ export default defineComponent({
       this.rareAnimals = animals.filter(a => a.rarity === "RARE")
       this.epicAnimal = animals.find(a => a.rarity === "EPIC")!
       this.timelessAnimal = animals.find(a => a.rarity === "TIMELESS")!
-      state.selectedAnimals = []
-      this.syncLocalSelectedAnimals()
+      this.$emit('animals-selected', [])
     },
 
     onAnimalSelected(animal: Animal) {
-      if (state.selectedAnimals.filter(a => a.name === animal.name).length > 0) {
-        state.selectedAnimals = state.selectedAnimals.filter(a => a.name !== animal.name)
+      if (this.selectedAnimals.filter(a => a.name === animal.name).length > 0) {
+        this.$emit('animals-selected', this.selectedAnimals.filter(a => a.name !== animal.name))
       } else {
-        if (state.selectedAnimals.length == 3) {
-          state.selectedAnimals.shift()
+        let newAnimals = [...this.selectedAnimals]
+        if (newAnimals.length == 3) {
+          newAnimals.shift()
         }
 
-        state.selectedAnimals.push(animal)
+        newAnimals.push(animal)
+        this.$emit('animals-selected', newAnimals)
       }
-      this.syncLocalSelectedAnimals()
     },
 
-    syncLocalSelectedAnimals() {
-      this.selectedAnimals = state.selectedAnimals
-    },
 
     isHighlighted(animal: Animal) {
-      return state.selectedAnimals.filter(a => a.name === animal.name).length > 0
+      return this.selectedAnimals.filter(a => a.name === animal.name).length > 0
     }
   }
 })

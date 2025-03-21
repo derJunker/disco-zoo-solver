@@ -1,10 +1,11 @@
 <template>
   <div class="reconstruct-play-view" :style="getBackgroundStyle()">
+    {{loadPathVariables($route.params.region, $route.query.animals)}}
     <div class="reconstruct-content">
       <AnimalDisplay :animals="animals" :tracker="animalTracker" class="animal-display"
                      @animal-click="onPlaceSelectChange" :animal-to-place="animalToPlace"/>
       <disco-board
-          :game="game" :best-clicks="bestClicks" :region="getSelectedRegion()"
+          :game="game" :best-clicks="bestClicks" :region="region"
           :probabilities="probabilities" :min-prob="minProb" :max-prob="maxProb"
           @clicked-coords="onCoordsClicked"
           @right-clicked-coords="rightClickedCoords" class="disco-board"/>
@@ -61,7 +62,6 @@
 import {defineComponent} from 'vue'
 import {Animal} from "@/types/Animal";
 import AnimalDisplay from "@/components/AnimalDisplay.vue";
-import {useState} from "@/store/useState";
 import MenuBar from "@/components/MenuBar.vue";
 import router from "@/router";
 import {useGame} from "@/store/useGame";
@@ -72,10 +72,12 @@ import {useSolver} from "@/store/useSolver";
 import ConfigMenu from "@/views/ConfigMenu.vue";
 import {sortAnimalsByRarity} from "@/util/animal-sorter";
 import DiscoBoard from "@/views/DiscoBoard.vue";
+import regionSelect from "@/components/Overlays/RegionSelect.vue";
+import {useAnimals} from "@/store/useAnimals";
 
 
-const state = useState()
 const gameStore = useGame()
+const animalStore = useAnimals()
 const solver = useSolver()
 
 export default defineComponent({
@@ -83,7 +85,9 @@ export default defineComponent({
   components: {DiscoBoard, ConfigMenu, MenuBar, AnimalDisplay},
   data() {
     return {
-      animals: state.selectedAnimals as Animal[],
+      animals: [] as Animal[], // TODO
+      animalNames: [] as string[],
+      region: null as string | null,
       game: null as Game | null,
       probabilities: null as number[][] | null,
       maxProb: null as number | null,
@@ -108,12 +112,17 @@ export default defineComponent({
     }
   },
 
-  async created() {
-    if (this.animals.length === 0) {
-      await router.push({name: "reconstruct-region", params: {region: state.selectedRegion?.toLowerCase()}})
+  async mounted() {
+    if (this.animalNames.length === 0) {
+      await router.push({name: "reconstruct"})
       return
     }
-    this.game = await gameStore.startReconstruct(this.animals)
+
+    this.animals = await animalStore.getAnimalsByNames(this.animalNames)
+
+    gameStore.startReconstruct(this.animals).then(game => {
+      this.game = game
+    })
     sortAnimalsByRarity(this.animals)
 
     this.animalForHeatmap = this.animals[this.animals.length - 1]
@@ -121,6 +130,12 @@ export default defineComponent({
   },
 
   methods: {
+    loadPathVariables(region: string, animals: string[]) {
+      this.animalNames = animals
+      this.region = region
+      return ''
+    },
+
     async updateProbabilityInfo() {
       if (!this.game || !this.animalForHeatmap) {
         this.probabilities = null;
@@ -148,7 +163,7 @@ export default defineComponent({
 
 
     onBack() {
-      router.push({name: "reconstruct-region", params: {region: state.selectedRegion?.toLowerCase()}})
+      router.push({name: "reconstruct"})
     },
     onConfig() {
       this.showConfig = !this.showConfig
@@ -206,10 +221,10 @@ export default defineComponent({
     },
 
     getBackgroundStyle() {
-      if (!state.selectedRegion) {
+      if (!this.region) {
         return {}
       }
-      const regionColors = getRegionColors(state.selectedRegion)
+      const regionColors = getRegionColors(this.region)
       return {backgroundColor: regionColors.light}
     },
 
@@ -220,10 +235,6 @@ export default defineComponent({
     getConfigMenuColorClass() {
       return this.showConfig ? "color-action-bad" : "color-action-neutral-2"
     },
-
-    getSelectedRegion() {
-      return state.selectedRegion
-    }
   }
 })
 </script>

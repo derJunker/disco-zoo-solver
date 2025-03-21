@@ -56,7 +56,7 @@ import DiscoBoard from "@/views/DiscoBoard.vue";
 import {getRegionColors} from "@/util/region-colors";
 import {Coords} from "@/types/Coords";
 import {AccuracyGameHistoryElement} from "@/types/AccuracyGameHistoryElement";
-import {useAccuracyState, useState} from "@/store/useState";
+import {useAccuracyState} from "@/store/useState";
 
 const gameApi = useGame()
 const accuracyState = useAccuracyState()

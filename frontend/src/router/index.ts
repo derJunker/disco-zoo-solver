@@ -10,11 +10,6 @@ const routes: Array<RouteRecordRaw> = [
   },
   {
     path: '/reconstruct/:region',
-    name: 'reconstruct-region',
-    component: () => import('../views/ReconstructView.vue')
-  },
-  {
-    path: '/reconstruct/:region/play',
     name: 'reconstruct-play',
     component: () => import('../views/ReconstructPlayView.vue')
   },
