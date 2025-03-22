@@ -111,15 +111,19 @@ export default defineComponent({
     },
 
     async onCoordsClicked(coords: Coords) {
-      const maxRounds = 10
+      const maxGameAmount = process.env.VUE_APP_ACCURACY_GAME_AMOUNT
+      if (this.gameRound >= maxGameAmount) {
+        return
+      }
       const game = this.game
       const region = this.region
       const animalToFind = this.animalToFind
+      const currentGameAmount = this.gameRound
       gameApi.accuracyPerformance(this.game!, this.animalToFind!, coords).then(resp => {
         const wasBestClick = resp.bestClicks.filter(click => click.x == coords.x && click.y == coords.y).length > 0
         const maxProb = Math.max(...resp.probabilities.flat())
         const minProb = Math.min(...resp.probabilities.flat())
-        this.accuracyHistory.push({
+        this.accuracyHistory[currentGameAmount] = {
           click: coords,
           score: calculateScore(resp.accuracy, wasBestClick ? 1 : 0),
           accuracy: resp.accuracy,
@@ -132,14 +136,14 @@ export default defineComponent({
           maxProb: maxProb,
           bestClicks: resp.bestClicks,
           wasBestClick: wasBestClick,
-        })
-        if (this.accuracyHistory.length >= maxRounds) {
+        }
+        if (this.accuracyHistory.length >= maxGameAmount && this.accuracyHistory.every(element => element !== undefined)) {
           accuracyState.singleClickHistory = this.accuracyHistory
           router.push({name: 'accuracy-single-click-result'})
         }
       })
       this.gameRound++
-      if (this.gameRound < maxRounds) {
+      if (this.gameRound < maxGameAmount) {
         await this.nextGame()
       }
     }

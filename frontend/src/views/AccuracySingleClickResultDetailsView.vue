@@ -182,9 +182,19 @@ export default defineComponent({
       const probabilityOfTile = element.probabilities[coords.x][coords.y]
       const heatMapColor = getHeatmapColor(probabilityOfTile, element.minProb, element.maxProb)
       const coordsAreBestClick = element.bestClicks.filter((click: Coords) => click.x === coords.x && click.y === coords.y).length > 0
+      const borderRadiusTopLeft = coords.x === 0 && coords.y === 0 ? "var(--border-radius)" : "0"
+      const borderRadiusTopRight = coords.x === element.probabilities.length-1 && coords.y === 0 ?
+          "var(--border-radius)" : "0"
+      const borderRadiusBottomLeft = coords.x === 0 && coords.y === element.probabilities[0].length-1 ?
+          "var(--border-radius)" : "0"
+      const borderRadiusBottomRight = coords.x === element.probabilities.length-1 && coords.y === element.probabilities[0].length-1 ?
+          "var(--border-radius)" : "0"
+      console.log("radius: ", `${borderRadiusTopLeft} ${borderRadiusTopRight} ${borderRadiusBottomRight} ${borderRadiusBottomLeft}`)
+
       return {
         backgroundColor: heatMapColor,
-        border: coordsAreBestClick ? "var(--best-click-border)" : ""
+        border: coordsAreBestClick ? "var(--best-click-border)" : "",
+        borderRadius: `${borderRadiusTopLeft} ${borderRadiusTopRight} ${borderRadiusBottomRight} ${borderRadiusBottomLeft}`
       }
     },
 
