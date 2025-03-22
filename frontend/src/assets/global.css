@@ -239,6 +239,10 @@ html, body, #app, #router-view {
     background-color: #A822CF;
 }
 
+.color-action-disabled {
+    background-color: #818181;
+}
+
 .color-action-info {
     background-color: #E7650D;
 }
@@ -427,4 +431,12 @@ html, body, #app, #router-view {
 
 .animal-highlighted::before {
     background: var(--animal-highlight-color-dark);
+}
+
+.btn-highlighted::after {
+    background: #ffffff;
+}
+
+.btn-highlighted::before {
+    display: none;
 }

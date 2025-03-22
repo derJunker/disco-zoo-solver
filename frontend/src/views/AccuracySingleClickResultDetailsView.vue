@@ -26,11 +26,14 @@
             <div class="btn game-nav-btn" @click="showIndex = loopIndex(showIndex+1)">{{">"}}</div>
           </div>
         </div>
+        <div class="btn btn-gradient color-action-neutral-2" id="back-btn" @click="onBack">
+          Back
+        </div>
       </div>
     </div>
-    <menu-bar :on-first-button-click="console.log" first-color-class="color-action-neutral-1" first-button-name="sth"
-              :on-second-button-click="console.log" second-color-class="color-action-neutral-2"
-              second-button-name="sth"/>
+    <menu-bar :on-first-button-click="onHome" first-color-class="color-action-neutral-1" first-button-name="Home"
+              :on-second-button-click="onRetry" second-color-class="color-action-good"
+              second-button-name="Retry"/>
   </div>
 </template>
 
@@ -60,7 +63,7 @@
 }
 
 .animal-square {
-  max-height: 3.5rem;
+  height: 3.5rem;
 }
 
 .boardNav {
@@ -131,6 +134,12 @@ h2, .score {
   bottom: -1.5rem;
 }
 
+#back-btn {
+  margin:  1rem auto 1rem auto;
+  width: fit-content;
+  padding: 1rem;
+}
+
 </style>
 
 <script lang="ts">
@@ -141,6 +150,7 @@ import AnimalSquare from "@/components/Basic/AnimalSquare.vue";
 import router from "@/router";
 import {Coords} from "@/types/Coords";
 import {getHeatmapColor} from "@/util/heatmap-colors";
+import {AccuracyGameType} from "@/types/AccuracyGameType";
 
 const state = useAccuracyState()
 
@@ -189,7 +199,6 @@ export default defineComponent({
           "var(--border-radius)" : "0"
       const borderRadiusBottomRight = coords.x === element.probabilities.length-1 && coords.y === element.probabilities[0].length-1 ?
           "var(--border-radius)" : "0"
-      console.log("radius: ", `${borderRadiusTopLeft} ${borderRadiusTopRight} ${borderRadiusBottomRight} ${borderRadiusBottomLeft}`)
 
       return {
         backgroundColor: heatMapColor,
@@ -201,6 +210,16 @@ export default defineComponent({
     isClickedTile(coords: Coords) {
       const element = this.singleClickHistory[this.showIndex]
       return element.click.x === coords.x && element.click.y === coords.y
+    },
+
+    onHome() {
+      router.push({name: 'home'})
+    },
+    onRetry() {
+      router.push({name: 'accuracy'})
+    },
+    onBack() {
+      router.push({name: 'accuracy-' + AccuracyGameType.SINGLE_CLICK + '-result'})
     }
   },
 

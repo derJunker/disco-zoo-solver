@@ -9,9 +9,6 @@
           <div id="accuracy">Accuracy: {{(score*100).toFixed(2)}}%</div>
         </div>
         <div class="nav-buttons">
-          <div class="btn btn-gradient color-action-good" @click="onRetryClick">
-            Retry
-          </div>
           <div class="btn btn-gradient color-action-neutral-2" @click="onDetailsClick">
             Details
           </div>
@@ -19,8 +16,8 @@
       </div>
     </div>
     <menu-bar :on-first-button-click="onHomeClick" first-color-class="color-action-neutral-1" first-button-name="Home"
-              :on-second-button-click="console.log" second-color-class="color-action-neutral-2"
-              second-button-name="Back"/>
+              :on-second-button-click="onRetryClick" second-color-class="color-action-good"
+              second-button-name="Retry"/>
   </div>
 </template>
 

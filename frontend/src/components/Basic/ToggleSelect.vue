@@ -1,5 +1,6 @@
 <template>
-  <span class="toggle-select btn btn-gradient" @click="onClick" :class = "selected ? selectedColorClass : 'unselected'">
+  <span class="toggle-select btn btn-gradient" @click="onClick" :class = "selected ? selectedColorClass :
+  'color-action-disabled'">
     {{ title }}
   </span>
 </template>
@@ -52,7 +53,4 @@ export default defineComponent({
 </script>
 
 <style scoped>
-.unselected {
-  background-color: gray;
-}
 </style>

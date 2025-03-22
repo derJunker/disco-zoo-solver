@@ -21,15 +21,10 @@
           Gametype:
         </h2>
         <div class="game-types-container">
-          <div id="single-click-game-type" class="btn btn-gradient color-action-neutral-1" :class="selectedGameType
-          === gameType.SINGLE_CLICK ? 'animal-highlighted' : ''"
-               @click="$emit('game-type-selected', gameType.SINGLE_CLICK)">
-            Single Click
-          </div>
-          <div id="single-game-game-type" class="btn btn-gradient color-action-neutral-3" :class="selectedGameType
-          === gameType.SINGLE_GAME ? 'animal-highlighted' : ''"
-               @click="$emit('game-type-selected', gameType.SINGLE_GAME)">
-            Single Game
+          <div v-for="gameType in possibleGameTypes" :key="gameType" class="btn btn-gradient game-type"
+               :class="selectedGameType === gameType ? 'color-action-neutral-2 btn-highlighted' : 'color-action-disabled'"
+               @click="$emit('game-type-selected', gameType)">
+            {{gameType.replace(/-/g, ' ')}}
           </div>
         </div>
       </div>
@@ -50,7 +45,8 @@
 }
 .game-types-container {
   display: flex;
-  row-gap: .2rem;
+  row-gap: .4rem;
+  flex-wrap: wrap;
   column-gap: 1rem;
 }
 #select-region-btn {
@@ -59,6 +55,9 @@
 .toggle-select-container {
   display: grid;
   place-items: end;
+}
+.game-type {
+  padding: .6rem;
 }
 </style>
 
@@ -95,8 +94,9 @@ export default defineComponent({
 
   data() {
     return {
-      gameType: AccuracyGameType
+      gameType: AccuracyGameType,
+      possibleGameTypes: Object.values(AccuracyGameType)
     }
-  }
+  },
 })
 </script>

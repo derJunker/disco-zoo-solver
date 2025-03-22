@@ -53,7 +53,7 @@ public class AccuracyController {
     }
 
     private ResponseEntity<AccuracySingleClickGameResponse> handleInvalidParams(Long seed, int gameNumber, String regionStr) {
-        if (seed == null || gameNumber < 0 || gameNumber > 10 || Region.byRepr(regionStr) == null) {
+        if (seed == null || gameNumber < 0 || gameNumber > 100 || Region.byRepr(regionStr) == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         return null;
