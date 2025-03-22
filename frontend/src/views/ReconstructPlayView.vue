@@ -2,13 +2,26 @@
   <div class="reconstruct-play-view" :style="getBackgroundStyle()">
     {{loadPathVariables($route.params.region, $route.query.animals)}}
     <div class="reconstruct-content">
+      <top-info-bar :region="region">
+        <div id="region">
+          Farm
+        </div>
+        <div id="attempts">
+          <span id="attemptNum">
+            {{ attempts }}
+          </span>
+          Attempts
+        </div>
+      </top-info-bar>
       <AnimalDisplay :animals="animals" :tracker="animalTracker" class="animal-display"
                      @animal-click="onPlaceSelectChange" :animal-to-place="animalToPlace"/>
-      <disco-board
-          :game="game" :best-clicks="bestClicks" :region="region"
-          :probabilities="probabilities" :min-prob="minProb" :max-prob="maxProb"
-          @clicked-coords="onCoordsClicked"
-          @right-clicked-coords="rightClickedCoords" class="disco-board"/>
+      <div class="disco-board-wrapper">
+        <disco-board
+            :game="game" :best-clicks="bestClicks" :region="region"
+            :probabilities="probabilities" :min-prob="minProb" :max-prob="maxProb"
+            @clicked-coords="onCoordsClicked"
+            @right-clicked-coords="rightClickedCoords" class="disco-board"/>
+      </div>
       <config-menu :style="!showConfig ? 'display: none;' : ''" class="config-menu dock-bottom dock-bottom-shadow" :animals="animals"
                    :heat-map-animal="animalForHeatmap" :place-animal="animalToPlace"
       @animal-heatmap-select="onHeatMapSelectChange" @animal-place-select="onPlaceSelectChange"/>
@@ -28,22 +41,23 @@
 .reconstruct-content {
   position: relative;
   flex: 1;
-  display: grid;
-  place-items: center;
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
 }
 
 .disco-board {
   max-width: min(90%, 400px);
   margin-inline: auto;
   margin-top: 3rem;
+  aspect-ratio: 1;
 }
 
-
-.animal-display {
-  position: absolute;
-  width: 100%;
-  top: 0;
+.disco-board-wrapper {
+  flex-grow: 1;
+  align-content: center;
 }
+
 
 
 .config-menu {
@@ -55,6 +69,25 @@
   max-width: min(90%, 400px);
   z-index: 1;
 }
+
+#region {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+#attemptNum {
+  font-size: 2rem;
+  font-weight: bold;
+  position: absolute;
+  left: -3rem;
+  bottom: -.2rem;
+  transform: scaleY(1.15);
+
+}
+
+#attempts {
+  position: relative;
+}
+
 
 </style>
 
@@ -72,8 +105,8 @@ import {useSolver} from "@/store/useSolver";
 import ConfigMenu from "@/views/ConfigMenu.vue";
 import {sortAnimalsByRarity} from "@/util/animal-sorter";
 import DiscoBoard from "@/views/DiscoBoard.vue";
-import regionSelect from "@/components/Overlays/RegionSelect.vue";
 import {useAnimals} from "@/store/useAnimals";
+import TopInfoBar from "@/views/TopInfoBar.vue";
 
 
 const gameStore = useGame()
@@ -82,7 +115,7 @@ const solver = useSolver()
 
 export default defineComponent({
   name: "ReconstructPlayView",
-  components: {DiscoBoard, ConfigMenu, MenuBar, AnimalDisplay},
+  components: {TopInfoBar, DiscoBoard, ConfigMenu, MenuBar, AnimalDisplay},
   data() {
     return {
       animals: [] as Animal[],
@@ -96,7 +129,8 @@ export default defineComponent({
       showConfig: false,
       animalToPlace: null as Animal | null,
       animalForHeatmap: null as Animal | null,
-      animalTracker: new Map<Animal, number>()
+      animalTracker: new Map<Animal, number>(),
+      attempts: process.env.VUE_APP_DEFAULT_ATTEMPTS
     }
   },
 
@@ -195,6 +229,7 @@ export default defineComponent({
       if (!this.game)
         return
       if (clickInfo.wasValidClick) {
+        this.updateAttemptCounter(clickInfo, coords)
         this.game.board[coords.x][coords.y] = clickInfo.updatedTile
 
         if (this.game.notCompletelyRevealedAnimalsWithoutBux.length == 0 &&
@@ -218,6 +253,19 @@ export default defineComponent({
         this.updateTracker()
 
       }
+    },
+
+    updateAttemptCounter(clickInfo: ClickChangeInfo, coords: Coords) {
+      if (!this.game)
+        return
+      const oldTile = this.game!.board[coords.x][coords.y]
+      const newTile = clickInfo.updatedTile!
+      if (oldTile?.revealed === newTile.revealed)
+        return;
+      if (newTile.revealed)
+        this.attempts--
+      else
+        this.attempts++
     },
 
     getBackgroundStyle() {
