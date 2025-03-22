@@ -4,6 +4,8 @@
     --wood-color-light: #C76B02;
     --background-color: #60C266;
 
+    --best-click-border: white solid 2px;
+
     /* Text styling */
     --text-color: #ffffff;
     --text-shadow: 1px 2px 3px rgba(0, 0, 0, 0.7);

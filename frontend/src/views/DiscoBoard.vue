@@ -125,7 +125,7 @@ export default defineComponent({
 }
 
 .best-click {
-  border: white solid 2px;
+  border: var(--best-click-border);
 }
 
 

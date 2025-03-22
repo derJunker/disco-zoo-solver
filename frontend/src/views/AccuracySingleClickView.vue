@@ -111,17 +111,27 @@ export default defineComponent({
     },
 
     async onCoordsClicked(coords: Coords) {
-      const maxRounds = 2
+      const maxRounds = 10
       const game = this.game
       const region = this.region
       const animalToFind = this.animalToFind
       gameApi.accuracyPerformance(this.game!, this.animalToFind!, coords).then(resp => {
+        const wasBestClick = resp.bestClicks.filter(click => click.x == coords.x && click.y == coords.y).length > 0
+        const maxProb = Math.max(...resp.probabilities.flat())
+        const minProb = Math.min(...resp.probabilities.flat())
         this.accuracyHistory.push({
-          performance: resp,
-          score: calculateScore(resp.accuracy, resp.wasBestClick ? 1 : 0),
+          click: coords,
+          score: calculateScore(resp.accuracy, wasBestClick ? 1 : 0),
+          accuracy: resp.accuracy,
+          animalToFind: animalToFind!,
+
           game: game!,
           region: region!,
-          animalToFind: animalToFind!
+          probabilities: resp.probabilities,
+          minProb: minProb,
+          maxProb: maxProb,
+          bestClicks: resp.bestClicks,
+          wasBestClick: wasBestClick,
         })
         if (this.accuracyHistory.length >= maxRounds) {
           accuracyState.singleClickHistory = this.accuracyHistory

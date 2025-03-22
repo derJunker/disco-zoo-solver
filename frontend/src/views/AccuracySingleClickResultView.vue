@@ -146,8 +146,8 @@ export default defineComponent({
       router.push({name: 'accuracy'})
       return
     }
-    this.overallAccuracy = clickHistory.reduce((acc, curr) => acc + curr.performance.accuracy, 0) / clickHistory.length
-    this.percentageBestClicks = clickHistory.filter(e => e.performance.wasBestClick).length / clickHistory.length
+    this.overallAccuracy = clickHistory.reduce((acc, curr) => acc + curr.accuracy, 0) / clickHistory.length
+    this.percentageBestClicks = clickHistory.filter(e => e.wasBestClick).length / clickHistory.length
     this.grade = this.calculateGrade(this.overallAccuracy, this.percentageBestClicks)
   },
 })

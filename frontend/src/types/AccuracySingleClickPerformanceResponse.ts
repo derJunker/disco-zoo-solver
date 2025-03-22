@@ -1,4 +1,7 @@
+import {Coords} from "@/types/Coords";
+
 export interface AccuracySingleClickPerformanceResponse {
     accuracy: number,
-    wasBestClick: boolean
+    probabilities: number[][],
+    bestClicks: Coords[],
 }

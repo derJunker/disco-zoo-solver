@@ -65,6 +65,6 @@ public class AccuracyService {
                         .map(coords -> probabilities[coords.x()][coords.y()])
                         .orElse(0d);
         var accuracy = clickedProbability / bestClickProbability;
-        return new AccuracySingleClickPerformanceResponse(accuracy, bestClicks.contains(click));
+        return new AccuracySingleClickPerformanceResponse(accuracy, probabilities, bestClicks);
     }
 }

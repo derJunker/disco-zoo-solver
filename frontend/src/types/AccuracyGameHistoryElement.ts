@@ -1,11 +1,18 @@
 import {AccuracySingleClickPerformanceResponse} from "@/types/AccuracySingleClickPerformanceResponse";
 import {Game} from "@/types/Game";
 import {Animal} from "@/types/Animal";
+import {Coords} from "@/types/Coords";
 
 export interface AccuracyGameHistoryElement {
-    performance: AccuracySingleClickPerformanceResponse,
+    click: Coords
     score: number,
+    accuracy: number,
+    animalToFind: Animal,
     game: Game,
     region: string,
-    animalToFind: Animal
+    probabilities: number[][],
+    minProb: number,
+    maxProb: number,
+    bestClicks: Coords[],
+    wasBestClick: boolean,
 }
