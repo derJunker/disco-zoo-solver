@@ -22,9 +22,11 @@
             @clicked-coords="onCoordsClicked"
             @right-clicked-coords="rightClickedCoords" class="disco-board"/>
       </div>
-      <config-menu :style="!showConfig ? 'display: none;' : ''" class="config-menu dock-bottom dock-bottom-shadow" :animals="animals"
-                   :heat-map-animal="animalForHeatmap" :place-animal="animalToPlace"
-      @animal-heatmap-select="onHeatMapSelectChange" @animal-place-select="onPlaceSelectChange"/>
+      <config-menu :style="!showConfig ? 'display: none;' : ''" class="config-menu dock-bottom dock-bottom-shadow"
+                   :animals="animals" :heat-map-animal="animalForHeatmap" :place-animal="animalToPlace"
+                   :can-add-attempts="canAddAttempts()" :can-remove-attempts="canRemoveAttempts()"
+                   @animal-heatmap-select="onHeatMapSelectChange" @animal-place-select="onPlaceSelectChange"
+                   @add-attempts="addAttempts()" @remove-attempts="removeAttempts()"/>
     </div>
     <menu-bar :on-first-button-click="onBack" first-color-class="color-action-neutral-1" first-button-name="back"
               :on-second-button-click="onConfig" :second-color-class="getConfigMenuColorClass()"
@@ -66,7 +68,7 @@
   left: 0;
   right: 0;
   margin: auto;
-  max-width: min(90%, 400px);
+  max-width: min(90%, 600px);
   z-index: 1;
 }
 
@@ -230,6 +232,10 @@ export default defineComponent({
         return
       if (clickInfo.wasValidClick) {
         this.updateAttemptCounter(clickInfo, coords)
+        if (this.attempts < 0) {
+          this.attempts = 0
+          return
+        }
         this.game.board[coords.x][coords.y] = clickInfo.updatedTile
 
         if (this.game.notCompletelyRevealedAnimalsWithoutBux.length == 0 &&
@@ -283,6 +289,29 @@ export default defineComponent({
     getConfigMenuColorClass() {
       return this.showConfig ? "color-action-bad" : "color-action-neutral-2"
     },
+
+    addAttempts() {
+      if (!this.game)
+        return
+      this.attempts = Math.min(this.attempts + 5, this.game.board.length*this.game.board[0].length)
+    },
+    removeAttempts() {
+      if (!this.game)
+        return
+      this.attempts = Math.max(this.attempts - 5, 0)
+    },
+
+    canAddAttempts() {
+      if (!this.game)
+        return
+      return this.attempts < this.game!.board.length*this.game!.board[0].length
+    },
+
+    canRemoveAttempts() {
+      if (!this.game)
+        return
+      return this.attempts > 0
+    }
   }
 })
 </script>
