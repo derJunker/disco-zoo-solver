@@ -60,6 +60,8 @@
   flex-direction: row;
   justify-content: center;
   align-items: center;
+  margin-bottom: .5rem;
+  gap: .4rem;
 }
 
 .animal-square {
@@ -67,12 +69,12 @@
 }
 
 .boardNav {
-  aspect-ratio: 1;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
   gap: .3rem;
+  margin-bottom: 1.2rem;
 }
 
 .tinyBoard {
@@ -85,6 +87,7 @@
   gap: 3px;
   border-radius: var(--border-radius);
   position: relative;
+  max-width: 20rem;
 }
 
 .game-nav-btn {
@@ -135,7 +138,7 @@ h2, .score {
 }
 
 #back-btn {
-  margin:  1rem auto 1rem auto;
+  margin:  1rem auto 0 auto;
   width: fit-content;
   padding: 1rem;
 }
