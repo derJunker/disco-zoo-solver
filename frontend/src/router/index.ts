@@ -19,26 +19,6 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import(/* webpackChunkName: "about" */ '../views/AccuracyView.vue')
   },
   {
-    path: '/accuracy/' + AccuracyGameType.SINGLE_CLICK + '/:region/:seed',
-    name: 'accuracy-' + AccuracyGameType.SINGLE_CLICK +'-play',
-    component: () => import('../views/AccuracySingleClickView.vue')
-  },
-  {
-    path: '/accuracy/' + AccuracyGameType.SINGLE_GAME + '/:region/:seed',
-    name: 'accuracy-' + AccuracyGameType.SINGLE_GAME +'-play',
-    component: () => import('../views/AccuracySingleGameView.vue')
-  },
-  {
-    path: '/accuracy/' + AccuracyGameType.SINGLE_CLICK + '/stats',
-    name: 'accuracy-' + AccuracyGameType.SINGLE_CLICK + '-result',
-    component: () => import('../views/AccuracySingleClickResultView.vue')
-  },
-  {
-    path: '/accuracy/' + AccuracyGameType.SINGLE_CLICK + '/stats/details',
-    name: 'accuracy-' + AccuracyGameType.SINGLE_CLICK + '-stats-details',
-    component: () => import('../views/AccuracySingleClickResultDetailsView.vue')
-  },
-  {
     path: '/stats',
     name: 'stats',
     component: () => import(/* webpackChunkName: "about" */ '../views/StatsView.vue')
@@ -61,21 +41,24 @@ const routes: Array<RouteRecordRaw> = [
 ]
 
 for (const gameType in AccuracyGameType) {
-  const vueFileShortName = gameType.replace(/[-_](.)/g, (_, char) => char.toUpperCase()).replace(/^[a-z]/, char => char.toUpperCase());
+  const routeShortName = gameType.replace(/_/g, '-').toLowerCase()
+  const vueFileShortName = routeShortName
+      .replace(/[-_](.)/g, (_, char) => char.toUpperCase())
+      .replace(/^[a-z]/, char => char.toUpperCase())
   routes.push(
       {
-        path: '/accuracy/' + gameType + '/:region/:seed',
-        name: 'accuracy-' + gameType +'-play',
+        path: '/accuracy/' + routeShortName + '/:region/:seed',
+        name: 'accuracy-' + routeShortName +'-play',
         component: () => import('../views/Accuracy' + vueFileShortName +'View.vue')
       },
       {
-        path: '/accuracy/' + gameType + '/stats',
-        name: 'accuracy-' + gameType + '-result',
+        path: '/accuracy/' + routeShortName + '/stats',
+        name: 'accuracy-' + routeShortName + '-result',
         component: () => import('../views/Accuracy' + vueFileShortName +'ResultView.vue')
       },
       {
-        path: '/accuracy/' + gameType + '/stats/details',
-        name: 'accuracy-' + gameType + '-stats-details',
+        path: '/accuracy/' + routeShortName + '/stats/details',
+        name: 'accuracy-' + routeShortName + '-stats-details',
         component: () => import('../views/Accuracy' + vueFileShortName +'ResultDetailsView.vue')
       },
   )

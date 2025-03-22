@@ -1,11 +1,13 @@
 <template>
   <div class="accuracy-single-click-view" :style="getBackgroundStyle()">
     {{setRouteValuesToVars($route.params.seed, $route.params.region,  $route.query.timeless)}}
-    <div class="accuracy-single-click-content" v-if="game && animalToFind">
-      <animal-display :tracker="new Map()" :animals="game.containedAnimals" class="animal-display" :animal-to-place="animalToFind"/>
-      <disco-board :game="game" :region="region"
-                   class="disco-board" @clicked-coords="onCoordsClicked"
-                   @right-clicked-coords="onCoordsClicked"/>
+    <div class="accuracy-single-click-content" >
+      <div class="acc-container" v-if="game && animalToFind">
+        <animal-display :tracker="new Map()" :animals="game.containedAnimals" class="animal-display" :animal-to-place="animalToFind"/>
+        <disco-board :game="game" :region="region"
+                     class="disco-board" @clicked-coords="onCoordsClicked"
+                     @right-clicked-coords="onCoordsClicked"/>
+      </div>
     </div>
     <menu-bar :on-first-button-click="onBack" first-color-class="color-action-neutral-1" first-button-name="back"
               :on-second-button-click="console.log" second-color-class="color-action-neutral-2"
@@ -25,6 +27,10 @@
   flex: 1;
   display: grid;
   place-items: center;
+}
+
+.acc-container {
+  width: 90%;
 }
 
 
