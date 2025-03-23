@@ -69,7 +69,7 @@ import {getRegionColors} from "@/util/region-colors";
 import {Coords} from "@/types/Coords";
 import {AccuracyGameHistoryElement} from "@/types/AccuracyGameHistoryElement";
 import {useAccuracyState} from "@/store/useState";
-import {calculateScore} from "@/util/score-calculator";
+import {calculateAccuracy} from "@/util/score-calculator";
 import TopInfoBar from "@/components/TopInfoBar.vue";
 
 const gameApi = useGame()
@@ -138,8 +138,7 @@ export default defineComponent({
         const minProb = Math.min(...resp.probabilities.flat())
         this.accuracyHistory[currentGameAmount] = {
           click: coords,
-          score: calculateScore(resp.accuracy, wasBestClick ? 1 : 0),
-          accuracy: resp.accuracy,
+          accuracy: calculateAccuracy(resp.accuracy, wasBestClick ? 1 : 0),
           animalToFind: animalToFind!,
 
           game: game!,

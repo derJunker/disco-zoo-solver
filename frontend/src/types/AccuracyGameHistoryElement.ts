@@ -5,7 +5,6 @@ import {Coords} from "@/types/Coords";
 
 export interface AccuracyGameHistoryElement {
     click: Coords
-    score: number,
     accuracy: number,
     animalToFind: Animal,
     game: Game,

@@ -21,7 +21,7 @@
 <!--                  {{(singleClickHistory[showIndex].probabilities[coords.x][coords.y]*100).toFixed(1)}}%-->
 <!--                </span>-->
               </div>
-              <div class="score">Score: {{(singleClickHistory[showIndex].score*100).toFixed(2)}}%</div>
+              <div class="score">Accuracy: {{(singleClickHistory[showIndex].accuracy*100).toFixed(2)}}%</div>
             </div>
             <div class="btn game-nav-btn" @click="showIndex = loopIndex(showIndex+1)">{{">"}}</div>
           </div>

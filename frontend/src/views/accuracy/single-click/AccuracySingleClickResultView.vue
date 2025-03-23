@@ -6,7 +6,7 @@
         <div class="wood-menu-group">
           <h2>Grade</h2>
           <div id="grade" :style="gradeColor()">{{grade}}</div>
-          <div id="accuracy">Accuracy: {{(score*100).toFixed(2)}}%</div>
+          <div id="score">Score: {{(score)}}</div>
         </div>
         <div class="nav-buttons">
           <div class="btn btn-gradient color-action-neutral-2" @click="onDetailsClick">
@@ -50,7 +50,7 @@
   text-align: center;
 }
 
-#accuracy {
+#score {
   text-align: center;
 }
 
@@ -75,7 +75,7 @@ import MenuBar from "@/components/MenuBar.vue";
 import {useAccuracyState} from "@/store/useState";
 import router from "@/router";
 import {AccuracyGameType} from "@/types/AccuracyGameType";
-import {calculateScore} from "@/util/score-calculator";
+import {calculateAccuracy, calculateScore} from "@/util/score-calculator";
 
 const accuracyState = useAccuracyState()
 
@@ -93,16 +93,15 @@ export default defineComponent({
 
   methods: {
     calculateGrade(overallAccuracy: number, percentageBestClicks: number): string {
-      // 89% of the score is based on overallAccuracy, 11% from percentageBestClicks
-      this.score = calculateScore(overallAccuracy, percentageBestClicks)
+      const accuracy = calculateAccuracy(overallAccuracy, percentageBestClicks)
 
       // Determine grade based on score with user's specified thresholds
-      if (this.score >= 1) return "S+";
-      if (this.score >= 0.90) return "S";
-      if (this.score >= 0.80) return "A";
-      if (this.score >= 0.70) return "B";
-      if (this.score >= 0.50) return "C";
-      if (this.score >= 0.35) return "D";
+      if (accuracy >= 1) return "S+";
+      if (accuracy >= 0.90) return "S";
+      if (accuracy >= 0.80) return "A";
+      if (accuracy >= 0.70) return "B";
+      if (accuracy >= 0.50) return "C";
+      if (accuracy >= 0.35) return "D";
       return "F";
     },
 
@@ -146,6 +145,7 @@ export default defineComponent({
     this.overallAccuracy = clickHistory.reduce((acc, curr) => acc + curr.accuracy, 0) / clickHistory.length
     this.percentageBestClicks = clickHistory.filter(e => e.wasBestClick).length / clickHistory.length
     this.grade = this.calculateGrade(this.overallAccuracy, this.percentageBestClicks)
+    this.score = calculateScore(clickHistory)
   },
 })
 </script>
