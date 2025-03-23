@@ -2,7 +2,7 @@
   <div class="animal-display">
     <div v-for="animal in animals" :key="animal.name" class="animal-container dock-top border-dark"
          :class="animalToPlace?.name === animal.name ? 'highlighted' : ''"
-         :style="'background-color: ' + calcRegionColors($route.params.region).dark + ';'"
+         :style="'background-color: ' + calcRegionColors().dark + ';'"
          @click="$emit('animal-click', animal)">
       <img :src="getAnimalPicture(animal)" :alt="animal.name" class="animal-picture" rel="preload"/>
       <div class="animal-name">
@@ -94,6 +94,10 @@ export default defineComponent({
       type: Object as () => Animal | null,
       required: false,
       default: null
+    },
+    region: {
+      type: String,
+      required: false
     }
   },
 
@@ -101,8 +105,8 @@ export default defineComponent({
     getAnimalPicture(animal: Animal) {
       return animalStore.getAnimalPictureUrl(animal)
     },
-    calcRegionColors(region: string) {
-      return getRegionColors(region)
+    calcRegionColors() {
+      return getRegionColors(this.region!)
     }
   }
 })

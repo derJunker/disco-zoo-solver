@@ -6,7 +6,9 @@ import java.util.List;
 import junker.disco.zoo.solver.board.Tile;
 import junker.disco.zoo.solver.model.animals.Animal;
 import junker.disco.zoo.solver.board.Game;
+import junker.disco.zoo.solver.model.animals.Region;
 import junker.disco.zoo.solver.requests.post_bodies.ReconstructClickBody;
+import junker.disco.zoo.solver.requests.post_bodies.ReconstructStartBody;
 import junker.disco.zoo.solver.requests.return_objects.ClickChangeInfo;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,8 +21,8 @@ import org.springframework.web.bind.annotation.RestController;
 @CrossOrigin
 public class ReconstructController {
     @PostMapping("/start")
-    public Game start(@RequestBody Animal[] animals) {
-        final var game =  new Game(Arrays.asList(animals));
+    public Game start(@RequestBody ReconstructStartBody body) {
+        final var game =  new Game(body.animals(), Region.byRepr(body.region()));
         return new Game(game, true);
     }
 

@@ -8,6 +8,7 @@ import java.util.Map;
 import junker.disco.zoo.solver.board.util.BoardUtil;
 import junker.disco.zoo.solver.board.util.PermutationUtil;
 import junker.disco.zoo.solver.model.animals.Animal;
+import junker.disco.zoo.solver.model.animals.Region;
 import lombok.Getter;
 
 import static junker.disco.zoo.solver.board.util.BoardUtil.cloneBoard;
@@ -20,6 +21,7 @@ public class Game {
 
     private Tile[][] board;
     private final List<Animal> containedAnimals;
+    private final Region region;
 
     private static Tile[][] getWipedBoard(Tile[][] board) {
         Tile[][] wipedBoard = new Tile[board.length][board[0].length];
@@ -33,7 +35,7 @@ public class Game {
         return wipedBoard;
     }
 
-    public Game(List<Animal> animalsToPlace) {
+    public Game(List<Animal> animalsToPlace, Region region) {
         board = new Tile[BOARD_SIZE][BOARD_SIZE]; // Assuming a 10x10 board for simplicity
         for (int y = 0; y < board.length; y++) {
             for (int x = 0; x < board[0].length; x++) {
@@ -46,26 +48,21 @@ public class Game {
         }
         board = permutations.get((int) (Math.random() * permutations.size()));
         containedAnimals = new ArrayList<>(animalsToPlace);
+        this.region = region;
     }
 
     public Game(Game gameToClone, boolean wipe) {
         var boardToClone = gameToClone.getBoard();
         this.board = wipe? getWipedBoard(boardToClone) : cloneBoard(boardToClone);
         this.containedAnimals = new ArrayList<>(gameToClone.containedAnimals);
+        this.region = gameToClone.region;
     }
 
-    public Game(Tile[][] board, List<Animal> containedAnimals) {
+    public Game(Tile[][] board, List<Animal> containedAnimals, Region region) {
         this.board = board;
         this.containedAnimals = containedAnimals;
+        this.region = region;
     }
-
-    public static Game of(Tile[][] board) {
-        Game game = new Game(new ArrayList<>());
-        game.board = board;
-        game.containedAnimals.addAll(BoardUtil.getContainedAnimals(board));
-        return game;
-    }
-
 
     public void revealTile(int x, int y) {
         var tile = board[x][y];

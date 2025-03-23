@@ -45,7 +45,7 @@ public class AccuracyService {
             animalsToPlace.add(animal);
         }
         var animalToSearch = animalsToPlace.get(random.nextInt(animalsToPlace.size()));
-        var game = new Game(animalsToPlace);
+        var game = new Game(animalsToPlace, region);
         return new AccuracySingleClickGameResponse(game, animalToSearch);
     }
 

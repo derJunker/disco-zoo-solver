@@ -11,7 +11,8 @@
         </div>
       </top-info-bar>
       <AnimalDisplay :animals="animals" :tracker="animalTracker" class="animal-display"
-                     @animal-click="onPlaceSelectChange" :animal-to-place="animalToPlace"/>
+                     @animal-click="onPlaceSelectChange" :animal-to-place="animalToPlace"
+                    :region="region"/>
       <div class="disco-board-wrapper">
         <disco-board
             :game="game" :best-clicks="bestClicks" :region="region"
@@ -150,7 +151,7 @@ export default defineComponent({
 
     this.animals = await animalStore.getAnimalsByNames(this.animalNames)
 
-    gameStore.startReconstruct(this.animals).then(game => {
+    gameStore.startReconstruct(this.animals, this.region!).then(game => {
       this.game = game
     })
     sortAnimalsByRarity(this.animals)

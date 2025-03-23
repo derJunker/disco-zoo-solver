@@ -5,13 +5,15 @@ import java.util.List;
 import junker.disco.zoo.solver.model.animals.Animal;
 import junker.disco.zoo.solver.board.Game;
 import junker.disco.zoo.solver.board.Tile;
+import junker.disco.zoo.solver.model.animals.Region;
 
 public record GameDTO(
         Tile[][] board,
-        List<Animal> containedAnimals
+        List<Animal> containedAnimals,
+        String region
 ) {
 
     public Game toGame() {
-        return new Game(board, containedAnimals);
+        return new Game(board, containedAnimals, Region.byRepr(region));
     }
 }

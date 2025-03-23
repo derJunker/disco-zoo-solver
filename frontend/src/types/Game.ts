@@ -4,7 +4,8 @@ export interface Game {
     board: Tile[][],
     containedAnimals: Animal[],
     completelyRevealedAnimals: Animal[],
-    notCompletelyRevealedAnimalsWithoutBux: Animal[]
+    notCompletelyRevealedAnimalsWithoutBux: Animal[],
+    region: string
 }
 
 export interface ClickChangeInfo {

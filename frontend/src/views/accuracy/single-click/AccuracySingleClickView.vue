@@ -3,14 +3,15 @@
     {{setRouteValuesToVars($route.params.seed, $route.params.region, $route.params.difficulty,  $route.query.timeless)}}
     <div class="accuracy-single-click-content">
       <div class="acc-container" v-if="game && animalToFind">
-        <top-info-bar :region="region">
+        <top-info-bar :region="displayRegion">
           <span>
             Game: {{limitedGameRound() + 1}}
           </span>
         </top-info-bar>
-        <animal-display :tracker="new Map()" :animals="game.containedAnimals" class="animal-display" :animal-to-place="animalToFind"/>
+        <animal-display :tracker="new Map()" :animals="game.containedAnimals" class="animal-display"
+                        :animal-to-place="animalToFind" :region="displayRegion"/>
         <div class="disco-board-wrapper">
-          <disco-board :game="game" :region="region"
+          <disco-board :game="game" :region="displayRegion"
                        class="disco-board" @clicked-coords="onCoordsClicked"
                        @right-clicked-coords="onCoordsClicked"/>
         </div>
@@ -85,6 +86,12 @@ export default defineComponent({
       computedRounds: 0,
       seed: null as number | null,
       region: null as string | null,
+      displayRegion: null as string | null,
+      displayRegionColors: null as {
+        primary: string,
+        light: string,
+        dark: string
+      } | null,
       difficulty: null as AccuracyDifficulty | null,
       timeless: false,
 
@@ -109,11 +116,10 @@ export default defineComponent({
     },
 
     getBackgroundStyle() {
-      if (!this.region) {
+      if (!this.displayRegionColors) {
         return {}
       }
-      const regionColors = getRegionColors(this.region)
-      return {backgroundColor: regionColors.light}
+      return {backgroundColor: this.displayRegionColors.light}
     },
 
     async nextGame() {
@@ -124,6 +130,8 @@ export default defineComponent({
       let response: AccuracySingleClickGameResponse = await gameApi.accuracySingleClick(this.seed!, this.region!,
           this.timeless, this.gameRound, this.difficulty!)
       this.game = response.game
+      this.displayRegion = this.game.region;
+      this.displayRegionColors = getRegionColors(this.game.region)
       this.animalToFind = response.animalToFind
     },
 

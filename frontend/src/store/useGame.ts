@@ -9,8 +9,11 @@ import {AccuracyDifficulty} from "@/types/accuracy/AccuracyDifficulty";
 
 export const useGame = defineStore('game', () => {
     const api = useApi();
-    async function startReconstruct(animals: Animal[]): Promise<Game> {
-        const resp = await api.postUrl("/reconstruct/start", animals);
+    async function startReconstruct(animals: Animal[], region: string): Promise<Game> {
+        const resp = await api.postUrl("/reconstruct/start", {
+            animals: animals,
+            region: region
+        });
         return resp.json();
     }
 

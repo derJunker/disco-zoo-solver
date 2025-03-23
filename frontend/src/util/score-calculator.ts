@@ -1,7 +1,7 @@
 import {AccuracyGameHistoryElement} from "@/types/accuracy/AccuracyGameHistoryElement";
 
 const scoreWeights = {
-    amountOfAnimals:(val: number) => Math.sqrt(val),
+    amountOfAnimals:(val: number) => Math.sqrt(val)*2,
     accuracy: (val: number) => (Math.exp((val - 0.7) * 5)) / (Math.exp((1 - 0.7) * 5))+1,
     percentageBestClicks: (val: number) => Math.pow(1-val, 5)+1,
     withTimeless: () => 1.2,
@@ -29,7 +29,7 @@ function calculateSingleGameScore(accuracyClick: AccuracyGameHistoryElement, wit
     const wasBestClick = accuracyClick.wasBestClick
     let timelessMultiplier = 1;
     if (withTimeless.toString() === "true") { // For some reason i cannot just use if(withTimeless)... it always returns true
-        timelessMultiplier = 1.2;
+        timelessMultiplier = scoreWeights.withTimeless();
     }
     return scoreWeights.amountOfAnimals(amountOfAnimals)* scoreWeights.accuracy(accuracy)
         * (wasBestClick ? scoreWeights.percentageBestClicks(percentageBestClicks) : 1) * timelessMultiplier;
