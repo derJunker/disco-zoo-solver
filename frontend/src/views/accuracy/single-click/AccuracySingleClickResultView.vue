@@ -13,7 +13,7 @@
           <div>Accuracy: {{(overallAccuracy*100).toFixed(2)}}%</div>
         </div>
         <div class="wood-menu-group">
-          <div>Region: TODO</div>
+          <div>Region: {{ region }}</div>
           <div>Difficulty: TODO</div>
         </div>
         <div class="nav-buttons">
@@ -38,7 +38,7 @@
           <div>Accuracy: {{(overallAccuracy*100).toFixed(2)}}%</div>
         </div>
         <div class="wood-menu-group-compatible">
-          <div>Region: TODO</div>
+          <div>Region: {{ region }}</div>
           <div>Difficulty: TODO</div>
         </div>
       </div>
@@ -117,12 +117,29 @@ const accuracyState = useAccuracyState()
 export default defineComponent({
   name: "AccuracySingleClickResultView",
   components: {MenuBar},
+
+  created() {
+    const clickHistory = accuracyState.singleClickHistory
+
+    if (clickHistory.length === 0) {
+      router.push({name: 'accuracy'})
+      return
+    }
+    this.overallAccuracy = clickHistory.reduce((acc, curr) => acc + curr.accuracy, 0) / clickHistory.length
+    this.bestClickCount = clickHistory.filter(e => e.wasBestClick).length
+    this.gameAmount = clickHistory.length
+    this.grade = this.calculateGrade()
+    this.score = calculateScore(clickHistory, accuracyState.withTimeless)
+    this.region = accuracyState.region
+  },
+
   data() {
     return {
       overallAccuracy: null as number | null,
       bestClickCount: null as number | null,
       gameAmount: null as number | null,
       grade: "" as string,
+      region: null as string | null,
       score: null as number | null
     }
   },
@@ -205,20 +222,6 @@ export default defineComponent({
             }
           });
     }
-  },
-
-  created() {
-    const clickHistory = accuracyState.singleClickHistory
-
-    if (clickHistory.length === 0) {
-      router.push({name: 'accuracy'})
-      return
-    }
-    this.overallAccuracy = clickHistory.reduce((acc, curr) => acc + curr.accuracy, 0) / clickHistory.length
-    this.bestClickCount = clickHistory.filter(e => e.wasBestClick).length
-    this.gameAmount = clickHistory.length
-    this.grade = this.calculateGrade()
-    this.score = calculateScore(clickHistory, accuracyState.withTimeless)
   },
 })
 </script>

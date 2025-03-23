@@ -6,16 +6,8 @@ export const useAccuracyState = defineStore( 'accuracyState', {
     state: () => {
         return {
             singleClickHistory: [] as AccuracyGameHistoryElement[],
-            withTimeless: false
+            withTimeless: false,
+            region: null as string | null,
         }
     },
-})
-
-export const useReconstructState = defineStore('reconstructState', {
-    state: () => {
-        return {
-            region: null as string | null,
-            animals: [] as Animal[]
-        }
-    }
 })
