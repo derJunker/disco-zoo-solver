@@ -147,14 +147,17 @@ html, body, #app, #router-view {
     font-size: var(--font-size-larger);
 }
 
-.wood-menu-group {
+.wood-menu-group, .wood-menu-group-compatible {
     background-color: #8A5416;
     border-radius: var(--border-radius);
-    box-shadow: inset 0px 1px 3px rgba(0, 0, 0, 0.4);
     padding: .5rem;
 }
 
-.wood-menu-group h2 {
+.wood-menu-group {
+    box-shadow: inset 0px 1px 3px rgba(0, 0, 0, 0.4);
+}
+
+.wood-menu-group h2, .wood-menu-group-compatible h2 {
     margin-bottom: .1rem;
     font-size: var(--font-size);
     color: rgba(255, 255, 255, 0.7);

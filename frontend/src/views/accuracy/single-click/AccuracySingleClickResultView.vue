@@ -17,7 +17,7 @@
           <div>Difficulty: TODO</div>
         </div>
         <div class="nav-buttons">
-          <div class="btn btn-gradient color-action-info">
+          <div class="btn btn-gradient color-action-info" @click="onShare">
             Share
           </div>
           <div class="btn btn-gradient color-action-neutral-2" @click="onDetailsClick">
@@ -25,6 +25,24 @@
           </div>
         </div>
       </div>
+
+      <div id="overview-menu-screenshot" class="wood-menu" hidden>
+        <h1>Results - Single Click</h1>
+        <div class="wood-menu-group-compatible">
+          <h2>Grade</h2>
+          <div id="grade" :style="gradeColor()">{{grade}}</div>
+        </div>
+        <div class="wood-menu-group-compatible">
+          <div>Score: {{(score)}}</div>
+          <div>Perfect Clicks: {{bestClickCount}}/{{gameAmount}}</div>
+          <div>Accuracy: {{(overallAccuracy*100).toFixed(2)}}%</div>
+        </div>
+        <div class="wood-menu-group-compatible">
+          <div>Region: TODO</div>
+          <div>Difficulty: TODO</div>
+        </div>
+      </div>
+
     </div>
     <menu-bar :on-first-button-click="onHomeClick" first-color-class="color-action-neutral-1" first-button-name="Home"
               :on-second-button-click="onRetryClick" second-color-class="color-action-good"
@@ -46,11 +64,11 @@
   place-items: center;
 }
 
-#overview-menu {
+#overview-menu, #overview-menu-screenshot {
   max-width: min(90%, 400px);
 }
 
-.wood-menu-group {
+.wood-menu-group, .wood-menu-group-compatible {
   margin-inline: 1.5rem;
   margin-bottom: .81rem;
 }
@@ -74,7 +92,14 @@ h2 {
   margin-bottom: 1rem;
 }
 .btn {
-  padding: 1rem;
+  width: 45%;
+  min-width: fit-content;
+  text-align: center;
+  padding: 1rem 0;
+}
+
+#overview-menu-screenshot {
+  z-index: -1;
 }
 </style>
 
@@ -85,6 +110,7 @@ import {useAccuracyState} from "@/store/useState";
 import router from "@/router";
 import {AccuracyGameType} from "@/types/AccuracyGameType";
 import {calculateAccuracy, calculateScore} from "@/util/score-calculator";
+import html2canvas from "html2canvas";
 
 const accuracyState = useAccuracyState()
 
@@ -142,6 +168,42 @@ export default defineComponent({
 
     onRetryClick() {
       router.push({name: 'accuracy'})
+    },
+
+    onShare() {
+      this.screenshotThenShare()
+    },
+
+    screenshotThenShare() {
+      const element: HTMLElement | null = document.querySelector("#overview-menu-screenshot");
+
+      if (element) {
+        element.hidden = false
+        html2canvas(element).then((canvas) => {
+          element.hidden = true
+          this.shareCanvas(canvas);
+        })
+      }
+    },
+
+    shareCanvas(canvas: HTMLCanvasElement) {
+      const dataUrl = canvas.toDataURL("image/png");
+      fetch(dataUrl)
+          .then(res => res.blob())
+          .then(blob => {
+            const file = new File([blob], "screenshot.png", { type: "image/png" });
+            const shareData = {
+              title: 'Item 1',
+              text: 'This is the first item',
+              files: [file],
+              url: router.currentRoute.value.fullPath,
+            };
+            if (navigator.canShare && navigator.canShare({ files: [file] })) {
+              navigator.share(shareData).catch(console.error);
+            } else {
+              console.error("Sharing not supported");
+            }
+          });
     }
   },
 
