@@ -6,17 +6,17 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/reconstruct',
     name: 'reconstruct',
-    component: () => import(/* webpackChunkName: "about" */ '../views/ReconstructView.vue')
+    component: () => import(/* webpackChunkName: "about" */ '../views/reconstruct/ReconstructView.vue')
   },
   {
     path: '/reconstruct/:region',
     name: 'reconstruct-play',
-    component: () => import('../views/ReconstructPlayView.vue')
+    component: () => import('../views/reconstruct/ReconstructPlayView.vue')
   },
   {
     path: '/accuracy',
     name: 'accuracy',
-    component: () => import(/* webpackChunkName: "about" */ '../views/AccuracyView.vue')
+    component: () => import(/* webpackChunkName: "about" */ '../views/accuracy/AccuracyView.vue')
   },
   {
     path: '/stats',
@@ -47,19 +47,19 @@ for (const gameType in AccuracyGameType) {
       .replace(/^[a-z]/, char => char.toUpperCase())
   routes.push(
       {
-        path: '/accuracy/' + routeShortName + '/:region/:seed',
-        name: 'accuracy-' + routeShortName +'-play',
-        component: () => import('../views/Accuracy' + vueFileShortName +'View.vue')
+        path: `/accuracy/${routeShortName}/:region/:seed`,
+        name: `accuracy-${routeShortName}-play`,
+        component: () => import(`../views/accuracy/${routeShortName}/Accuracy${vueFileShortName}View.vue`)
       },
       {
-        path: '/accuracy/' + routeShortName + '/stats',
-        name: 'accuracy-' + routeShortName + '-result',
-        component: () => import('../views/Accuracy' + vueFileShortName +'ResultView.vue')
+        path: `/accuracy/${routeShortName}/stats`,
+        name: `accuracy-${routeShortName}-result`,
+        component: () => import(`../views/accuracy/${routeShortName}/Accuracy${vueFileShortName}ResultView.vue`)
       },
       {
-        path: '/accuracy/' + routeShortName + '/stats/details',
-        name: 'accuracy-' + routeShortName + '-stats-details',
-        component: () => import('../views/Accuracy' + vueFileShortName +'ResultDetailsView.vue')
+        path: `/accuracy/${routeShortName}/stats/details`,
+        name: `accuracy-${routeShortName}-stats-details`,
+        component: () => import(`../views/accuracy/${routeShortName}/Accuracy${vueFileShortName}ResultDetailsView.vue`)
       },
   )
 }

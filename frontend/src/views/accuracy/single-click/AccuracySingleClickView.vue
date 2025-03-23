@@ -58,7 +58,7 @@ import {useGame} from "@/store/useGame";
 import {AccuracySingleClickGameResponse} from "@/types/AccuracySingleClickGameResponse";
 import {Animal} from "@/types/Animal";
 import AnimalDisplay from "@/components/AnimalDisplay.vue";
-import DiscoBoard from "@/views/DiscoBoard.vue";
+import DiscoBoard from "@/components/Basic/DiscoBoard.vue";
 import {getRegionColors} from "@/util/region-colors";
 import {Coords} from "@/types/Coords";
 import {AccuracyGameHistoryElement} from "@/types/AccuracyGameHistoryElement";

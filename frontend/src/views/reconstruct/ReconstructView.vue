@@ -44,7 +44,7 @@ import {defineComponent} from "vue";
 import RegionSelect from "@/components/Overlays/RegionSelect.vue";
 import MenuBar from "@/components/MenuBar.vue";
 import router from "@/router";
-import ReconstructConfig from "@/views/ReconstructConfig.vue";
+import ReconstructConfig from "@/components/Overlays/ReconstructConfig.vue";
 import {Animal} from "@/types/Animal";
 
 export default defineComponent({

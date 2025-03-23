@@ -22,7 +22,8 @@
             @clicked-coords="onCoordsClicked"
             @right-clicked-coords="rightClickedCoords" class="disco-board"/>
       </div>
-      <config-menu :style="!showConfig ? 'display: none;' : ''" class="config-menu dock-bottom dock-bottom-shadow"
+      <reconstruct-play-config :style="!showConfig ? 'display: none;' : ''"
+                               class="reconstruct-play-config dock-bottom dock-bottom-shadow"
                    :animals="animals" :heat-map-animal="animalForHeatmap" :place-animal="animalToPlace"
                    :can-add-attempts="canAddAttempts()" :can-remove-attempts="canRemoveAttempts()"
                    @animal-heatmap-select="onHeatMapSelectChange" @animal-place-select="onPlaceSelectChange"
@@ -62,7 +63,7 @@
 
 
 
-.config-menu {
+.reconstruct-play-config {
   position: absolute;
   bottom: 0;
   left: 0;
@@ -104,11 +105,11 @@ import {ClickChangeInfo, Game} from "@/types/Game";
 import {Coords} from "@/types/Coords";
 import {getRegionColors} from "@/util/region-colors";
 import {useSolver} from "@/store/useSolver";
-import ConfigMenu from "@/views/ConfigMenu.vue";
+import ReconstructPlayConfig from "@/components/Overlays/ReconstructPlayConfig.vue";
 import {sortAnimalsByRarity} from "@/util/animal-sorter";
-import DiscoBoard from "@/views/DiscoBoard.vue";
+import DiscoBoard from "@/components/Basic/DiscoBoard.vue";
 import {useAnimals} from "@/store/useAnimals";
-import TopInfoBar from "@/views/TopInfoBar.vue";
+import TopInfoBar from "@/components/TopInfoBar.vue";
 
 
 const gameStore = useGame()
@@ -117,7 +118,7 @@ const solver = useSolver()
 
 export default defineComponent({
   name: "ReconstructPlayView",
-  components: {TopInfoBar, DiscoBoard, ConfigMenu, MenuBar, AnimalDisplay},
+  components: {ReconstructPlayConfig, TopInfoBar, DiscoBoard, MenuBar, AnimalDisplay},
   data() {
     return {
       animals: [] as Animal[],

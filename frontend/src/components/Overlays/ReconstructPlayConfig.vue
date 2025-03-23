@@ -1,5 +1,5 @@
 <template>
-  <div class="config-menu wood-menu">
+  <div class="reconstruct-play-config wood-menu">
     <h1>Reconstruct - Config</h1>
     <div class="config-options">
       <div class="heatmap-config-container">
@@ -38,7 +38,7 @@
 </template>
 
 <style scoped>
-.config-menu {
+.reconstruct-play-config {
   padding-inline: 1.25rem;
 }
 .config-options {
@@ -88,7 +88,7 @@ import {Animal} from "@/types/Animal";
 import AnimalSquare from "@/components/Basic/AnimalSquare.vue";
 
 export default defineComponent ({
-  name: 'ConfigMenu',
+  name: 'ReconstructPlayConfig',
   components: {AnimalSquare},
   props: {
     animals: {
