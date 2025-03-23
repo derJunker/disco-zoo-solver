@@ -71,6 +71,7 @@ import {AccuracyGameHistoryElement} from "@/types/accuracy/AccuracyGameHistoryEl
 import {useAccuracyState} from "@/store/useState";
 import {calculateAccuracy} from "@/util/score-calculator";
 import TopInfoBar from "@/components/TopInfoBar.vue";
+import {AccuracyDifficulty} from "@/types/accuracy/AccuracyDifficulty";
 
 const gameApi = useGame()
 const accuracyState = useAccuracyState()
@@ -84,7 +85,7 @@ export default defineComponent({
       computedRounds: 0,
       seed: null as number | null,
       region: null as string | null,
-      difficulty: null as string | null,
+      difficulty: null as AccuracyDifficulty | null,
       timeless: false,
 
       game: null as Game | null,
@@ -100,7 +101,7 @@ export default defineComponent({
     setRouteValuesToVars(seed: number, region: string, difficulty:string,  timeless: boolean | null) {
       this.seed = seed
       this.region = region
-      this.difficulty = difficulty
+      this.difficulty = difficulty as AccuracyDifficulty
       if (timeless !== null) {
         this.timeless = timeless
       }
@@ -157,6 +158,7 @@ export default defineComponent({
           accuracyState.singleClickHistory = this.accuracyHistory
           accuracyState.withTimeless = this.timeless
           accuracyState.region = this.region
+          accuracyState.difficulty = this.difficulty
           router.push({name: 'accuracy-single-click-result'})
         }
       })

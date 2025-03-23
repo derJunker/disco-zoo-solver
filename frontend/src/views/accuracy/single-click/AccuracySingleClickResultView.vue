@@ -14,7 +14,7 @@
         </div>
         <div class="wood-menu-group">
           <div>Region: {{ region }}</div>
-          <div>Difficulty: TODO</div>
+          <div>Difficulty: {{ difficulty }}</div>
         </div>
         <div class="nav-buttons">
           <div class="btn btn-gradient color-action-info" @click="onShare">
@@ -39,7 +39,7 @@
         </div>
         <div class="wood-menu-group-compatible">
           <div>Region: {{ region }}</div>
-          <div>Difficulty: TODO</div>
+          <div>Difficulty: {{ difficulty }}</div>
         </div>
       </div>
 
@@ -131,6 +131,7 @@ export default defineComponent({
     this.grade = this.calculateGrade()
     this.score = calculateScore(clickHistory, accuracyState.withTimeless)
     this.region = accuracyState.region
+    this.difficulty = accuracyState.difficulty
   },
 
   data() {
@@ -140,7 +141,8 @@ export default defineComponent({
       gameAmount: null as number | null,
       grade: "" as string,
       region: null as string | null,
-      score: null as number | null
+      score: null as number | null,
+      difficulty: null as string | null,
     }
   },
 
