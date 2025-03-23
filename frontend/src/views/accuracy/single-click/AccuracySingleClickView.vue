@@ -1,12 +1,19 @@
 <template>
   <div class="accuracy-single-click-view" :style="getBackgroundStyle()">
     {{setRouteValuesToVars($route.params.seed, $route.params.region,  $route.query.timeless)}}
-    <div class="accuracy-single-click-content" >
+    <div class="accuracy-single-click-content">
       <div class="acc-container" v-if="game && animalToFind">
+        <top-info-bar :region="region">
+          <div id="region">
+            {{region}}
+          </div>
+        </top-info-bar>
         <animal-display :tracker="new Map()" :animals="game.containedAnimals" class="animal-display" :animal-to-place="animalToFind"/>
-        <disco-board :game="game" :region="region"
-                     class="disco-board" @clicked-coords="onCoordsClicked"
-                     @right-clicked-coords="onCoordsClicked"/>
+        <div class="disco-board-wrapper">
+          <disco-board :game="game" :region="region"
+                       class="disco-board" @clicked-coords="onCoordsClicked"
+                       @right-clicked-coords="onCoordsClicked"/>
+        </div>
       </div>
     </div>
     <menu-bar :on-first-button-click="onBack" first-color-class="color-action-neutral-1" first-button-name="back"
@@ -25,26 +32,25 @@
 .accuracy-single-click-content {
   position: relative;
   flex: 1;
-  display: grid;
-  place-items: center;
 }
 
 .acc-container {
-  width: 90%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
 }
 
+
+.disco-board-wrapper {
+  align-content: center;
+  margin-top: auto;
+  margin-bottom: auto;
+}
 
 .disco-board {
   max-width: min(90%, 400px);
   margin-inline: auto;
-  margin-top: 3rem;
-}
-
-.animal-display {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
 }
 
 </style>
@@ -64,13 +70,14 @@ import {Coords} from "@/types/Coords";
 import {AccuracyGameHistoryElement} from "@/types/AccuracyGameHistoryElement";
 import {useAccuracyState} from "@/store/useState";
 import {calculateScore} from "@/util/score-calculator";
+import TopInfoBar from "@/components/TopInfoBar.vue";
 
 const gameApi = useGame()
 const accuracyState = useAccuracyState()
 
 export default defineComponent({
   name: "AccuracyPlayView",
-  components: {DiscoBoard, AnimalDisplay, MenuBar},
+  components: {TopInfoBar, DiscoBoard, AnimalDisplay, MenuBar},
   data() {
     return {
       gameRound: 0,

@@ -4,7 +4,7 @@
     <div class="reconstruct-content">
       <top-info-bar :region="region">
         <div id="region">
-          Farm
+          {{region}}
         </div>
         <div id="attempts">
           <span id="attemptNum">
@@ -81,7 +81,7 @@
   font-size: 2rem;
   font-weight: bold;
   position: absolute;
-  left: -3rem;
+  right: 7.5rem;
   bottom: -.2rem;
   transform: scaleY(1.15);
 
