@@ -4,6 +4,9 @@
     <div class="accuracy-single-click-content">
       <div class="acc-container" v-if="game && animalToFind">
         <top-info-bar :region="region">
+          <span>
+            Game: {{limitedGameRound() + 1}}
+          </span>
         </top-info-bar>
         <animal-display :tracker="new Map()" :animals="game.containedAnimals" class="animal-display" :animal-to-place="animalToFind"/>
         <div class="disco-board-wrapper">
@@ -156,6 +159,10 @@ export default defineComponent({
       if (this.gameRound < maxGameAmount) {
         await this.nextGame()
       }
+    },
+
+    limitedGameRound() {
+      return Math.min(Math.max(0, this.gameRound), process.env.VUE_APP_ACCURACY_GAME_AMOUNT-1)
     }
   },
 
