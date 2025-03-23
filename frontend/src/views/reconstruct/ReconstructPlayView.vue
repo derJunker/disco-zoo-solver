@@ -3,9 +3,6 @@
     {{loadPathVariables($route.params.region, $route.query.animals)}}
     <div class="reconstruct-content">
       <top-info-bar :region="region">
-        <div id="region">
-          {{region}}
-        </div>
         <div id="attempts">
           <span id="attemptNum">
             {{ attempts }}
@@ -73,10 +70,6 @@
   z-index: 1;
 }
 
-#region {
-  font-size: 1.5rem;
-  font-weight: bold;
-}
 #attemptNum {
   font-size: 2rem;
   font-weight: bold;

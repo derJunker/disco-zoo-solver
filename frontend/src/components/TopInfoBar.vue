@@ -1,5 +1,8 @@
 <template>
   <div class="top-info-bar btn-gradient" :style="getStyle()">
+    <div id="region">
+      {{region}}
+    </div>
     <slot/>
   </div>
 </template>
@@ -18,6 +21,11 @@
   text-align: center;
   align-items: center;
   font-size: 1.3rem;
+}
+
+#region {
+  font-size: 1.5rem;
+  font-weight: bold;
 }
 </style>
 

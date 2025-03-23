@@ -4,9 +4,6 @@
     <div class="accuracy-single-click-content">
       <div class="acc-container" v-if="game && animalToFind">
         <top-info-bar :region="region">
-          <div id="region">
-            {{region}}
-          </div>
         </top-info-bar>
         <animal-display :tracker="new Map()" :animals="game.containedAnimals" class="animal-display" :animal-to-place="animalToFind"/>
         <div class="disco-board-wrapper">
