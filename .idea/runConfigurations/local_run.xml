@@ -1,0 +1,7 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="local run" type="CompoundRunConfigurationType">
+    <toRun name="serve frontend" type="js.build_tools.npm" />
+    <toRun name="DiscoZooSolverSpringApplication" type="SpringBootApplicationConfigurationType" />
+    <method v="2" />
+  </configuration>
+</component>
