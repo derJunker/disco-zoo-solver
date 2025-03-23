@@ -3,7 +3,7 @@ import {AccuracyGameHistoryElement} from "@/types/AccuracyGameHistoryElement";
 const scoreWeights = {
     accuracy: (val: number) => val*0.95,
     percentageBestClicks: (val: number) => val*0.5,
-    amountOfAnimals:(val: number) => Math.sqrt(val)*2,
+    amountOfAnimals:(val: number) => Math.sqrt(val)*1.5,
 }
 
 export function calculateAccuracy(accuracy: number, percentageBestClicks: number): number {

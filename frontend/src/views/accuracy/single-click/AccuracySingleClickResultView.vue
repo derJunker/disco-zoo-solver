@@ -2,13 +2,24 @@
   <div class="accuracy-single-click-result-view">
     <div class="accuracy-single-click-result-content">
       <div id="overview-menu" class="wood-menu dock-bottom menu-bottom">
-        <h1>Results</h1>
+        <h1>Results - Single Click</h1>
         <div class="wood-menu-group">
           <h2>Grade</h2>
           <div id="grade" :style="gradeColor()">{{grade}}</div>
-          <div id="score">Score: {{(score)}}</div>
+        </div>
+        <div class="wood-menu-group">
+          <div>Score: {{(score)}}</div>
+          <div>Perfect Clicks: {{bestClickCount}}/{{gameAmount}}</div>
+          <div>Accuracy: {{(overallAccuracy*100).toFixed(2)}}%</div>
+        </div>
+        <div class="wood-menu-group">
+          <div>Region: TODO</div>
+          <div>Difficulty: TODO</div>
         </div>
         <div class="nav-buttons">
+          <div class="btn btn-gradient color-action-info">
+            Share
+          </div>
           <div class="btn btn-gradient color-action-neutral-2" @click="onDetailsClick">
             Details
           </div>
@@ -41,6 +52,7 @@
 
 .wood-menu-group {
   margin-inline: 1.5rem;
+  margin-bottom: .81rem;
 }
 
 #grade {
@@ -50,18 +62,15 @@
   text-align: center;
 }
 
-#score {
-  text-align: center;
-}
-
 h2 {
   text-align: center;
 }
 
 .nav-buttons {
   display: flex;
-  justify-content: space-around;
-  margin-top: 3rem;
+  justify-content: space-between;
+  margin-inline: 1.5rem;
+  margin-top: 1.5rem;
   margin-bottom: 1rem;
 }
 .btn {
@@ -85,15 +94,16 @@ export default defineComponent({
   data() {
     return {
       overallAccuracy: null as number | null,
-      percentageBestClicks: null as number | null,
+      bestClickCount: null as number | null,
+      gameAmount: null as number | null,
       grade: "" as string,
       score: null as number | null
     }
   },
 
   methods: {
-    calculateGrade(overallAccuracy: number, percentageBestClicks: number): string {
-      const accuracy = calculateAccuracy(overallAccuracy, percentageBestClicks)
+    calculateGrade(): string {
+      const accuracy = calculateAccuracy(this.overallAccuracy!, this.bestClickCount!/this.gameAmount!)
 
       // Determine grade based on score with user's specified thresholds
       if (accuracy >= 1) return "S+";
@@ -143,8 +153,9 @@ export default defineComponent({
       return
     }
     this.overallAccuracy = clickHistory.reduce((acc, curr) => acc + curr.accuracy, 0) / clickHistory.length
-    this.percentageBestClicks = clickHistory.filter(e => e.wasBestClick).length / clickHistory.length
-    this.grade = this.calculateGrade(this.overallAccuracy, this.percentageBestClicks)
+    this.bestClickCount = clickHistory.filter(e => e.wasBestClick).length
+    this.gameAmount = clickHistory.length
+    this.grade = this.calculateGrade()
     this.score = calculateScore(clickHistory)
   },
 })

@@ -2,7 +2,7 @@
   <div class="accuracy-single-click-result-details-view">
     <div class="accuracy-single-click-result-details-content">
       <div class="wood-menu menu-bottom dock-bottom" id="details-menu">
-        <h1>Accuracy Single Click Result Details</h1>
+        <h1>Details - Single Click</h1>
         <div class="stats wood-menu-group" v-if="singleClickHistory.length > 0">
           <h2>Game {{showIndex+1}}</h2>
           <div class="animals">

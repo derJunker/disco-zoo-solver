@@ -81,13 +81,14 @@ export default defineComponent({
   data() {
     return {
       gameRound: 0,
+      computedRounds: 0,
       seed: null as number | null,
       region: null as string | null,
       timeless: false,
 
       game: null as Game | null,
       animalToFind: null as Animal | null,
-      accuracyHistory: [] as AccuracyGameHistoryElement[]
+      accuracyHistory: [] as AccuracyGameHistoryElement[],
     }
   },
   methods: {
@@ -149,7 +150,8 @@ export default defineComponent({
           bestClicks: resp.bestClicks,
           wasBestClick: wasBestClick,
         }
-        if (this.accuracyHistory.length >= maxGameAmount && this.accuracyHistory.every(element => element !== undefined)) {
+        this.computedRounds++
+        if (this.computedRounds >= maxGameAmount) {
           accuracyState.singleClickHistory = this.accuracyHistory
           router.push({name: 'accuracy-single-click-result'})
         }

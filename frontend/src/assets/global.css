@@ -150,7 +150,7 @@ html, body, #app, #router-view {
 .wood-menu-group {
     background-color: #8A5416;
     border-radius: var(--border-radius);
-    box-shadow: inset 0px 0px 5px rgba(0, 0, 0, 0.4);
+    box-shadow: inset 0px 1px 3px rgba(0, 0, 0, 0.4);
     padding: .5rem;
 }
 
@@ -438,4 +438,21 @@ html, body, #app, #router-view {
 
 .btn-highlighted::before {
     display: none;
+}
+
+.wood-menu-group {
+    clip-path: polygon(
+            0px calc(100% - 4px),
+            4px calc(100% - 4px),
+            4px 100%,
+            calc(100% - 4px) 100%,
+            calc(100% - 4px) calc(100% - 4px),
+            100% calc(100% - 4px),
+            100% 4px,
+            calc(100% - 4px) 4px,
+            calc(100% - 4px) 0px,
+            4px 0px,
+            4px 4px,
+            0px 4px
+    );
 }
