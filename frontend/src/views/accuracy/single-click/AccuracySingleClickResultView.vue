@@ -218,7 +218,7 @@ export default defineComponent({
     this.bestClickCount = clickHistory.filter(e => e.wasBestClick).length
     this.gameAmount = clickHistory.length
     this.grade = this.calculateGrade()
-    this.score = calculateScore(clickHistory)
+    this.score = calculateScore(clickHistory, accuracyState.withTimeless)
   },
 })
 </script>

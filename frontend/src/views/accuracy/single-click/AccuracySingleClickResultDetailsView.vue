@@ -103,6 +103,7 @@
   text-align: center;
   align-content: center;
   isolation: isolate;
+  box-sizing: unset;
 }
 
 .tile > img {

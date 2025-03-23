@@ -5,7 +5,8 @@ import {Animal} from "@/types/Animal";
 export const useAccuracyState = defineStore( 'accuracyState', {
     state: () => {
         return {
-            singleClickHistory: [] as AccuracyGameHistoryElement[]
+            singleClickHistory: [] as AccuracyGameHistoryElement[],
+            withTimeless: false
         }
     },
 })

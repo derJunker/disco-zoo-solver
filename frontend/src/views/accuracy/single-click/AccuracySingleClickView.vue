@@ -153,6 +153,7 @@ export default defineComponent({
         this.computedRounds++
         if (this.computedRounds >= maxGameAmount) {
           accuracyState.singleClickHistory = this.accuracyHistory
+          accuracyState.withTimeless = this.timeless
           router.push({name: 'accuracy-single-click-result'})
         }
       })
