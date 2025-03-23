@@ -1,5 +1,8 @@
 package junker.disco.zoo.solver.controller;
 
+import java.util.List;
+
+import junker.disco.zoo.solver.model.accuracy.AccuracyDifficulty;
 import junker.disco.zoo.solver.model.animals.Region;
 import junker.disco.zoo.solver.requests.post_bodies.AccuracyClickBody;
 import junker.disco.zoo.solver.requests.return_objects.AccuracySingleClickGameResponse;
@@ -32,13 +35,16 @@ public class AccuracyController {
     public ResponseEntity<AccuracySingleClickGameResponse> getGame(@PathVariable Long seed,
                                                                    @RequestParam(required = true, name = "region") String regionStr,
                                                                    @RequestParam(required = true) boolean timeless,
-                                                                   @RequestParam(defaultValue = "0", required = false) int gameNumber) {
-        var resp = handleInvalidParams(seed, gameNumber, regionStr);
+                                                                   @RequestParam(defaultValue = "0",
+                                                                           required = false) int gameNumber,
+                                                                   @RequestParam(required = false, name="difficulty",
+                                                                           defaultValue = "easy") String difficultyStr) {
+        var resp = handleInvalidParams(seed, gameNumber, regionStr, difficultyStr);
         if (resp != null) return resp;
-
+        final var difficulty = AccuracyDifficulty.byRepr(difficultyStr);
         var region = Region.byRepr(regionStr);
 
-        var game = accuracyService.getSingleClickGame(seed, gameNumber, region, timeless);
+        var game = accuracyService.getSingleClickGame(seed, gameNumber, region, timeless, difficulty);
         return new ResponseEntity<>(game, HttpStatus.OK);
     }
 
@@ -52,8 +58,10 @@ public class AccuracyController {
         return new ResponseEntity<>(performance, HttpStatus.OK);
     }
 
-    private ResponseEntity<AccuracySingleClickGameResponse> handleInvalidParams(Long seed, int gameNumber, String regionStr) {
-        if (seed == null || gameNumber < 0 || gameNumber > 100 || Region.byRepr(regionStr) == null) {
+    private ResponseEntity<AccuracySingleClickGameResponse> handleInvalidParams(Long seed, int gameNumber,
+                                                                                String regionStr, String difficulty) {
+        if (seed == null || gameNumber < 0 || gameNumber > 100 || Region.byRepr(regionStr) == null ||
+                !List.of("easy", "medium", "hard").contains(difficulty)) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         return null;

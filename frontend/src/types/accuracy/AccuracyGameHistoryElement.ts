@@ -1,4 +1,4 @@
-import {AccuracySingleClickPerformanceResponse} from "@/types/AccuracySingleClickPerformanceResponse";
+import {AccuracySingleClickPerformanceResponse} from "@/types/accuracy/AccuracySingleClickPerformanceResponse";
 import {Game} from "@/types/Game";
 import {Animal} from "@/types/Animal";
 import {Coords} from "@/types/Coords";

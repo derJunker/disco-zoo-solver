@@ -1,6 +1,6 @@
 <template>
   <div class="accuracy-single-click-view" :style="getBackgroundStyle()">
-    {{setRouteValuesToVars($route.params.seed, $route.params.region,  $route.query.timeless)}}
+    {{setRouteValuesToVars($route.params.seed, $route.params.region, $route.params.difficulty,  $route.query.timeless)}}
     <div class="accuracy-single-click-content">
       <div class="acc-container" v-if="game && animalToFind">
         <top-info-bar :region="region">
@@ -61,13 +61,13 @@ import MenuBar from "@/components/MenuBar.vue";
 import router from "@/router";
 import {Game} from "@/types/Game";
 import {useGame} from "@/store/useGame";
-import {AccuracySingleClickGameResponse} from "@/types/AccuracySingleClickGameResponse";
+import {AccuracySingleClickGameResponse} from "@/types/accuracy/AccuracySingleClickGameResponse";
 import {Animal} from "@/types/Animal";
 import AnimalDisplay from "@/components/AnimalDisplay.vue";
 import DiscoBoard from "@/components/Basic/DiscoBoard.vue";
 import {getRegionColors} from "@/util/region-colors";
 import {Coords} from "@/types/Coords";
-import {AccuracyGameHistoryElement} from "@/types/AccuracyGameHistoryElement";
+import {AccuracyGameHistoryElement} from "@/types/accuracy/AccuracyGameHistoryElement";
 import {useAccuracyState} from "@/store/useState";
 import {calculateAccuracy} from "@/util/score-calculator";
 import TopInfoBar from "@/components/TopInfoBar.vue";
@@ -84,6 +84,7 @@ export default defineComponent({
       computedRounds: 0,
       seed: null as number | null,
       region: null as string | null,
+      difficulty: null as string | null,
       timeless: false,
 
       game: null as Game | null,
@@ -96,9 +97,10 @@ export default defineComponent({
       router.push({name: 'accuracy'})
     },
 
-    setRouteValuesToVars(seed: number, region: string, timeless: boolean | null) {
+    setRouteValuesToVars(seed: number, region: string, difficulty:string,  timeless: boolean | null) {
       this.seed = seed
       this.region = region
+      this.difficulty = difficulty
       if (timeless !== null) {
         this.timeless = timeless
       }
@@ -119,7 +121,7 @@ export default defineComponent({
         return
       }
       let response: AccuracySingleClickGameResponse = await gameApi.accuracySingleClick(this.seed!, this.region!,
-          this.timeless, this.gameRound)
+          this.timeless, this.gameRound, this.difficulty!)
       this.game = response.game
       this.animalToFind = response.animalToFind
     },

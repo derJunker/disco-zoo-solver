@@ -108,7 +108,7 @@ import {defineComponent} from 'vue'
 import MenuBar from "@/components/MenuBar.vue";
 import {useAccuracyState} from "@/store/useState";
 import router from "@/router";
-import {AccuracyGameType} from "@/types/AccuracyGameType";
+import {AccuracyGameType} from "@/types/accuracy/AccuracyGameType";
 import {calculateAccuracy, calculateScore} from "@/util/score-calculator";
 import html2canvas from "html2canvas";
 

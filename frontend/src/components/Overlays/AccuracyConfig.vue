@@ -28,11 +28,34 @@
           </div>
         </div>
       </div>
+      <div>
+        <h2>
+          Difficulty:
+        </h2>
+        <div class="difficulty-container">
+          <div v-for="difficulty in difficulties" :key="difficulty" class="btn btn-gradient game-type"
+               :class="selectedDifficulty === difficulty ? difficulty + ' btn-highlighted' : 'color-action-disabled'"
+               @click="$emit('difficulty-selected', difficulty)">
+            {{difficulty.replace(/-/g, ' ')}}
+          </div>
+        </div>
+      </div>
     </div>
  </div>
 </template>
 
 <style scoped>
+.easy {
+  background-color: #59fa59;
+}
+
+.medium {
+  background-color: #e0d73e;
+}
+.hard {
+  background-color: #ff4d4d;
+}
+
 .btn {
   text-align: center;
 }
@@ -43,7 +66,7 @@
   justify-content: space-between;
   row-gap: 1rem;
 }
-.game-types-container {
+.game-types-container, .difficulty-container {
   display: flex;
   row-gap: .4rem;
   flex-wrap: wrap;
@@ -65,8 +88,9 @@
 <script lang="ts">
 import {defineComponent} from 'vue'
 import {getRegionColors} from "@/util/region-colors";
-import {AccuracyGameType} from "@/types/AccuracyGameType";
+import {AccuracyGameType} from "@/types/accuracy/AccuracyGameType";
 import ToggleSelect from "@/components/Basic/ToggleSelect.vue";
+import {AccuracyDifficulty} from "@/types/accuracy/AccuracyDifficulty";
 
 export default defineComponent({
   name: "AccuracyConfig",
@@ -77,6 +101,10 @@ export default defineComponent({
       required: true
     },
     selectedGameType: {
+      type: String,
+      required: true
+    },
+    selectedDifficulty: {
       type: String,
       required: true
     },
@@ -95,7 +123,8 @@ export default defineComponent({
   data() {
     return {
       gameType: AccuracyGameType,
-      possibleGameTypes: Object.values(AccuracyGameType)
+      possibleGameTypes: Object.values(AccuracyGameType),
+      difficulties: Object.values(AccuracyDifficulty)
     }
   },
 })

@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
-import {AccuracyGameType} from "@/types/AccuracyGameType";
+import {AccuracyGameType} from "@/types/accuracy/AccuracyGameType";
 
 
 const routes: Array<RouteRecordRaw> = [
@@ -47,7 +47,7 @@ for (const gameType in AccuracyGameType) {
       .replace(/^[a-z]/, char => char.toUpperCase())
   routes.push(
       {
-        path: `/accuracy/${routeShortName}/:region/:seed`,
+        path: `/accuracy/${routeShortName}/:region/:difficulty/:seed`,
         name: `accuracy-${routeShortName}-play`,
         component: () => import(`../views/accuracy/${routeShortName}/Accuracy${vueFileShortName}View.vue`)
       },

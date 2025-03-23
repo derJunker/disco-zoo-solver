@@ -1,4 +1,4 @@
-import {AccuracyGameHistoryElement} from "@/types/AccuracyGameHistoryElement";
+import {AccuracyGameHistoryElement} from "@/types/accuracy/AccuracyGameHistoryElement";
 
 const scoreWeights = {
     amountOfAnimals:(val: number) => Math.sqrt(val),

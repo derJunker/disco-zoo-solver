@@ -3,8 +3,9 @@ import {useApi} from "@/store/useApi";
 import {Animal} from "@/types/Animal";
 import {ClickChangeInfo, Game} from "@/types/Game";
 import {Coords} from "@/types/Coords";
-import {AccuracySingleClickGameResponse} from "@/types/AccuracySingleClickGameResponse";
-import {AccuracySingleClickPerformanceResponse} from "@/types/AccuracySingleClickPerformanceResponse";
+import {AccuracySingleClickGameResponse} from "@/types/accuracy/AccuracySingleClickGameResponse";
+import {AccuracySingleClickPerformanceResponse} from "@/types/accuracy/AccuracySingleClickPerformanceResponse";
+import {AccuracyDifficulty} from "@/types/accuracy/AccuracyDifficulty";
 
 export const useGame = defineStore('game', () => {
     const api = useApi();
@@ -22,9 +23,10 @@ export const useGame = defineStore('game', () => {
         return resp.json();
     }
 
-    async function accuracySingleClickGetGame(seed: number, region: string, timeless: boolean, gameNumber: number): Promise<AccuracySingleClickGameResponse> {
+    async function accuracySingleClickGetGame(seed: number, region: string, timeless: boolean, gameNumber: number, difficulty: string): Promise<AccuracySingleClickGameResponse> {
         const resp = await api.fetchUrl(`/accuracy/single-click/${seed}`, {
             region: region,
+            difficulty: difficulty,
             timeless: timeless,
             gameNumber: gameNumber
         });

@@ -3,8 +3,10 @@
     <div class="accuracy-content">
       <accuracy-config class="accuracy-config dock-bottom menu-bottom"
                        :selected-region="selectedRegion" :selected-game-type="selectedGameType" :timeless="timeless"
+                       :selected-difficulty="selectedDifficulty"
                        @timeless-changed="onTimelessChanged"
-                       @region-clicked="onRegionClicked" @game-type-selected="onGameTypeSelected"/>
+                       @region-clicked="onRegionClicked" @game-type-selected="onGameTypeSelected"
+                       @difficulty-selected="onDifficultySelected"/>
       <region-select v-if="showRegionSelect"  @region-select="onRegionSelect"
                       class="region-select dock-bottom dock-bottom-shadow menu-bottom" :any-option-available="true"/>
     </div>
@@ -46,7 +48,8 @@ import MenuBar from "@/components/MenuBar.vue";
 import AccuracyConfig from "@/components/Overlays/AccuracyConfig.vue";
 import router from "@/router";
 import RegionSelect from "@/components/Overlays/RegionSelect.vue";
-import {AccuracyGameType} from "@/types/AccuracyGameType";
+import {AccuracyGameType} from "@/types/accuracy/AccuracyGameType";
+import {AccuracyDifficulty} from "@/types/accuracy/AccuracyDifficulty";
 
 export default defineComponent({
   name: "AccuracyView",
@@ -55,6 +58,7 @@ export default defineComponent({
     return {
       selectedRegion: "farm" as string | null,
       selectedGameType: AccuracyGameType.SINGLE_CLICK as string,
+      selectedDifficulty: AccuracyDifficulty.MEDIUM,
       showRegionSelect: false,
       timeless: false
     }
@@ -65,7 +69,7 @@ export default defineComponent({
     },
     onPlay() {
       router.push({name: 'accuracy-' + this.selectedGameType +'-play', params: {seed: this.generateSeed(), region:
-          this.selectedRegion}, query: {timeless: this.timeless + ""}})
+          this.selectedRegion, difficulty: this.selectedDifficulty}, query: {timeless: this.timeless + ""}})
     },
 
     onRegionClicked() {
@@ -74,6 +78,10 @@ export default defineComponent({
 
     onGameTypeSelected(gameType: string) {
       this.selectedGameType = gameType
+    },
+
+    onDifficultySelected(difficulty: AccuracyDifficulty) {
+      this.selectedDifficulty = difficulty
     },
 
     onTimelessChanged(timeless: boolean) {

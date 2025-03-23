@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import junker.disco.zoo.solver.board.Coords;
 import junker.disco.zoo.solver.board.Game;
 import junker.disco.zoo.solver.board.solve.DiscoZooSolver;
+import junker.disco.zoo.solver.model.accuracy.AccuracyDifficulty;
 import junker.disco.zoo.solver.model.animals.Animal;
 import junker.disco.zoo.solver.model.animals.Region;
 import junker.disco.zoo.solver.requests.return_objects.AccuracySingleClickGameResponse;
@@ -22,12 +23,13 @@ public class AccuracyService {
     private static final int RANDOM_CALLS_UPPER_BOUND = 20;
 
     public AccuracySingleClickGameResponse getSingleClickGame(Long seed,
-                                                              int gameNumber, Region region, boolean timeless) {
+                                                              int gameNumber, Region region, boolean timeless,
+                                                              AccuracyDifficulty difficulty) {
         var random = new java.util.Random(seed);
 
         skipRandomAhead(gameNumber, random);
 
-        var animalAmount = random.nextInt(3) + 1;
+        var animalAmount = difficulty.animalAmount();
 
         if (region.equals(Region.ANY)) {
             var regionsWithoutAny = Region.exclusiveValues();

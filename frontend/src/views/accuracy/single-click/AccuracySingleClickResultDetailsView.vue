@@ -154,7 +154,7 @@ import AnimalSquare from "@/components/Basic/AnimalSquare.vue";
 import router from "@/router";
 import {Coords} from "@/types/Coords";
 import {getHeatmapColor} from "@/util/heatmap-colors";
-import {AccuracyGameType} from "@/types/AccuracyGameType";
+import {AccuracyGameType} from "@/types/accuracy/AccuracyGameType";
 
 const state = useAccuracyState()
 
