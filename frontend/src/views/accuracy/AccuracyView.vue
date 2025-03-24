@@ -50,20 +50,21 @@ import router from "@/router";
 import RegionSelect from "@/components/Overlays/RegionSelect.vue";
 import {AccuracyGameType} from "@/types/accuracy/AccuracyGameType";
 import {AccuracyDifficulty} from "@/types/accuracy/AccuracyDifficulty";
-import {userSettingsState} from "@/store/useState";
+import {useAccuracyState, userSettingsState} from "@/store/useState";
 
 const userSettings = userSettingsState()
+const accuracyState = useAccuracyState()
 
 export default defineComponent({
   name: "AccuracyView",
   components: {RegionSelect, AccuracyConfig, MenuBar},
   data() {
     return {
-      selectedRegion: "farm" as string | null,
+      selectedRegion: accuracyState.getLastSelectedRegion || "farm" as string | null,
       selectedGameType: AccuracyGameType.SINGLE_CLICK as string,
-      selectedDifficulty: AccuracyDifficulty.MEDIUM,
+      selectedDifficulty: accuracyState.getLastSelectedDifficulty || AccuracyDifficulty.MEDIUM,
       showRegionSelect: false,
-      timeless: userSettings.isTimelessRegionAllowed("farm")
+      timeless: userSettings.isTimelessRegionAllowed(accuracyState.getLastSelectedRegion || "farm")
     }
   },
   methods: {
@@ -83,10 +84,12 @@ export default defineComponent({
 
     onGameTypeSelected(gameType: string) {
       this.selectedGameType = gameType
+      accuracyState.setLastSelectedGameType(gameType)
     },
 
     onDifficultySelected(difficulty: AccuracyDifficulty) {
       this.selectedDifficulty = difficulty
+      accuracyState.setLastSelectedDifficulty(difficulty)
     },
 
     onTimelessChanged(timeless: boolean) {
@@ -101,6 +104,7 @@ export default defineComponent({
       this.selectedRegion = region
       this.showRegionSelect = false
       this.timeless = userSettings.isTimelessRegionAllowed(this.selectedRegion)
+      accuracyState.setLastSelectedRegion(region)
     },
 
     generateSeed() {

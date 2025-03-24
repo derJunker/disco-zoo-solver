@@ -46,19 +46,20 @@ import MenuBar from "@/components/MenuBar.vue";
 import router from "@/router";
 import ReconstructConfig from "@/components/Overlays/ReconstructConfig.vue";
 import {Animal} from "@/types/Animal";
-import {userSettingsState} from "@/store/useState";
+import {useReconstructState, userSettingsState} from "@/store/useState";
 
 const userSettings = userSettingsState()
+const reconstructState = useReconstructState()
 
 export default defineComponent({
   name: "ReconstructView",
   components: {ReconstructConfig, MenuBar, RegionSelect},
   data() {
     return {
-      selectedRegion: "farm" as string | null,
-      showRegionSelect: false,
-      timeless: userSettings.isTimelessRegionAllowed("farm"),
+      selectedRegion: reconstructState.getLastSelectedRegion || "farm" as string | null,
+      timeless: userSettings.isTimelessRegionAllowed(reconstructState.getLastSelectedRegion || "farm"),
       selectedAnimals: [] as Animal[],
+      showRegionSelect: false,
     }
   },
 
@@ -83,6 +84,7 @@ export default defineComponent({
       this.showRegionSelect = false
       this.selectedAnimals = []
       this.timeless = userSettings.isTimelessRegionAllowed(this.selectedRegion)
+      reconstructState.setLastSelectedRegion(region)
     },
 
     onRegionClicked() {
