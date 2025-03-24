@@ -9,6 +9,7 @@ export const useAccuracyState = defineStore( 'accuracyState', {
             withTimeless: false,
             region: null as string | null,
             difficulty: null as AccuracyDifficulty | null,
+            seed: -1,
         }
     },
 })

@@ -220,7 +220,9 @@ export default defineComponent({
       router.push({name: 'home'})
     },
     onRetry() {
-      router.push({name: 'accuracy'})
+      router.push({name: 'accuracy-' + AccuracyGameType.SINGLE_CLICK + '-play',
+        params: {seed: state.seed, region: state.region, difficulty: state.difficulty},
+        query: {timeless: state.withTimeless + ""}})
     },
     onBack() {
       router.push({name: 'accuracy-' + AccuracyGameType.SINGLE_CLICK + '-result'})

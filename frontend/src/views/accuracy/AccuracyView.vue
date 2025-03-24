@@ -68,8 +68,10 @@ export default defineComponent({
       router.push({name: 'home'})
     },
     onPlay() {
-      router.push({name: 'accuracy-' + this.selectedGameType +'-play', params: {seed: this.generateSeed(), region:
-          this.selectedRegion, difficulty: this.selectedDifficulty}, query: {timeless: this.timeless + ""}})
+      router.push({name: 'accuracy-' + this.selectedGameType +'-play',
+        params: {seed: this.generateSeed(), region:
+          this.selectedRegion, difficulty: this.selectedDifficulty},
+        query: {timeless: this.timeless + ""}})
     },
 
     onRegionClicked() {

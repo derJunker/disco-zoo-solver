@@ -112,14 +112,14 @@ import {AccuracyGameType} from "@/types/accuracy/AccuracyGameType";
 import {calculateAccuracy, calculateScore} from "@/util/score-calculator";
 import html2canvas from "html2canvas";
 
-const accuracyState = useAccuracyState()
+const state = useAccuracyState()
 
 export default defineComponent({
   name: "AccuracySingleClickResultView",
   components: {MenuBar},
 
   created() {
-    const clickHistory = accuracyState.singleClickHistory
+    const clickHistory = state.singleClickHistory
 
     if (clickHistory.length === 0) {
       router.push({name: 'accuracy'})
@@ -129,9 +129,9 @@ export default defineComponent({
     this.bestClickCount = clickHistory.filter(e => e.wasBestClick).length
     this.gameAmount = clickHistory.length
     this.grade = this.calculateGrade()
-    this.score = calculateScore(clickHistory, accuracyState.withTimeless)
-    this.region = accuracyState.region
-    this.difficulty = accuracyState.difficulty
+    this.score = calculateScore(clickHistory, state.withTimeless)
+    this.region = state.region
+    this.difficulty = state.difficulty
   },
 
   data() {
@@ -186,7 +186,9 @@ export default defineComponent({
     },
 
     onRetryClick() {
-      router.push({name: 'accuracy'})
+      router.push({name: 'accuracy-' + AccuracyGameType.SINGLE_CLICK + '-play',
+        params: {seed: state.seed, region: this.region, difficulty: this.difficulty},
+        query: {timeless: state.withTimeless + ""}})
     },
 
     onShare() {
