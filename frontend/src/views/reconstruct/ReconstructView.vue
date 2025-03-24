@@ -46,6 +46,9 @@ import MenuBar from "@/components/MenuBar.vue";
 import router from "@/router";
 import ReconstructConfig from "@/components/Overlays/ReconstructConfig.vue";
 import {Animal} from "@/types/Animal";
+import {userSettingsState} from "@/store/useState";
+
+const userSettings = userSettingsState()
 
 export default defineComponent({
   name: "ReconstructView",
@@ -54,7 +57,7 @@ export default defineComponent({
     return {
       selectedRegion: "farm" as string | null,
       showRegionSelect: false,
-      timeless: false,
+      timeless: userSettings.isTimelessRegionAllowed("farm"),
       selectedAnimals: [] as Animal[],
     }
   },
@@ -68,6 +71,10 @@ export default defineComponent({
         if (indexOfTimeless !== -1) {
           this.selectedAnimals.splice(indexOfTimeless, 1)
         }
+
+        userSettings.removeTimelessRegion(this.selectedRegion)
+      } else {
+        userSettings.addTimelessRegion(this.selectedRegion)
       }
     },
 
@@ -75,7 +82,7 @@ export default defineComponent({
       this.selectedRegion = region.toLowerCase()
       this.showRegionSelect = false
       this.selectedAnimals = []
-      this.timeless = false
+      this.timeless = userSettings.isTimelessRegionAllowed(this.selectedRegion)
     },
 
     onRegionClicked() {

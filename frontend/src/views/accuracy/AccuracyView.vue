@@ -50,6 +50,9 @@ import router from "@/router";
 import RegionSelect from "@/components/Overlays/RegionSelect.vue";
 import {AccuracyGameType} from "@/types/accuracy/AccuracyGameType";
 import {AccuracyDifficulty} from "@/types/accuracy/AccuracyDifficulty";
+import {userSettingsState} from "@/store/useState";
+
+const userSettings = userSettingsState()
 
 export default defineComponent({
   name: "AccuracyView",
@@ -60,7 +63,7 @@ export default defineComponent({
       selectedGameType: AccuracyGameType.SINGLE_CLICK as string,
       selectedDifficulty: AccuracyDifficulty.MEDIUM,
       showRegionSelect: false,
-      timeless: false
+      timeless: userSettings.isTimelessRegionAllowed("farm")
     }
   },
   methods: {
@@ -88,11 +91,16 @@ export default defineComponent({
 
     onTimelessChanged(timeless: boolean) {
       this.timeless = timeless
+      // Dont remove it from the list of animals if it is not selected
+      // but add it if it is selected
+      if (this.timeless)
+        userSettings.addTimelessRegion(this.selectedRegion)
     },
 
     onRegionSelect(region: string) {
       this.selectedRegion = region
       this.showRegionSelect = false
+      this.timeless = userSettings.isTimelessRegionAllowed(this.selectedRegion)
     },
 
     generateSeed() {
