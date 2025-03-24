@@ -2,7 +2,7 @@
   <div class="home-view">
     <div class="home-view-content">
       <div class="heading-container">
-        <h1 class="rare btn-gradient btn animal-highlighted">Disco Zoo Solver</h1>
+        <h1 class="rare btn-gradient btn btn-highlighted">Disco Zoo Solver</h1>
       </div>
       <menu-overlay v-if="showMenuOverlay" class="menu-overlay dock-bottom menu-bottom"/>
       <play-overlay v-if="showPlayOverlay" class="play-overlay dock-bottom menu-bottom"/>
@@ -21,8 +21,9 @@ h1 {
 }
 .heading-container {
   margin-top: 5rem;
-  margin-inline: 2rem;
-  filter: drop-shadow(0 0 10px var(--animal-highlight-color)) drop-shadow(0 0 30px var(--animal-highlight-color));
+  margin-inline: auto;
+  max-width: min(90%, 600px);
+  filter: drop-shadow(0 0 30px var(--animal-highlight-color));
 }
 .home-view {
   display: flex;
