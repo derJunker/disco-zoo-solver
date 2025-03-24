@@ -102,6 +102,11 @@
     --constellation-light: #516468;
 }
 
+a {
+    color: var(--text-color);
+    text-decoration: none;
+}
+
 /* CSS Reset */
 *,
 *::before,

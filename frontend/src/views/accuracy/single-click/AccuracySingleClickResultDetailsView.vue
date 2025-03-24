@@ -26,8 +26,14 @@
             <div class="btn game-nav-btn" @click="showIndex = loopIndex(showIndex+1)">{{">"}}</div>
           </div>
         </div>
-        <div class="btn btn-gradient color-action-neutral-2" id="back-btn" @click="onBack">
-          Back
+
+        <div class="nav-btn-container">
+          <div class="btn btn-gradient color-action-info" @click="onBack">
+            Back
+          </div>
+          <a class="btn btn-gradient color-action-neutral-2" :href="getReconstructLink()" target="_blank">
+            Reconstruct
+          </a>
         </div>
       </div>
     </div>
@@ -138,10 +144,16 @@ h2, .score {
   bottom: -1.5rem;
 }
 
-#back-btn {
+.nav-btn-container {
   margin:  1rem auto 0 auto;
-  width: fit-content;
+  display: flex;
+  justify-content: space-around;
+}
+
+.nav-btn-container > .btn {
+  width: 40%;
   padding: 1rem;
+  text-align: center;
 }
 
 </style>
@@ -226,6 +238,13 @@ export default defineComponent({
     },
     onBack() {
       router.push({name: 'accuracy-' + AccuracyGameType.SINGLE_CLICK + '-result'})
+    },
+
+    getReconstructLink() {
+      const element = this.singleClickHistory[this.showIndex]
+      const gameRegion = element.game.region.toLowerCase()
+      const animals = element.game.containedAnimals.map((animal: any) => `animals=${animal.name}`.toLowerCase()).join('&')
+      return `/reconstruct/${gameRegion}?${animals}`
     }
   },
 
