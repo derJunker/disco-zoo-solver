@@ -29,7 +29,7 @@ public class AccuracyService {
 
         skipRandomAhead(gameNumber, random);
 
-        var animalAmount = difficulty.animalAmount();
+        var animalAmount = animalAmount(difficulty, random);
 
         if (region.equals(Region.ANY)) {
             var regionsWithoutAny = Region.exclusiveValues();
@@ -55,6 +55,36 @@ public class AccuracyService {
                 random.nextInt();
             }
         }
+    }
+
+    private int animalAmount(AccuracyDifficulty difficulty, Random random) {
+        int roll = random.nextInt(100);
+
+        int chance1, chance2, chance3;
+
+        switch (difficulty) {
+            case EASY:
+                chance1 = 70;
+                chance2 = 30;
+                chance3 = 0;
+                break;
+            case MEDIUM:
+                chance1 = 20;
+                chance2 = 60;
+                chance3 = 20;
+                break;
+            case HARD:
+                chance1 = 0;
+                chance2 = 25;
+                chance3 = 75;
+                break;
+            default:
+                return 1;
+        }
+
+        if (roll < chance1) return 1;
+        if (roll < chance1 + chance2) return 2;
+        return 3;
     }
 
     public AccuracySingleClickPerformanceResponse clicked(Game game, Animal animalToFind, Coords click) {
