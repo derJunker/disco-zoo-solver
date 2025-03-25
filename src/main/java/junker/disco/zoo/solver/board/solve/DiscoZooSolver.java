@@ -59,7 +59,7 @@ public class DiscoZooSolver {
             return solutionsForNoOverlap(overlaps, animalToSolve, game, previousClicks, smallestSolutionLength, highestOverlapCoords);
         }
 
-        if (game.getNotCompletelyRevealedAnimalsWithoutBux().size() == 1) {
+        if (overlaps.animalMaxOverlapCounts().size() == 1) {
             var multipleClickSets = MultiClickEmulator.calculateMultiClickSets(overlaps,
                     highestOverlapCoords, animalToSolve);
             return emulateClicksForSingleAnimal(multipleClickSets, overlaps, game, previousClicks, animalToSolve,

@@ -35,7 +35,7 @@ public class OverlapCalulator {
                     bestCandidates.clear();
                     bestCandidates.add(new Coords(x, y));
                     maxOverlap = (int) animalTileOverlap;
-                } else if (animalTileOverlap == maxOverlap ) {
+                } else if (animalTileOverlap == maxOverlap && (animalTileOverlap < permutationSize || includeSolved)) {
                     bestCandidates.add(new Coords(x, y));
                 }
             }
