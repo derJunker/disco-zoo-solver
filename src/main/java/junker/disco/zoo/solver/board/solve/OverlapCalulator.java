@@ -149,7 +149,10 @@ public class OverlapCalulator {
                                 .filter(animalBoardInstance -> animalBoardInstance != null && animalBoardInstance.animal().equals(animal))
                                 .distinct()
                                 .count();
-                        animalMaxOverlaps.put(animal, Math.max(animalMaxOverlaps.getOrDefault(animal, 0), animalOverlapCount));
+                        animalMaxOverlaps.put(animal, Math.max(animalMaxOverlaps.getOrDefault(animal, 1),
+                                animalOverlapCount));
+                    } else {
+                        animalMaxOverlaps.putIfAbsent(animal, 1);
                     }
 
                 }

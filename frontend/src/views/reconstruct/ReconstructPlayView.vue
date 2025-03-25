@@ -148,7 +148,6 @@ export default defineComponent({
       await router.push({name: "reconstruct"})
       return
     }
-    console.log("animalNames in mounted:", this.animalNames)
     this.animals = await animalStore.getAnimalsByNames(this.animalNames)
 
     gameStore.startReconstruct(this.animals, this.region!).then(game => {

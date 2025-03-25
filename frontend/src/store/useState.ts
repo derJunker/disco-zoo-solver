@@ -90,16 +90,12 @@ export const userSettingsState = defineStore('userSettingsState', {
             return this.allowedTimelessRegions.includes(region.toLowerCase());
         },
         addTimelessRegion(region: string | null) {
-            console.log("addTimelessRegion", region);
-            console.log("allowedTimelessRegions", this.allowedTimelessRegions);
             if (region && !this.allowedTimelessRegions.includes(region.toLowerCase())) {
                 this.allowedTimelessRegions.push(region.toLowerCase());
                 this.saveToLocalStorage();
             }
         },
         removeTimelessRegion(region: string | null) {
-            console.log("removeTimelessRegion", region);
-            console.log("allowedTimelessRegions", this.allowedTimelessRegions);
             if (region) {
                 const index = this.allowedTimelessRegions.indexOf(region.toLowerCase());
                 if (index >= 0) {
