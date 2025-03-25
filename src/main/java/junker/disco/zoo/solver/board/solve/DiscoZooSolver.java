@@ -75,7 +75,6 @@ public class DiscoZooSolver {
                                                                   Game game, List<Coords> previousClicks, Animal animalToSolve, int smallestSolutionLength) {
         var overallOverlap = overlaps.overallOverlap();
         List<Solution> allSolutions = new ArrayList<>();
-        Map<Solution, Double> solutionProbabilities = new HashMap<>();
         for (var coords : highestOverlapCoords) {
             Set<AnimalBoardInstance> animalInstances =
                     new HashSet<>(overallOverlap[coords.x()][coords.y()]);
@@ -83,9 +82,7 @@ public class DiscoZooSolver {
                     .map(animalBoardInstance -> animalBoardInstance != null? animalBoardInstance.animal() : null)
                     .collect(Collectors.toSet());
             var differentAnimalSolutions = new ArrayList<Solution>();
-            Map<Solution, Double> differentAnimalSolutionProbabilities = new HashMap<>();
             var worstSolutionLengthForDifferentAnimals = 0;
-            var worstProbabilityForDifferentAnimals = 1.0d;
             for (var animalToPlace : placeableAnimals) {
                 var nextOverlaps = emulateOverlapClick(overlaps, animalToPlace, animalInstances, coords, game);
                 var nextGame = new Game(game, true);
@@ -106,52 +103,15 @@ public class DiscoZooSolver {
 
                 solutions = onlyMinSolutions(solutions);
 
-                var prevWorstSolutionLength = worstSolutionLengthForDifferentAnimals;
                 worstSolutionLengthForDifferentAnimals = ListUtil.resetAddIfAboveLimit(differentAnimalSolutions,
                         solutions,
                         solutions.getFirst().clicks().size(), worstSolutionLengthForDifferentAnimals);
-                // Get the best solutions of that animal click and check if
-                for (Solution solution : solutions) {
-                    solutionProbabilities.putIfAbsent(solution, 0.0);
-                    if (!nextHighestOverlapCoords.isEmpty()) {
-                        var anyHighestOverlap = nextHighestOverlapCoords.getFirst();
-                        var probability =
-                                nextOverlaps.animalOverlapProbability().get(animalToSolve)[anyHighestOverlap.x()][anyHighestOverlap.y()];
-                        if (probability < worstProbabilityForDifferentAnimals - 0.0001 && prevWorstSolutionLength != worstSolutionLengthForDifferentAnimals) {
-                            worstProbabilityForDifferentAnimals = probability;
-                            differentAnimalSolutionProbabilities.clear();
-                            differentAnimalSolutionProbabilities.put(solution, probability);
-                        } else if (Math.abs(probability - worstProbabilityForDifferentAnimals) < 0.0001) {
-                            differentAnimalSolutionProbabilities.put(solution, probability);
-                        }
-                    }
-                }
-                if (prevWorstSolutionLength != worstSolutionLengthForDifferentAnimals) {
-                    var anyHighestOverlap = nextHighestOverlapCoords.getFirst();
-                    final var probability = nextOverlaps.animalOverlapProbability().get(animalToSolve)[anyHighestOverlap.x()][anyHighestOverlap.y()];
-                    worstProbabilityForDifferentAnimals = probability;
-                    differentAnimalSolutionProbabilities.clear();
-                    differentAnimalSolutions.forEach(solution -> differentAnimalSolutionProbabilities.put(solution, probability));
-                }
-                differentAnimalSolutions.removeIf(Predicate.not(differentAnimalSolutionProbabilities::containsKey));
             }
             if (differentAnimalSolutions.isEmpty())
                 continue;
-            solutionProbabilities.putAll(differentAnimalSolutionProbabilities);
             smallestSolutionLength = ListUtil.resetAddIfBelowLimit(allSolutions, differentAnimalSolutions,
                     differentAnimalSolutions.getFirst().clicks().size(),
                     smallestSolutionLength);
-            var max = allSolutions.stream().map(solutionProbabilities::get).mapToDouble(dob -> dob).max().orElse(0);
-            var newSolutionProbabilities = new HashMap<Solution, Double>();
-            if (previousClicks.isEmpty()) {
-                allSolutions =
-                        new ArrayList<>(allSolutions.stream()
-                                .filter(solution -> solutionProbabilities.get(solution) >= max - 0.0001)
-                                .peek(solution -> newSolutionProbabilities.put(solution, solutionProbabilities.get(solution)))
-                                .toList());
-                solutionProbabilities.clear();
-                solutionProbabilities.putAll(newSolutionProbabilities);
-            }
         }
         return allSolutions;
     }
