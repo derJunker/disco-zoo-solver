@@ -1,6 +1,7 @@
 package junker.disco.zoo.solver.controller;
 
 import java.util.List;
+import java.util.Optional;
 
 import junker.disco.zoo.solver.model.accuracy.AccuracyDifficulty;
 import junker.disco.zoo.solver.model.animals.Region;
@@ -39,12 +40,12 @@ public class AccuracyController {
                                                                            required = false) int gameNumber,
                                                                    @RequestParam(required = false, name="difficulty",
                                                                            defaultValue = "easy") String difficultyStr) {
-        var resp = handleInvalidParams(seed, gameNumber, regionStr, difficultyStr);
+        var regionOpt = Region.byRepr(regionStr);
+        var resp = handleInvalidParams(seed, gameNumber, regionOpt, difficultyStr);
         if (resp != null) return resp;
         final var difficulty = AccuracyDifficulty.byRepr(difficultyStr);
-        var region = Region.byRepr(regionStr);
 
-        var game = accuracyService.getSingleClickGame(seed, gameNumber, region, timeless, difficulty);
+        var game = accuracyService.getSingleClickGame(seed, gameNumber, regionOpt.get(), timeless, difficulty);
         return new ResponseEntity<>(game, HttpStatus.OK);
     }
 
@@ -59,8 +60,9 @@ public class AccuracyController {
     }
 
     private ResponseEntity<AccuracySingleClickGameResponse> handleInvalidParams(Long seed, int gameNumber,
-                                                                                String regionStr, String difficulty) {
-        if (seed == null || gameNumber < 0 || gameNumber > 100 || Region.byRepr(regionStr) == null ||
+                                                                                Optional<Region> regionOpt,
+                                                                                String difficulty) {
+        if (seed == null || gameNumber < 0 || gameNumber > 100 || regionOpt.isEmpty() ||
                 !List.of("easy", "medium", "hard").contains(difficulty)) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }

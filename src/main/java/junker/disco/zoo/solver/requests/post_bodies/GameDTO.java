@@ -14,6 +14,6 @@ public record GameDTO(
 ) {
 
     public Game toGame() {
-        return new Game(board, containedAnimals, Region.byRepr(region));
+        return new Game(board, containedAnimals, Region.byRepr(region).orElseThrow());
     }
 }

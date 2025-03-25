@@ -1,11 +1,10 @@
 package junker.disco.zoo.solver.controller;
 
-import java.util.stream.Collectors;
-
-import junker.disco.zoo.solver.board.solve.DiscoZooSolver;
 import junker.disco.zoo.solver.requests.post_bodies.SolveRequestBody;
 import junker.disco.zoo.solver.requests.return_objects.SolveResult;
 import junker.disco.zoo.solver.service.SolveService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -25,9 +24,9 @@ public class SolveController {
 
 
     @PostMapping
-    public SolveResult solve(@RequestBody SolveRequestBody body) {
+    public ResponseEntity<SolveResult> solve(@RequestBody SolveRequestBody body) {
         final var game = body.game().toGame();
         final var animalToSolverFor = body.animalToSolveFor();
-        return solveService.solve(game, animalToSolverFor);
+        return new ResponseEntity<>(solveService.solve(game, animalToSolverFor), HttpStatus.OK);
     }
 }

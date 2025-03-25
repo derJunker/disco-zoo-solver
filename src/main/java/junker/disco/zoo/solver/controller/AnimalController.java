@@ -4,6 +4,8 @@ import java.util.List;
 
 import junker.disco.zoo.solver.model.animals.Animal;
 import junker.disco.zoo.solver.model.animals.Region;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,12 +18,19 @@ import org.springframework.web.bind.annotation.RestController;
 public class AnimalController {
 
     @GetMapping
-    public List<Animal> getAnimalsOfRegion(@RequestParam("region") String region) {
-        return Animal.getAnimalListByRegion(Region.byRepr(region), true);
+    public ResponseEntity<List<Animal>> getAnimalsOfRegion(@RequestParam("region") String regionStr) {
+        var regionOpt = Region.byRepr(regionStr);
+        return regionOpt
+                .map(region -> new ResponseEntity<>(Animal.getAnimalListByRegion(region, true), HttpStatus.OK))
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     @GetMapping("/byName")
-    public List<Animal> getAnimalsByNames(@RequestParam("names") List<String> names) {
-        return Animal.findAnimalsByName(names.toArray(new String[0]));
+    public ResponseEntity<List<Animal>> getAnimalsByNames(@RequestParam("names") List<String> names) {
+        var animals =  Animal.findAnimalsByName(names.toArray(new String[0]));
+        if (animals.size() != names.size())
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+        return new ResponseEntity<>(animals, HttpStatus.OK);
     }
 }

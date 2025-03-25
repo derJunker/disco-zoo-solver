@@ -10,7 +10,6 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Lob;
 import jakarta.persistence.Table;
-import junker.disco.zoo.solver.board.Coords;
 import junker.disco.zoo.solver.board.util.DoubleArrayUtil;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

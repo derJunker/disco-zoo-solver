@@ -3,6 +3,7 @@ package junker.disco.zoo.solver.model.animals;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 
 public enum Region {
@@ -32,8 +33,8 @@ public enum Region {
         this.order = order;
     }
 
-    public static Region byRepr(String repr) {
-        return Arrays.stream(Region.values()).filter(region -> region.repr.equalsIgnoreCase(repr)).findFirst().orElse(null);
+    public static Optional<Region> byRepr(String repr) {
+        return Arrays.stream(Region.values()).filter(region -> region.repr.equalsIgnoreCase(repr)).findFirst();
     }
 
     public static List<String> getRegionReprs() {

@@ -1,15 +1,15 @@
 package junker.disco.zoo.solver.controller;
 
-import java.util.Arrays;
 import java.util.List;
 
-import junker.disco.zoo.solver.board.Tile;
 import junker.disco.zoo.solver.model.animals.Animal;
 import junker.disco.zoo.solver.board.Game;
 import junker.disco.zoo.solver.model.animals.Region;
 import junker.disco.zoo.solver.requests.post_bodies.ReconstructClickBody;
 import junker.disco.zoo.solver.requests.post_bodies.ReconstructStartBody;
 import junker.disco.zoo.solver.requests.return_objects.ClickChangeInfo;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,13 +21,16 @@ import org.springframework.web.bind.annotation.RestController;
 @CrossOrigin
 public class ReconstructController {
     @PostMapping("/start")
-    public Game start(@RequestBody ReconstructStartBody body) {
-        final var game =  new Game(body.animals(), Region.byRepr(body.region()));
-        return new Game(game, true);
+    public ResponseEntity<Game> start(@RequestBody ReconstructStartBody body) {
+        var regionOpt = Region.byRepr(body.region());
+        if (regionOpt.isEmpty())
+            return ResponseEntity.notFound().build();
+        final var game =  new Game(body.animals(), regionOpt.get());
+        return new ResponseEntity<>(new Game(game, true), HttpStatus.OK);
     }
 
     @PostMapping("/click")
-    public ClickChangeInfo click(@RequestBody ReconstructClickBody requestBody) {
+    public ResponseEntity<ClickChangeInfo> click(@RequestBody ReconstructClickBody requestBody) {
         final var game = requestBody.game().toGame();
         var animal = requestBody.animal();
         final var coords = requestBody.coords();
@@ -46,11 +49,11 @@ public class ReconstructController {
             completelyRevealedAnimals = game.getCompletelyRevealedAnimals();
             notCompletelyRevealedAnimalsWithoutBux = game.getNotCompletelyRevealedAnimalsWithoutBux();
         }
-        return new ClickChangeInfo(
+        return new ResponseEntity<>(new ClickChangeInfo(
                 currentTile,
                 isValid,
                 completelyRevealedAnimals,
                 notCompletelyRevealedAnimalsWithoutBux
-        );
+        ), HttpStatus.OK);
     }
 }
