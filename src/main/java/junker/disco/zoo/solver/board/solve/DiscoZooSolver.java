@@ -64,7 +64,7 @@ public class DiscoZooSolver {
             return List.of(new Solution(previousClicks));
         } else if (maxOverlapCount == 1) {
             return solutionsForNoOverlap(overlaps, animalToSolve, game, previousClicks, smallestSolutionLength,
-                    highestOverlapCoords, includeSolvedInSolution);
+                    highestOverlapCoords);
         }
 
         if (overlaps.animalMaxOverlapCounts().size() == 1) {

@@ -22,13 +22,13 @@ public class NoOverlapSolutionFinder {
      */
     public static List<Solution> solutionsForNoOverlap(Overlaps overlaps, Animal animalToSolve, Game game,
                                                   List<Coords> previousClicks, int smallestSolutionLength,
-                                                       List<Coords> highestOverlapCoords, boolean includeSolvedInSolution) {
+                                                       List<Coords> highestOverlapCoords) {
         int boardWidth = game.getBoard().length;
         int boardHeight = game.getBoard()[0].length;
 
         // For each animalBoardInstance all the clickable Coords
         var animalBoardInstancesClickableCoordsMap = getClickableCoordsForAnimalBoardInstance(overlaps,
-                animalToSolve, includeSolvedInSolution, boardWidth, boardHeight);
+                animalToSolve, boardWidth, boardHeight);
         var minSolutionLength = minSolutionLength(animalBoardInstancesClickableCoordsMap, previousClicks);
         if (minSolutionLength > smallestSolutionLength)
             return List.of(new Solution(IntStream.range(0, minSolutionLength).mapToObj(_ -> new Coords(-1, -1)).toList()));
@@ -38,14 +38,13 @@ public class NoOverlapSolutionFinder {
 
     private static Map<AnimalBoardInstance, Set<Coords>> getClickableCoordsForAnimalBoardInstance(Overlaps overlaps,
                                                                                                   Animal animalToSolve,
-                                                                                                  boolean includeSolvedInSolution,
                                                                                                   int boardWidth, int boardHeight) {
         // For each animalBoardInstance all the clickable Coords
         var animalBoardInstancesClickableCoordsMap = new HashMap<AnimalBoardInstance, Set<Coords>>();
         for (int x = 0; x < boardWidth; x++) {
             for (int y = 0; y < boardHeight; y++) {
                 var animalTileOverlap = overlaps.uniqueAnimalOverlapMap().get(animalToSolve)[x][y];
-                if (!animalTileOverlap.isEmpty() && (overlaps.animalOverlapProbability().get(animalToSolve)[x][y] < 1 || includeSolvedInSolution)) {
+                if (!animalTileOverlap.isEmpty()) {
                     var animalInstance = animalTileOverlap.iterator().next();
                     animalBoardInstancesClickableCoordsMap.putIfAbsent(animalInstance, new HashSet<>());
                     animalBoardInstancesClickableCoordsMap.get(animalInstance).add(new Coords(x, y));

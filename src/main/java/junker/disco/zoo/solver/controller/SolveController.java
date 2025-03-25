@@ -27,6 +27,9 @@ public class SolveController {
     public ResponseEntity<SolveResult> solve(@RequestBody SolveRequestBody body) {
         final var game = body.game().toGame();
         final var animalToSolverFor = body.animalToSolveFor();
+        if (animalToSolverFor == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
         return new ResponseEntity<>(solveService.solve(game, animalToSolverFor), HttpStatus.OK);
     }
 }

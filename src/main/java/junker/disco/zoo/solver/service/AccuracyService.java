@@ -1,6 +1,8 @@
 package junker.disco.zoo.solver.service;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
 
@@ -12,22 +14,29 @@ import junker.disco.zoo.solver.model.animals.Animal;
 import junker.disco.zoo.solver.model.animals.Region;
 import junker.disco.zoo.solver.requests.return_objects.AccuracySingleClickGameResponse;
 import junker.disco.zoo.solver.requests.return_objects.AccuracySingleClickPerformanceResponse;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 @Service
 public class AccuracyService {
 
-    // How many random calls to skip ahead for each round. This should be the maximum amount of random.next...()
-    // calls for each "getRandomGame()
-    private static final int RANDOM_CALLS_UPPER_BOUND = 20;
-
     public AccuracySingleClickGameResponse getSingleClickGame(Long seed,
-                                                              int gameNumber, Region region, boolean timeless,
-                                                              AccuracyDifficulty difficulty) {
-        var random = new java.util.Random(seed);
+                                                               int gameNumber, Region region, boolean timeless,
+                                                               AccuracyDifficulty difficulty) {
+        return getSingleClickGame(seed, gameNumber, region, timeless, difficulty, null);
+    }
 
-        skipRandomAhead(gameNumber, random);
+    private AccuracySingleClickGameResponse getSingleClickGame(Long seed,
+                                                              int gameNumber, Region region, boolean timeless,
+                                                              AccuracyDifficulty difficulty, Random random) {
+        if (random == null) {
+            random = new Random(seed);
+        }
+        List<Animal> previousAnimals = new ArrayList<>();
+        if (gameNumber > 0) {
+            // Recursively get the previous game to get the animals that were placed
+            var previousResponse = getSingleClickGame(seed, gameNumber - 1, region, timeless, difficulty, random);
+            previousAnimals = previousResponse.game().getContainedAnimals();
+        }
 
         var animalAmount = animalAmount(difficulty, random);
 
@@ -37,24 +46,22 @@ public class AccuracyService {
         }
 
         var animalsOfRegion = Animal.getAnimalListByRegion(region, timeless);
-        var remainingAnimals = new ArrayList<>(animalsOfRegion);
-        var animalsToPlace = new ArrayList<Animal>();
-        for (var i = 0; i < animalAmount; i++) {
-            var chosenAnimalIndex = random.nextInt(remainingAnimals.size());
-            var animal = remainingAnimals.remove(chosenAnimalIndex);
-            animalsToPlace.add(animal);
+        List<Animal> remainingAnimals;
+        List<Animal> animalsToPlace;
+        do {
+            remainingAnimals = new ArrayList<>(animalsOfRegion);
+            animalsToPlace = new ArrayList<>();
+            for (var i = 0; i < animalAmount; i++) {
+                var chosenAnimalIndex = random.nextInt(remainingAnimals.size());
+                var animal = remainingAnimals.remove(chosenAnimalIndex);
+                animalsToPlace.add(animal);
+            }
         }
+        while (animalsToPlace.size() == previousAnimals.size() &&
+                new HashSet<>(animalsToPlace).containsAll(previousAnimals) && new HashSet<>(previousAnimals).containsAll(animalsToPlace));
         var animalToSearch = animalsToPlace.get(random.nextInt(animalsToPlace.size()));
         var game = new Game(animalsToPlace, region);
         return new AccuracySingleClickGameResponse(game, animalToSearch);
-    }
-
-    private void skipRandomAhead(int gameNumber, Random random) {
-        for (int i = 0; i < gameNumber; i++) {
-            for (int j = 0; j < RANDOM_CALLS_UPPER_BOUND; j++) {
-                random.nextInt();
-            }
-        }
     }
 
     private int animalAmount(AccuracyDifficulty difficulty, Random random) {

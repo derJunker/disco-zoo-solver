@@ -167,9 +167,10 @@ export default defineComponent({
     },
 
     async updateProbabilityInfo() {
-      if (!this.game || !this.animalForHeatmap) {
+      if (!this.game || this.animalForHeatmap == null) {
         this.probabilities = null;
         this.bestClicks = []
+        return;
       }
       const info = await solver.solve(this.game!, this.animalForHeatmap!)
       this.probabilities = info.probabilities
