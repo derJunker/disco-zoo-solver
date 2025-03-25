@@ -1,0 +1,20 @@
+package junker.disco.zoo.solver.service;
+
+import java.util.stream.Collectors;
+
+import junker.disco.zoo.solver.board.Game;
+import junker.disco.zoo.solver.board.solve.DiscoZooSolver;
+import junker.disco.zoo.solver.model.animals.Animal;
+import junker.disco.zoo.solver.requests.return_objects.SolveResult;
+import org.springframework.stereotype.Service;
+
+@Service
+public class SolveService {
+
+    public SolveResult solve(Game game, Animal animalToSolverFor) {
+        var moveInformation = DiscoZooSolver.getBestMoveInformation(animalToSolverFor, game);
+        var bestClicks =
+                moveInformation.solutions().stream().map(solution -> solution.clicks().getFirst()).collect(Collectors.toSet());
+        return new SolveResult(bestClicks, moveInformation.probabilities());
+    }
+}
