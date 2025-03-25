@@ -1,5 +1,6 @@
 package junker.disco.zoo.solver.board.util;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -7,6 +8,11 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.persistence.AttributeConverter;
+import jakarta.persistence.Converter;
 
 import junker.disco.zoo.solver.board.Coords;
 
@@ -131,5 +137,29 @@ public class DoubleArrayUtil {
         return sum;
     }
 
+    @Converter(autoApply = true)
+    public static
+    class DoubleArrayConverter implements AttributeConverter<Double[][], String> {
+        private static final ObjectMapper objectMapper = new ObjectMapper();
 
+        @Override
+        public String convertToDatabaseColumn(Double[][] attribute) {
+            try {
+                return objectMapper.writeValueAsString(attribute);
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException("Error converting Double[][] to JSON", e);
+            }
+        }
+
+        @Override
+        public Double[][] convertToEntityAttribute(String dbData) {
+            try {
+                return objectMapper.readValue(dbData, Double[][].class);
+            } catch (IOException e) {
+                throw new RuntimeException("Error converting JSON to Double[][]", e);
+            }
+        }
+    }
 }
+
+

@@ -43,6 +43,8 @@ dependencies {
 
     implementation("org.springframework.boot:spring-boot-starter")
     implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+
 
     compileOnly("org.projectlombok:lombok")
     annotationProcessor("org.projectlombok:lombok:1.18.30")
@@ -50,6 +52,10 @@ dependencies {
     implementation("org.apache.logging.log4j:log4j-api:2.24.3")
     implementation("org.apache.logging.log4j:log4j-core:2.24.3")
     implementation("org.apache.logging.log4j:log4j-slf4j-impl:2.24.3")
+
+    runtimeOnly("com.h2database:h2:2.3.232")
+
+    developmentOnly("org.springframework.boot:spring-boot-devtools")
 
     providedRuntime("org.springframework.boot:spring-boot-starter-tomcat")
 }
