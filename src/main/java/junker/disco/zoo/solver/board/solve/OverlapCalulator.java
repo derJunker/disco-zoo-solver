@@ -31,11 +31,12 @@ public class OverlapCalulator {
                         overallOverlap[x][y].stream()
                                 .filter(Objects::nonNull)
                                 .filter(animalBoardInstance -> animalBoardInstance.animal().equals(animalToSolve)).count();
-                if (animalTileOverlap > maxOverlap && (animalTileOverlap < permutationSize || includeSolved)) {
+                boolean isCompletelySolved = overlaps.animalMaxOverlapCounts().get(animalToSolve) == 1;
+                if (animalTileOverlap > maxOverlap && (animalTileOverlap < permutationSize || includeSolved || isCompletelySolved)) {
                     bestCandidates.clear();
                     bestCandidates.add(new Coords(x, y));
                     maxOverlap = (int) animalTileOverlap;
-                } else if (animalTileOverlap == maxOverlap && (animalTileOverlap < permutationSize || includeSolved)) {
+                } else if (animalTileOverlap == maxOverlap && (animalTileOverlap < permutationSize || includeSolved || isCompletelySolved)) {
                     bestCandidates.add(new Coords(x, y));
                 }
             }

@@ -4,11 +4,9 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
-import java.util.stream.Collectors;
 
 import junker.disco.zoo.solver.board.Coords;
 import junker.disco.zoo.solver.board.Game;
-import junker.disco.zoo.solver.board.solve.DiscoZooSolver;
 import junker.disco.zoo.solver.model.accuracy.AccuracyDifficulty;
 import junker.disco.zoo.solver.model.animals.Animal;
 import junker.disco.zoo.solver.model.animals.Region;
@@ -18,6 +16,12 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class AccuracyService {
+
+    private final SolveService solveService;
+
+    public AccuracyService(SolveService solveService) {
+        this.solveService = solveService;
+    }
 
     public AccuracySingleClickGameResponse getSingleClickGame(Long seed,
                                                                int gameNumber, Region region, boolean timeless,
@@ -95,11 +99,10 @@ public class AccuracyService {
     }
 
     public AccuracySingleClickPerformanceResponse clicked(Game game, Animal animalToFind, Coords click) {
-        var bestMoveInfo = DiscoZooSolver.getBestMoveInformation(animalToFind, game);
-        var probabilities = bestMoveInfo.probabilities();
+        var solveResult = solveService.solve(game, animalToFind);
+        var probabilities = solveResult.probabilities();
         var clickedProbability = probabilities[click.x()][click.y()];
-        var bestClicks = bestMoveInfo.solutions().stream()
-                .map(solution -> solution.clicks().getFirst()).collect(Collectors.toSet());
+        var bestClicks = solveResult.bestClicks();
         var bestClickProbability = bestClicks.stream().findAny()
                         .map(coords -> probabilities[coords.x()][coords.y()])
                         .orElse(0d);

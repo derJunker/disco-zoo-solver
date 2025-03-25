@@ -167,6 +167,7 @@ import router from "@/router";
 import {Coords} from "@/types/Coords";
 import {getHeatmapColor} from "@/util/heatmap-colors";
 import {AccuracyGameType} from "@/types/accuracy/AccuracyGameType";
+import {Animal} from "@/types/Animal";
 
 const state = useAccuracyState()
 
@@ -243,8 +244,9 @@ export default defineComponent({
     getReconstructLink() {
       const element = this.singleClickHistory[this.showIndex]
       const gameRegion = element.game.region.toLowerCase()
-      const animals = element.game.containedAnimals.map((animal: any) => `animals=${animal.name}`.toLowerCase()).join('&')
-      return `/reconstruct/${gameRegion}?${animals}`
+      const animals =
+          element.game.containedAnimals.map((animal: Animal) => `${animal.name}`.toLowerCase()).join(",")
+      return `/reconstruct/${gameRegion}?animals=${animals}`
     }
   },
 

@@ -23,6 +23,12 @@ public class SlowSolutionService implements ApplicationListener<ApplicationReady
     @Value("${solutions.save.threshold.ms}")
     private int saveThresholdMs;
 
+    @Value("${solutions.save.use.db}")
+    private boolean useDb;
+
+    @Value("${solutions.save.use.caching}")
+    private boolean useCaching;
+
     private static final Map<String, SolveResult> sharedSlowResultsMap = new ConcurrentHashMap<>();
 
     private final SlowSolutionEntryRepository slowSolutionEntryRepository;
@@ -34,23 +40,28 @@ public class SlowSolutionService implements ApplicationListener<ApplicationReady
 
     public SolveResult addSolutionIfTooSlow(Supplier<SolveResult> supplier, Game game,
                                             Animal animalToSolveFor) {
+        if (!useCaching)
+            return supplier.get();
         var start = System.currentTimeMillis();
         var result = supplier.get();
         var end = System.currentTimeMillis();
         if (end - start > saveThresholdMs) {
             final var hash = hash(game, animalToSolveFor);
             sharedSlowResultsMap.put(hash, result);
-            slowSolutionEntryRepository.save(SlowSolutionEntry.builder()
-                    .hash(hash)
-                    .bestClicks(result.bestClicks().stream().map(CoordsEntity::fromCoords).collect(Collectors.toSet()))
-                    .probabilities(result.probabilities())
-                    .build());
+            if (useDb)
+                slowSolutionEntryRepository.save(SlowSolutionEntry.builder()
+                        .hash(hash)
+                        .bestClicks(result.bestClicks().stream().map(CoordsEntity::fromCoords).collect(Collectors.toSet()))
+                        .probabilities(result.probabilities())
+                        .build());
             System.out.println("Saved solution, took " + (end - start) + "ms, hash: " + hash);
         }
         return result;
     }
 
     public SolveResult getIfSaved(Game game, Animal animalToSolveFor) {
+        if (!useCaching)
+            return null;
         return sharedSlowResultsMap.get(hash(game, animalToSolveFor));
     }
 
@@ -69,7 +80,8 @@ public class SlowSolutionService implements ApplicationListener<ApplicationReady
 
     @Override
     public void onApplicationEvent(ApplicationReadyEvent event) {
-        loadSlowResultsIntoMemory();
+        if(useDb && useCaching)
+            loadSlowResultsIntoMemory();
     }
 
 
