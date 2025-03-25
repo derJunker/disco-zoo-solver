@@ -40,7 +40,7 @@ public class DiscoZooSolver {
 
     private static List<Solution> getBestSolutions(Animal animalToSolve, Game game, Overlaps overlaps) {
         var clonedGame = new Game(game, true);
-        var highestOverlapCoords = findHighestOverlapCoords(overlaps, animalToSolve);
+        var highestOverlapCoords = findHighestOverlapCoords(overlaps, animalToSolve, false);
         if (highestOverlapCoords.isEmpty())
             return List.of();
         else if (highestOverlapCoords.size() == 1) {
@@ -89,15 +89,14 @@ public class DiscoZooSolver {
                 var nextOverlaps = emulateOverlapClick(overlaps, animalToPlace, animalInstances, coords, game);
                 var nextGame = new Game(game, true);
                 nextGame.setTile(coords.x(), coords.y(), true, animalToPlace);
+                ExpectedValueCalculator.mutateProbabilitiesForAnimal(animalToSolve, animalToPlace, overlaps, coords,
+                        probabilitiesForDifferentAnimals, nextProbabilitiesForDifferentAnimals, nextOverlaps);
 
                 var nextPreviousClicks = ListUtil.putLast(previousClicks, coords);
                 if (nextPreviousClicks.size() > smallestSolutionLength) {
                     continue;
                 }
-                var nextHighestOverlapCoords = findHighestOverlapCoords(nextOverlaps, animalToSolve);
-                ExpectedValueCalculator.mutateProbabilitiesForAnimal(animalToSolve, animalToPlace, overlaps, coords,
-                        probabilitiesForDifferentAnimals, nextProbabilitiesForDifferentAnimals,
-                        nextHighestOverlapCoords, nextOverlaps);
+                var nextHighestOverlapCoords = findHighestOverlapCoords(nextOverlaps, animalToSolve, false);
 
                 var solutions = emulateClicks(nextOverlaps, animalToSolve, nextGame, nextPreviousClicks,
                         nextHighestOverlapCoords, smallestSolutionLength);
@@ -167,7 +166,7 @@ public class DiscoZooSolver {
             var worstSolutionLengthForDifferentAnimals = 0;
             for (var firstClickPermutation : ListUtil.permuteFirst(multiClickSet)) {
                 var nextPreviousClicks = ListUtil.cloneThenAddAll(previousClicks, firstClickPermutation);
-                var highestOverlapCoords = findHighestOverlapCoords(nextOverlaps, animalToSolve);
+                var highestOverlapCoords = findHighestOverlapCoords(nextOverlaps, animalToSolve, false);
                 var multiClickSolutions =  emulateClicks(nextOverlaps, animalToSolve, nextGame, nextPreviousClicks,
                         highestOverlapCoords,
                         smallestSolutionLength);

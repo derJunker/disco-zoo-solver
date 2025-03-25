@@ -19,9 +19,11 @@ import junker.disco.zoo.solver.model.solver.Overlaps;
 
 public class OverlapCalulator {
     // TODO precomputable in Overlaps class
-    public static List<Coords> findHighestOverlapCoords(Overlaps overlaps, Animal animalToSolve) {
+    public static List<Coords> findHighestOverlapCoords(Overlaps overlaps, Animal animalToSolve,
+                                                        boolean includeSolved) {
         var overallOverlap = overlaps.overallOverlap();
         var bestCandidates = new ArrayList<Coords>();
+        int permutationSize = overlaps.permutations().size();
         var maxOverlap = 1;
         for (int x = 0; x < overallOverlap.length; x++) {
             for (int y = 0; y < overallOverlap[0].length; y++) {
@@ -29,11 +31,11 @@ public class OverlapCalulator {
                         overallOverlap[x][y].stream()
                                 .filter(Objects::nonNull)
                                 .filter(animalBoardInstance -> animalBoardInstance.animal().equals(animalToSolve)).count();
-                if (animalTileOverlap > maxOverlap) {
+                if (animalTileOverlap > maxOverlap && (animalTileOverlap < permutationSize || includeSolved)) {
                     bestCandidates.clear();
                     bestCandidates.add(new Coords(x, y));
                     maxOverlap = (int) animalTileOverlap;
-                } else if (animalTileOverlap == maxOverlap) {
+                } else if (animalTileOverlap == maxOverlap ) {
                     bestCandidates.add(new Coords(x, y));
                 }
             }
@@ -128,13 +130,6 @@ public class OverlapCalulator {
                         .map(AnimalBoardInstance::animal)
                         .collect(Collectors.toSet());
                 for (var animal : distinctAnimals) {
-                    var animalOverlapCount = (int) tileOverlaps.stream()
-                            .filter(animalBoardInstance -> animalBoardInstance != null && animalBoardInstance.animal().equals(animal))
-                            .distinct()
-                            .count();
-                    animalMaxOverlaps.put(animal, Math.max(animalMaxOverlaps.getOrDefault(animal, 0), animalOverlapCount));
-
-
                     if (!animalOverlapProbabilities.containsKey(animal)) {
                         animalOverlapProbabilities.put(animal, new Double[boardWidth][boardHeight]);
                         for (int i = 0; i < boardWidth; i++) {
@@ -145,8 +140,17 @@ public class OverlapCalulator {
                     }
                     var instancesAtTile =
                             (double) overallOverlap[x][y].stream().filter(instance -> instance != null && instance.animal().equals(animal)).count();
-                    animalOverlapProbabilities.get(animal)[x][y] =
-                            instancesAtTile / permutations.size();
+                    var probabilityAtTile = instancesAtTile / permutations.size();
+                    animalOverlapProbabilities.get(animal)[x][y] = probabilityAtTile;
+
+
+                    if(probabilityAtTile < 1){
+                        var animalOverlapCount = (int) tileOverlaps.stream()
+                                .filter(animalBoardInstance -> animalBoardInstance != null && animalBoardInstance.animal().equals(animal))
+                                .distinct()
+                                .count();
+                        animalMaxOverlaps.put(animal, Math.max(animalMaxOverlaps.getOrDefault(animal, 0), animalOverlapCount));
+                    }
 
                 }
                 if (!animalOverlapProbabilities.containsKey(null)) {

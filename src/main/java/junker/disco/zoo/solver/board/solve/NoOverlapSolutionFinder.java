@@ -43,7 +43,7 @@ public class NoOverlapSolutionFinder {
         for (int x = 0; x < boardWidth; x++) {
             for (int y = 0; y < boardHeight; y++) {
                 var animalTileOverlap = overlaps.uniqueAnimalOverlapMap().get(animalToSolve)[x][y];
-                if (!animalTileOverlap.isEmpty()) {
+                if (!animalTileOverlap.isEmpty() && overlaps.animalOverlapProbability().get(animalToSolve)[x][y] < 1) {
                     var animalInstance = animalTileOverlap.iterator().next();
                     animalBoardInstancesClickableCoordsMap.putIfAbsent(animalInstance, new HashSet<>());
                     animalBoardInstancesClickableCoordsMap.get(animalInstance).add(new Coords(x, y));

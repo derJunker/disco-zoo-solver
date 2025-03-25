@@ -162,8 +162,6 @@ export default defineComponent({
 
   methods: {
     loadPathVariables(region: string, animals: string[]) {
-      console.log("loading path variables")
-      console.log("animals:", animals)
       this.animalNames = animals
       this.region = region
       return ''

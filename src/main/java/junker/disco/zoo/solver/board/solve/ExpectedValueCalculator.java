@@ -12,8 +12,10 @@ public class ExpectedValueCalculator {
     public static void mutateProbabilitiesForAnimal(Animal animalToSearch, Animal animalToPlace, Overlaps overlaps,
                                                     Coords coords,
                                                     Map<Animal, Double> probabilitiesForDifferentAnimals,
-                                                    Map<Animal, Double> nextProbabilitiesForDifferentAnimals,
-                                                    List<Coords> nextHighestOverlapCoords, Overlaps nextOverlaps) {
+                                                    Map<Animal, Double> nextProbabilitiesForDifferentAnimals, Overlaps nextOverlaps) {
+        var nextHighestOverlapCoords = OverlapCalulator.findHighestOverlapCoords(nextOverlaps, animalToSearch, true);
+        if (nextHighestOverlapCoords.isEmpty())
+            return;
         final var nextCoords = nextHighestOverlapCoords.getFirst();
         final var probabilityOfNextHighestOverlap =
             nextOverlaps.animalOverlapProbability().get(animalToSearch)[nextCoords.x()][nextCoords.y()];
