@@ -1,4 +1,4 @@
-package junker.disco.zoo.solver.db;
+package junker.disco.zoo.solver.db.entities;
 
 import java.util.Set;
 
@@ -6,12 +6,14 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Lob;
 import jakarta.persistence.Table;
 import junker.disco.zoo.solver.board.Coords;
 import junker.disco.zoo.solver.board.util.DoubleArrayUtil;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -20,13 +22,14 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class SlowSolutionEntry {
 
     @Id
     private String hash;
 
-    @ElementCollection
-    private Set<Coords> bestClicks;
+    @ElementCollection(fetch = FetchType.EAGER)
+    private Set<CoordsEntity> bestClicks;
 
     @Lob  // Store as large object (useful for big matrices)
     @Column(columnDefinition = "TEXT") // Ensures storage as text

@@ -3,20 +3,33 @@ package junker.disco.zoo.solver.service;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 import junker.disco.zoo.solver.board.Game;
+import junker.disco.zoo.solver.db.entities.CoordsEntity;
+import junker.disco.zoo.solver.db.entities.SlowSolutionEntry;
+import junker.disco.zoo.solver.db.repos.SlowSolutionEntryRepository;
 import junker.disco.zoo.solver.model.animals.Animal;
 import junker.disco.zoo.solver.requests.return_objects.SolveResult;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Service;
 
 @Service
-public class SlowSolutionService {
+public class SlowSolutionService implements ApplicationListener<ApplicationReadyEvent> {
+
 
     @Value("${solutions.save.threshold.ms}")
     private int saveThresholdMs;
 
     private static final Map<String, SolveResult> sharedSlowResultsMap = new ConcurrentHashMap<>();
+
+    private final SlowSolutionEntryRepository slowSolutionEntryRepository;
+
+    public SlowSolutionService(SlowSolutionEntryRepository slowSolutionEntryRepository) {
+        this.slowSolutionEntryRepository = slowSolutionEntryRepository;
+    }
 
 
     public SolveResult addSolutionIfTooSlow(Supplier<SolveResult> supplier, Game game,
@@ -27,6 +40,11 @@ public class SlowSolutionService {
         if (end - start > saveThresholdMs) {
             final var hash = hash(game, animalToSolveFor);
             sharedSlowResultsMap.put(hash, result);
+            slowSolutionEntryRepository.save(SlowSolutionEntry.builder()
+                    .hash(hash)
+                    .bestClicks(result.bestClicks().stream().map(CoordsEntity::fromCoords).collect(Collectors.toSet()))
+                    .probabilities(result.probabilities())
+                    .build());
             System.out.println("Saved solution, took " + (end - start) + "ms, hash: " + hash);
         }
         return result;
@@ -34,6 +52,24 @@ public class SlowSolutionService {
 
     public SolveResult getIfSaved(Game game, Animal animalToSolveFor) {
         return sharedSlowResultsMap.get(hash(game, animalToSolveFor));
+    }
+
+    public void loadSlowResultsIntoMemory() {
+        final var entries = slowSolutionEntryRepository.findAll();
+        entries.forEach(entry -> {
+            final var hash = entry.getHash();
+            final var bestClicks = entry.getBestClicks();
+            final var probabilities = entry.getProbabilities();
+            sharedSlowResultsMap.put(hash, new SolveResult(bestClicks.stream()
+                    .map(CoordsEntity::toCoords).collect(Collectors.toSet()),
+                    probabilities));
+        });
+        System.out.println("Loaded " + entries.size() + " slow solutions into memory");
+    }
+
+    @Override
+    public void onApplicationEvent(ApplicationReadyEvent event) {
+        loadSlowResultsIntoMemory();
     }
 
 
