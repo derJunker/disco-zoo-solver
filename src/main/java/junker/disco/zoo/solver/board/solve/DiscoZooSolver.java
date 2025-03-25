@@ -6,7 +6,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -75,6 +74,7 @@ public class DiscoZooSolver {
                                                                   Game game, List<Coords> previousClicks, Animal animalToSolve, int smallestSolutionLength) {
         var overallOverlap = overlaps.overallOverlap();
         List<Solution> allSolutions = new ArrayList<>();
+        Map<Coords, Double> expectedNextProbabilities = new HashMap<>();
         for (var coords : highestOverlapCoords) {
             Set<AnimalBoardInstance> animalInstances =
                     new HashSet<>(overallOverlap[coords.x()][coords.y()]);
@@ -83,6 +83,8 @@ public class DiscoZooSolver {
                     .collect(Collectors.toSet());
             var differentAnimalSolutions = new ArrayList<Solution>();
             var worstSolutionLengthForDifferentAnimals = 0;
+            var probabilitiesForDifferentAnimals = new HashMap<Animal, Double>();
+            var nextProbabilitiesForDifferentAnimals = new HashMap<Animal, Double>();
             for (var animalToPlace : placeableAnimals) {
                 var nextOverlaps = emulateOverlapClick(overlaps, animalToPlace, animalInstances, coords, game);
                 var nextGame = new Game(game, true);
@@ -93,6 +95,10 @@ public class DiscoZooSolver {
                     continue;
                 }
                 var nextHighestOverlapCoords = findHighestOverlapCoords(nextOverlaps, animalToSolve);
+                ExpectedValueCalculator.mutateProbabilitiesForAnimal(animalToSolve, animalToPlace, overlaps, coords,
+                        probabilitiesForDifferentAnimals, nextProbabilitiesForDifferentAnimals,
+                        nextHighestOverlapCoords, nextOverlaps);
+
                 var solutions = emulateClicks(nextOverlaps, animalToSolve, nextGame, nextPreviousClicks,
                         nextHighestOverlapCoords, smallestSolutionLength);
                 // it is the worst solution compared to the other placeable animals.
@@ -107,13 +113,34 @@ public class DiscoZooSolver {
                         solutions,
                         solutions.getFirst().clicks().size(), worstSolutionLengthForDifferentAnimals);
             }
+            var expectedNextProbability =
+                    ExpectedValueCalculator.expectedNextProbability(probabilitiesForDifferentAnimals,
+                    nextProbabilitiesForDifferentAnimals);
+            expectedNextProbabilities.put(coords, expectedNextProbability);
             if (differentAnimalSolutions.isEmpty())
                 continue;
             smallestSolutionLength = ListUtil.resetAddIfBelowLimit(allSolutions, differentAnimalSolutions,
                     differentAnimalSolutions.getFirst().clicks().size(),
                     smallestSolutionLength);
+
         }
-        return allSolutions;
+
+        return filterSolutionsByOnlyBestExpectedProbabilities(allSolutions, expectedNextProbabilities,
+                previousClicks.size());
+    }
+
+    private static List<Solution> filterSolutionsByOnlyBestExpectedProbabilities(List<Solution> solutions,
+                                                                   Map<Coords, Double> expectedNextProbabilities,
+                                                                                 int clickIndex) {
+        var maxProbability = Double.NEGATIVE_INFINITY;
+        var bestCoords = new ArrayList<Coords>();
+        for (var entry : expectedNextProbabilities.entrySet()) {
+            maxProbability = ListUtil.resetAddIfAboveLimit(bestCoords, List.of(entry.getKey()), entry.getValue(), maxProbability);
+        }
+        return solutions.stream()
+                        .filter(solution -> bestCoords.contains(solution.clicks().get(clickIndex)))
+                        .toList();
+
     }
 
     private static List<Solution> emulateClicksForSingleAnimal(Set<Set<Coords>> multipleClickSets, Overlaps overlaps, Game game, List<Coords> previousClicks, Animal animalToSolve, int smallestSolutionLength) {

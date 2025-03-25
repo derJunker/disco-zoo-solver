@@ -32,6 +32,24 @@ public class ListUtil {
         return addAndClearIfThresholdTrue(listToModify, elements, value, limit, value > limit);
     }
 
+    public static <T> double resetAddIfAboveLimit(List<T> listToModify, List<T> elements, double value, double limit) {
+        return addAndClearIfThresholdTrue(listToModify, elements, value, limit, value - limit > 0.00001);
+    }
+
+    private static <T> double addAndClearIfThresholdTrue(List<T> listToModify, List<T> elements, double value, double limit,
+                                            boolean threshold) {
+        if (threshold) {
+            listToModify.clear();
+            listToModify.addAll(elements);
+            return value;
+        } else if(Math.abs(value - limit) < 0.00001) {
+            listToModify.addAll(elements);
+            return value;
+        } else {
+            return limit;
+        }
+    }
+
     private static <T> int addAndClearIfThresholdTrue(List<T> listToModify, List<T> elements, int value, int limit,
                                             boolean threshold) {
         if (threshold) {

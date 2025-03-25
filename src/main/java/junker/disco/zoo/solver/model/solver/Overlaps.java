@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Set;
 
 import junker.disco.zoo.solver.board.AnimalBoardInstance;
+import junker.disco.zoo.solver.board.Coords;
 import junker.disco.zoo.solver.board.Tile;
 import junker.disco.zoo.solver.model.animals.Animal;
 import junker.disco.zoo.solver.board.util.DoubleArrayUtil;
