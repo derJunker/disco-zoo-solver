@@ -11,10 +11,24 @@ import org.springframework.stereotype.Service;
 @Service
 public class SolveService {
 
+    private final SlowSolutionService slowSolutionService;
+
+    public SolveService(SlowSolutionService slowSolutionService) {
+        this.slowSolutionService = slowSolutionService;
+    }
+
     public SolveResult solve(Game game, Animal animalToSolverFor) {
-        var moveInformation = DiscoZooSolver.getBestMoveInformation(animalToSolverFor, game);
-        var bestClicks =
-                moveInformation.solutions().stream().map(solution -> solution.clicks().getFirst()).collect(Collectors.toSet());
-        return new SolveResult(bestClicks, moveInformation.probabilities());
+        final var potentialResult = slowSolutionService.getIfSaved(game, animalToSolverFor);
+        if (potentialResult != null) {
+            System.out.println("Returning saved solution");
+            return potentialResult;
+        }
+
+        return slowSolutionService.addSolutionIfTooSlow(() -> {
+            final var moveInformation = DiscoZooSolver.getBestMoveInformation(animalToSolverFor, game);
+            var bestClicks =
+                    moveInformation.solutions().stream().map(solution -> solution.clicks().getFirst()).collect(Collectors.toSet());
+            return new SolveResult(bestClicks, moveInformation.probabilities());
+        }, game, animalToSolverFor);
     }
 }
