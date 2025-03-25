@@ -160,8 +160,8 @@ export default defineComponent({
   },
 
   methods: {
-    loadPathVariables(region: string, animals: string[]) {
-      this.animalNames = animals
+    loadPathVariables(region: string, animalList: string) {
+      this.animalNames = animalList.split(",")
       this.region = region
       return ''
     },
