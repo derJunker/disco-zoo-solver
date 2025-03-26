@@ -51,6 +51,7 @@ import RegionSelect from "@/components/Overlays/RegionSelect.vue";
 import {AccuracyGameType} from "@/types/accuracy/AccuracyGameType";
 import {AccuracyDifficulty} from "@/types/accuracy/AccuracyDifficulty";
 import {useAccuracyState, userSettingsState} from "@/store/useState";
+import {generateSeed} from "@/util/seed-generator";
 
 const userSettings = userSettingsState()
 const accuracyState = useAccuracyState()
@@ -73,7 +74,7 @@ export default defineComponent({
     },
     onPlay() {
       router.push({name: 'accuracy-' + this.selectedGameType +'-play',
-        params: {seed: this.generateSeed(), region:
+        params: {seed: generateSeed(), region:
           this.selectedRegion, difficulty: this.selectedDifficulty},
         query: {timeless: this.timeless + ""}})
     },
@@ -106,10 +107,6 @@ export default defineComponent({
       this.timeless = userSettings.isTimelessRegionAllowed(this.selectedRegion)
       accuracyState.setLastSelectedRegion(region)
     },
-
-    generateSeed() {
-      return Math.floor(Math.random() * 1000000)
-    }
   }
 })
 </script>

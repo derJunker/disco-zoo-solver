@@ -111,6 +111,7 @@ import router from "@/router";
 import {AccuracyGameType} from "@/types/accuracy/AccuracyGameType";
 import {calculateAccuracy, calculateScore} from "@/util/score-calculator";
 import html2canvas from "html2canvas";
+import {generateSeed} from "@/util/seed-generator";
 
 const state = useAccuracyState()
 
@@ -187,7 +188,7 @@ export default defineComponent({
 
     onRetryClick() {
       router.push({name: 'accuracy-' + AccuracyGameType.SINGLE_CLICK + '-play',
-        params: {seed: state.seed, region: this.region, difficulty: this.difficulty},
+        params: {seed: generateSeed(), region: this.region, difficulty: this.difficulty},
         query: {timeless: state.withTimeless + ""}})
     },
 

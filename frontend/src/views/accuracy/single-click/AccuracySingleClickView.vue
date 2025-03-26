@@ -13,7 +13,7 @@
         <div class="disco-board-wrapper">
           <disco-board :game="game" :region="displayRegion"
                        class="disco-board" @clicked-coords="onCoordsClicked"
-                       @right-clicked-coords="onCoordsClicked"/>
+                       @right-clicked-coords="onCoordsClicked" :loading="loadingResults"/>
         </div>
       </div>
     </div>
@@ -95,6 +95,8 @@ export default defineComponent({
       difficulty: null as AccuracyDifficulty | null,
       timeless: false,
 
+      loadingResults: false,
+
       game: null as Game | null,
       animalToFind: null as Animal | null,
       accuracyHistory: [] as AccuracyGameHistoryElement[],
@@ -173,6 +175,8 @@ export default defineComponent({
       this.gameRound++
       if (this.gameRound < maxGameAmount) {
         await this.nextGame()
+      } else {
+        this.loadingResults = true
       }
     },
 

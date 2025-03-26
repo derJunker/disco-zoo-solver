@@ -167,6 +167,7 @@ import {Coords} from "@/types/Coords";
 import {getHeatmapColor} from "@/util/heatmap-colors";
 import {AccuracyGameType} from "@/types/accuracy/AccuracyGameType";
 import {Animal} from "@/types/Animal";
+import {generateSeed} from "@/util/seed-generator";
 
 const state = useAccuracyState()
 
@@ -233,7 +234,7 @@ export default defineComponent({
     },
     onRetry() {
       router.push({name: 'accuracy-' + AccuracyGameType.SINGLE_CLICK + '-play',
-        params: {seed: state.seed, region: state.region, difficulty: state.difficulty},
+        params: {seed: generateSeed(), region: state.region, difficulty: state.difficulty},
         query: {timeless: state.withTimeless + ""}})
     },
     onBack() {

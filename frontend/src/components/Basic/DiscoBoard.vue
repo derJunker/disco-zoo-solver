@@ -10,9 +10,11 @@
           :animal="game.board[coords.x][coords.y].animalBoardInstance.animal" class="animal-square" />
                 <div style="user-select: none;" v-else-if="probabilities">{{probabilities[coords.x][coords.y].toFixed(3)}}</div>
     </div>
-    <div class="loading" v-if="showLoading">
-      <loading-circle/>
-    </div>
+    <transition name="fade">
+      <div class="loading" v-if="showLoading">
+        <loading-circle/>
+      </div>
+    </transition>
   </div>
 </template>
 
@@ -74,7 +76,7 @@ export default defineComponent({
           if (this.loading) {
             this.showLoading = true;
           }
-        }, 700);
+        }, 100);
       } else {
         this.showLoading = false;
       }
@@ -178,6 +180,14 @@ button:focus {
   background-color: rgba(0, 0,0 ,0.6);
   display: grid;
   place-items: center;
+}
+
+.fade-enter-active, .fade-leave-active {
+  transition: opacity 0.8s ease;
+}
+
+.fade-enter-from, .fade-leave-to {
+  opacity: 0;
 }
 
 </style>

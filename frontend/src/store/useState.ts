@@ -14,7 +14,6 @@ export const useAccuracyState = defineStore( 'accuracyState', {
             withTimeless: false,
             region: null as string | null,
             difficulty: null as AccuracyDifficulty | null,
-            seed: -1,
             _lastSelectedRegion: getDiscoZooLocalStorageItem('acc_last-selected-region') as string | null,
             _lastSelectedDifficulty: getDiscoZooLocalStorageItem('acc_last-selected-difficulty') as AccuracyDifficulty | null,
             _lastSelectedGameType: getDiscoZooLocalStorageItem('acc_last-selected-game-type') as string | null,
