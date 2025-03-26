@@ -22,14 +22,14 @@ public class AnimalController {
         var regionOpt = Region.byRepr(regionStr);
         return regionOpt
                 .map(region -> new ResponseEntity<>(Animal.getAnimalListByRegion(region, true), HttpStatus.OK))
-                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.BAD_REQUEST));
     }
 
     @GetMapping("/byName")
     public ResponseEntity<List<Animal>> getAnimalsByNames(@RequestParam("names") List<String> names) {
         var animals =  Animal.findAnimalsByName(names.toArray(new String[0]));
         if (animals.size() != names.size())
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
         return new ResponseEntity<>(animals, HttpStatus.OK);
     }

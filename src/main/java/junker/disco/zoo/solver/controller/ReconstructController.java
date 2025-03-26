@@ -1,6 +1,7 @@
 package junker.disco.zoo.solver.controller;
 
 import java.util.List;
+import java.util.Optional;
 
 import junker.disco.zoo.solver.model.animals.Animal;
 import junker.disco.zoo.solver.board.Game;
@@ -22,9 +23,9 @@ import org.springframework.web.bind.annotation.RestController;
 public class ReconstructController {
     @PostMapping("/start")
     public ResponseEntity<Game> start(@RequestBody ReconstructStartBody body) {
-        var regionOpt = Region.byRepr(body.region());
+        var regionOpt = Region.byRepr(body.region()).or(() -> Optional.of(Region.valueOf(body.region().toUpperCase())));
         if (regionOpt.isEmpty())
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.badRequest().build();
         final var game =  new Game(body.animals(), regionOpt.get());
         return new ResponseEntity<>(new Game(game, true), HttpStatus.OK);
     }

@@ -143,7 +143,13 @@ public class DiscoZooSolver {
                                                                                  int clickIndex) {
         var maxProbability = Double.NEGATIVE_INFINITY;
         var bestCoords = new ArrayList<Coords>();
-        for (var entry : expectedNextProbabilities.entrySet()) {
+        var occurringProbabilities =
+                expectedNextProbabilities.entrySet().stream()
+                        .filter(entry ->
+                                solutions.stream()
+                                        .anyMatch(solution -> solution.clicks().get(clickIndex).equals(entry.getKey())))
+                        .toList();
+        for (var entry : occurringProbabilities) {
             maxProbability = ListUtil.resetAddIfAboveLimit(bestCoords, List.of(entry.getKey()), entry.getValue(), maxProbability);
         }
         return solutions.stream()
