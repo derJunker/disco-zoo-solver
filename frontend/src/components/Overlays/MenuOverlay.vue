@@ -2,9 +2,9 @@
   <div class="menu-overlay wood-menu">
     <h1>Menu</h1>
     <div class="menu-buttons">
-      <div class="btn btn-gradient color-action-neutral-2" @click="clickedSettings()">Settings</div>
-      <div class="btn btn-gradient color-action-neutral-3" @click="clickedAbout()">About</div>
-      <div class="btn btn-gradient color-action-neutral-1" @click="clickedStats()">Stats</div>
+      <button class="btn btn-gradient color-action-neutral-2" @click="clickedSettings()">Settings</button>
+      <button class="btn btn-gradient color-action-neutral-3" @click="clickedAbout()">About</button>
+      <button class="btn btn-gradient color-action-neutral-1" @click="clickedStats()">Stats</button>
     </div>
   </div>
 </template>

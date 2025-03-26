@@ -2,8 +2,8 @@
   <div class="play-overlay wood-menu">
     <h1>Play</h1>
     <div class="play-buttons">
-      <div class="btn btn-gradient color-action-neutral-2" @click="clickedReconstruct()">Reconstruct</div>
-      <div class="btn btn-gradient color-action-neutral-3" @click="clickedAccuracy()">Accuracy</div>
+      <button class="btn btn-gradient color-action-neutral-2" @click="clickedReconstruct()">Reconstruct</button>
+      <button class="btn btn-gradient color-action-neutral-3" @click="clickedAccuracy()">Accuracy</button>
     </div>
   </div>
 </template>

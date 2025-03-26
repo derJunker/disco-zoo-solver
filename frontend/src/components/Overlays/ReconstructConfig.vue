@@ -6,11 +6,11 @@
         <h2>
           Region:
         </h2>
-        <div id="select-region-btn" class="btn btn-gradient" @click="$emit('region-clicked')"
+        <button id="select-region-btn" class="btn btn-gradient" @click="$emit('region-clicked')"
              :style="selectedRegion ? ('background-color: ' + calcRegionColors(selectedRegion).primary) :
              'background-color: gray'">
           {{selectedRegion? selectedRegion : 'Select Region'}}
-        </div>
+        </button>
       </div>
       <div class="toggle-select-container">
         <toggle-select title="timeless" selected-color-class="timeless" class="toggle-select"

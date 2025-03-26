@@ -1,10 +1,10 @@
 <template>
   <span class="menu-bar wood-menu dock-bottom dock-bottom-shadow dock-left dock-left">
-    <span :class="firstColorClass + ' btn btn-gradient dock-bottom dock-left first'" @click="onFirstButtonClick">{{ firstButtonName
-                                                                                             }}</span>
-    <span :class="secondColorClass + ' btn btn-gradient dock-bottom dock-right second'" @click="onSecondButtonClick">{{
-        secondButtonName
-                                                                                            }}</span>
+    <button :class="firstColorClass + ' btn btn-gradient dock-bottom dock-left first'" @click="onFirstButtonClick">
+      {{firstButtonName}}</button>
+    <button :class="secondColorClass + ' btn btn-gradient dock-bottom dock-right second'" @click="onSecondButtonClick">
+      {{secondButtonName}}
+    </button>
   </span>
 </template>
 

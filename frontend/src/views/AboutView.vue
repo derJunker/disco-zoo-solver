@@ -1,8 +1,6 @@
 <template>
   <div class="about">
-    <div class="btn btn-gradient color-action-bad">
-      Close
-    </div>
+    Hello
   </div>
 </template>
 <style scoped>
@@ -11,11 +9,6 @@
   justify-content: center;
   align-items: center;
   height: 100%;
-}
-.btn {
-  padding-top: 0.7rem;
-  padding-bottom: 0.7rem;
-  width: fit-content;
 }
 
 </style>

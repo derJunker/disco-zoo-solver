@@ -2,10 +2,11 @@
  <div class="region-select wood-menu">
    <h1>Regions</h1>
    <div class="regions">
-     <div v-for="region in regions" class="rounded btn btn-gradient" :key="region" @click="$emit('region-select', region)"
+     <button v-for="region in regions" class="rounded btn btn-gradient" :key="region" @click="$emit('region-select',
+     region)"
           :style="'background-color: ' + regionColors[region].primary">
        {{region}}
-     </div>
+     </button>
    </div>
  </div>
 </template>
@@ -64,7 +65,7 @@ export default defineComponent({
   user-select: none;
 }
 
-.regions > div {
+.regions > button {
   text-align: center;
   padding: .5rem;
   min-width: 75%;

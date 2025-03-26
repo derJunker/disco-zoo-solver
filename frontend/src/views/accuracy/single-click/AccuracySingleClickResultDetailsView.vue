@@ -9,10 +9,10 @@
             <animal-square :animal="animal" v-for="animal in getContainedAnimals(showIndex)"
                            :key="animal.name"
                            class="animal-square" :class="singleClickHistory[showIndex].animalToFind.name ===
-                           animal.name ? 'animal-highlighted' : ''"/>
+                           animal.name ? 'animal-highlighted' : ''" tabindex="-1"/>
           </div>
           <div class="boardNav">
-            <div class="btn game-nav-btn" @click="showIndex = loopIndex(showIndex-1)">{{"<"}}</div>
+            <button class="btn game-nav-btn" @click="showIndex = loopIndex(showIndex-1)">{{"<"}}</button>
             <div class="tinyBoard border-dark">
               <div class="tile" v-for="coords in getCoords()" :key="coords" :style="getStyle(coords)">
                 <img v-if="isClickedTile(coords)" src="/mouse-click.png" :alt="'You Clicked ' + coords"
@@ -23,14 +23,14 @@
               </div>
               <div class="score">Accuracy: {{(singleClickHistory[showIndex].accuracy*100).toFixed(2)}}%</div>
             </div>
-            <div class="btn game-nav-btn" @click="showIndex = loopIndex(showIndex+1)">{{">"}}</div>
+            <button class="btn game-nav-btn" @click="showIndex = loopIndex(showIndex+1)">{{">"}}</button>
           </div>
         </div>
 
         <div class="nav-btn-container">
-          <div class="btn btn-gradient color-action-info" @click="onBack">
+          <button class="btn btn-gradient color-action-info" @click="onBack">
             Back
-          </div>
+          </button>
           <a class="btn btn-gradient color-action-neutral-2" :href="getReconstructLink()" target="_blank">
             Reconstruct
           </a>
@@ -109,7 +109,6 @@
   text-align: center;
   align-content: center;
   isolation: isolate;
-  box-sizing: unset;
 }
 
 .tile > img {

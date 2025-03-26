@@ -1,8 +1,8 @@
 <template>
-  <span class="toggle-select btn btn-gradient" @click="onClick" :class = "selected ? selectedColorClass :
+  <button class="toggle-select btn btn-gradient" @click="onClick" :class = "selected ? selectedColorClass :
   'color-action-disabled'">
     {{ title }}
-  </span>
+  </button>
 </template>
 
 <script lang="ts">

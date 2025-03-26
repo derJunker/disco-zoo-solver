@@ -1,7 +1,7 @@
 <template>
- <div class="animal-square" :style="getStyle()">
+ <button class="animal-square" :style="getStyle()">
     <img :src="getAnimalPictureUrl(animal)" :alt="animal.name" rel="preload"/>
- </div>
+ </button>
 </template>
 
 <style scoped>

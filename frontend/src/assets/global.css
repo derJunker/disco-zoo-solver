@@ -124,6 +124,14 @@ html {
     text-shadow: var(--text-shadow);
 }
 
+button {
+    font-size: inherit;
+    font-family: inherit;
+    color: inherit;
+    text-shadow: inherit;
+    border: inherit;
+}
+
 html, body, #app, #router-view {
     height: 100dvh;
 }
@@ -440,8 +448,24 @@ html, body, #app, #router-view {
     background: var(--animal-highlight-color-dark);
 }
 
+.animal-square:focus::before {
+    background: white;
+}
+.animal-square:focus::after {
+    background: white;
+}
+
 .btn-highlighted::after {
     background: #ffffff;
+}
+
+.btn:focus::after {
+    background: #ffffff;
+}
+
+.btn:focus {
+    transform: scale(1.025);
+    transition-duration: .1s;
 }
 
 .btn-highlighted::before {

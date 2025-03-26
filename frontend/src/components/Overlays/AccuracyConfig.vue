@@ -6,11 +6,11 @@
         <h2>
           Region:
         </h2>
-        <div id="select-region-btn" class="btn btn-gradient" @click="$emit('region-clicked')"
+        <button id="select-region-btn" class="btn btn-gradient" @click="$emit('region-clicked')"
              :style="selectedRegion ? ('background-color: ' + calcRegionColors(selectedRegion).primary) :
              'background-color: gray'">
           {{selectedRegion? selectedRegion : 'Select Region'}}
-        </div>
+        </button>
       </div>
       <div class="toggle-select-container">
         <toggle-select title="timeless" selected-color-class="timeless" class="toggle-select"
@@ -21,11 +21,11 @@
           Gametype:
         </h2>
         <div class="game-types-container">
-          <div v-for="gameType in possibleGameTypes" :key="gameType" class="btn btn-gradient game-type"
+          <button v-for="gameType in possibleGameTypes" :key="gameType" class="btn btn-gradient game-type"
                :class="selectedGameType === gameType ? 'color-action-neutral-2 btn-highlighted' : 'color-action-disabled'"
                @click="$emit('game-type-selected', gameType)">
             {{gameType.replace(/-/g, ' ')}}
-          </div>
+          </button>
         </div>
       </div>
       <div>
@@ -33,11 +33,11 @@
           Difficulty:
         </h2>
         <div class="difficulty-container">
-          <div v-for="difficulty in difficulties" :key="difficulty" class="btn btn-gradient game-type"
+          <button v-for="difficulty in difficulties" :key="difficulty" class="btn btn-gradient game-type"
                :class="selectedDifficulty === difficulty ? difficulty + ' btn-highlighted' : 'color-action-disabled'"
                @click="$emit('difficulty-selected', difficulty)">
             {{difficulty.replace(/-/g, ' ')}}
-          </div>
+          </button>
         </div>
       </div>
     </div>

@@ -21,16 +21,16 @@
         </div>
       </div>
       <div class="attempt-btns">
-        <div id="add-attempts" class="btn btn-gradient"
+        <button id="add-attempts" class="btn btn-gradient"
              :class="canAddAttempts? 'color-action-good' : 'color-action-disabled'"
              @click="canAddAttempts ? $emit('add-attempts') : null">
           +5 Attempts
-        </div>
-        <div id="remove-attempts" class="btn btn-gradient"
+        </button>
+        <button id="remove-attempts" class="btn btn-gradient"
              :class="canRemoveAttempts? 'color-action-bad' : 'color-action-disabled'"
              @click="canRemoveAttempts? $emit('remove-attempts'): null">
           -5 Attempts
-        </div>
+        </button>
       </div>
     </div>
 

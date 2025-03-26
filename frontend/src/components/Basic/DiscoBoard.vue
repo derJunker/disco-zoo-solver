@@ -1,6 +1,6 @@
 <template>
   <div class="disco-board" :style="getBoardStyle()" v-if="game">
-    <div
+    <button
         v-for="coords in getCoords()" :key="coords" class="tile" :style="getTileStyle(coords)"
         :class="bestClicks && bestClicks.filter((click: Coords) => click.x === coords.x && click.y === coords.y).length
         > 0 ?
@@ -9,7 +9,7 @@
           v-if="game.board[coords.x][coords.y].occupied && game.board[coords.x][coords.y].revealed"
           :animal="game.board[coords.x][coords.y].animalBoardInstance.animal" class="animal-square" />
                 <div style="user-select: none;" v-else-if="probabilities">{{probabilities[coords.x][coords.y].toFixed(3)}}</div>
-    </div>
+    </button>
   </div>
 </template>
 
@@ -107,6 +107,11 @@ export default defineComponent({
 })
 </script>
 <style scoped>
+
+button:focus {
+  transform: scale(99.50%);
+  transition-duration: .1s;
+}
 
 .disco-board {
   display: grid;
