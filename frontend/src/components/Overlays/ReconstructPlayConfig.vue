@@ -115,11 +115,6 @@ export default defineComponent ({
     },
   },
 
-  data() {
-    return {
-    }
-  },
-
 
   methods: {
     onAnimalHeatmapSelected(animal: Animal) {

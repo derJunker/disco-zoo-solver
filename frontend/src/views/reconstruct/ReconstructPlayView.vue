@@ -18,7 +18,7 @@
             :game="game" :best-clicks="bestClicks" :region="region"
             :probabilities="probabilities" :min-prob="minProb" :max-prob="maxProb"
             @clicked-coords="onCoordsClicked"
-            @right-clicked-coords="rightClickedCoords" class="disco-board"/>
+            @right-clicked-coords="rightClickedCoords" class="disco-board" :loading="loadingData"/>
       </div>
       <reconstruct-play-config :style="!showConfig ? 'display: none;' : ''"
                                class="reconstruct-play-config dock-bottom dock-bottom-shadow"
@@ -127,7 +127,9 @@ export default defineComponent({
       animalToPlace: null as Animal | null,
       animalForHeatmap: null as Animal | null,
       animalTracker: new Map<Animal, number>(),
-      attempts: process.env.VUE_APP_DEFAULT_ATTEMPTS
+      attempts: process.env.VUE_APP_DEFAULT_ATTEMPTS,
+
+      loadingData: false
     }
   },
 
@@ -135,7 +137,9 @@ export default defineComponent({
     game: {
       async handler(game: Game | null) {
         if (game) {
-          this.updateProbabilityInfo()
+          this.loadingData = true
+          await this.updateProbabilityInfo()
+          this.loadingData = false
           this.updateTracker()
         }
       },
@@ -200,9 +204,11 @@ export default defineComponent({
       this.showConfig = !this.showConfig
     },
 
-    onHeatMapSelectChange(animal: Animal) {
+    async onHeatMapSelectChange(animal: Animal) {
       this.animalForHeatmap = animal
-      this.updateProbabilityInfo()
+      this.loadingData = true
+      await this.updateProbabilityInfo()
+      this.loadingData = false
     },
 
     onPlaceSelectChange(animal: Animal | null) {
@@ -213,16 +219,24 @@ export default defineComponent({
     },
 
     async onCoordsClicked(coords: Coords) {
+      if (this.loadingData)
+        return
+      this.loadingData = true
       let clickInfo = await gameStore.clickReconstruct(this.game!, this.animalToPlace, coords)
-      this.updateGame(clickInfo, coords)
+      await this.updateGame(clickInfo, coords)
+      this.loadingData = false
     },
 
     async rightClickedCoords(coords: Coords) {
+      if (this.loadingData)
+        return
+      this.loadingData = true
       let clickInfo = await gameStore.clickReconstruct(this.game!, null, coords)
-      this.updateGame(clickInfo, coords)
+      await this.updateGame(clickInfo, coords)
+      this.loadingData = false
     },
 
-    updateGame(clickInfo : ClickChangeInfo, coords: Coords) {
+    async updateGame(clickInfo : ClickChangeInfo, coords: Coords) {
       if (!this.game)
         return
       if (clickInfo.wasValidClick) {
@@ -250,7 +264,7 @@ export default defineComponent({
             && this.game.notCompletelyRevealedAnimalsWithoutBux.length > 0)
           this.animalToPlace = null
 
-        this.updateProbabilityInfo()
+        await this.updateProbabilityInfo()
         this.updateTracker()
 
       }

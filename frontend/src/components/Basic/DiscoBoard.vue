@@ -1,6 +1,6 @@
 <template>
   <div class="disco-board" :style="getBoardStyle()" v-if="game">
-    <button
+    <div
         v-for="coords in getCoords()" :key="coords" class="tile" :style="getTileStyle(coords)"
         :class="bestClicks && bestClicks.filter((click: Coords) => click.x === coords.x && click.y === coords.y).length
         > 0 ?
@@ -9,7 +9,10 @@
           v-if="game.board[coords.x][coords.y].occupied && game.board[coords.x][coords.y].revealed"
           :animal="game.board[coords.x][coords.y].animalBoardInstance.animal" class="animal-square" />
                 <div style="user-select: none;" v-else-if="probabilities">{{probabilities[coords.x][coords.y].toFixed(3)}}</div>
-    </button>
+    </div>
+    <div class="loading" v-if="showLoading">
+      <loading-circle/>
+    </div>
   </div>
 </template>
 
@@ -20,10 +23,11 @@ import {Game} from "@/types/Game";
 import {getRegionColors} from "@/util/region-colors";
 import {getHeatmapColor} from "@/util/heatmap-colors";
 import {defineComponent} from "vue";
+import LoadingCircle from "@/components/Basic/LoadingCircle.vue";
 
 export default defineComponent({
   name: 'disco-board',
-  components: {AnimalSquare},
+  components: {LoadingCircle, AnimalSquare},
 
   props: {
     game: {
@@ -49,6 +53,31 @@ export default defineComponent({
     maxProb: {
       type: Number,
       required: false
+    },
+    loading: {
+      type: Boolean,
+      required: false,
+      default: false
+    },
+  },
+
+  data() {
+    return {
+      showLoading: this.loading
+    }
+  },
+
+  watch: {
+    loading(newVal: boolean) {
+      if (newVal) {
+        setTimeout(() => {
+          if (this.loading) {
+            this.showLoading = true;
+          }
+        }, 700);
+      } else {
+        this.showLoading = false;
+      }
     }
   },
 
@@ -114,6 +143,7 @@ button:focus {
 }
 
 .disco-board {
+  position: relative;
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   gap: 3px;
@@ -138,6 +168,16 @@ button:focus {
   max-width: 100%;
   max-height: 100%;
   position: absolute;
+}
+
+.loading {
+  position: absolute;
+  z-index: 10;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0,0 ,0.6);
+  display: grid;
+  place-items: center;
 }
 
 </style>
