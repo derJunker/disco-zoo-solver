@@ -5,7 +5,10 @@ export function getRegionColors(region: string): { primary: string, dark: string
             dark: "black",
             light: "grey",
         }
-    const formattedRegion = region.toLowerCase().replace(" ", "-")
+    const formattedRegion = region.toLowerCase()
+        .replace("_", "-")
+        .replace(" ", "-")
+    console.log("formattedRegion", formattedRegion)
     return {
         primary: "var(--" + formattedRegion + "-primary)",
         dark: "var(--" + formattedRegion + "-dark)",
