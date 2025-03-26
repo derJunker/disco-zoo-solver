@@ -14,6 +14,7 @@ public record GameDTO(
 ) {
 
     public Game toGame() {
-        return new Game(board, containedAnimals, Region.byRepr(region).orElseThrow());
+        var optRegion = Region.byRepr(region).or(() -> java.util.Optional.of(Region.valueOf(region)));
+        return new Game(board, containedAnimals, optRegion.orElseThrow());
     }
 }
