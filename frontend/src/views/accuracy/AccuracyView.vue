@@ -62,7 +62,7 @@ export default defineComponent({
   data() {
     return {
       selectedRegion: accuracyState.getLastSelectedRegion || "farm" as string | null,
-      selectedGameType: AccuracyGameType.SINGLE_CLICK as string,
+      selectedGameType: accuracyState.getLastSelectedGameType ||AccuracyGameType.SINGLE_CLICK,
       selectedDifficulty: accuracyState.getLastSelectedDifficulty || AccuracyDifficulty.MEDIUM,
       showRegionSelect: false,
       timeless: userSettings.isTimelessRegionAllowed(accuracyState.getLastSelectedRegion || "farm")
