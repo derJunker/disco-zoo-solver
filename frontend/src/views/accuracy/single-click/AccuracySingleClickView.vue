@@ -24,6 +24,11 @@
 </template>
 
 <style scoped>
+* {
+  transition: background-color .5s;
+}
+
+
 .accuracy-single-click-view {
   display: flex;
   flex-direction: column;
@@ -62,7 +67,6 @@ import MenuBar from "@/components/MenuBar.vue";
 import router from "@/router";
 import {Game} from "@/types/Game";
 import {useGame} from "@/store/useGame";
-import {AccuracySingleClickGameResponse} from "@/types/accuracy/AccuracySingleClickGameResponse";
 import {Animal} from "@/types/Animal";
 import AnimalDisplay from "@/components/AnimalDisplay.vue";
 import DiscoBoard from "@/components/Basic/DiscoBoard.vue";

@@ -30,6 +30,10 @@
   justify-content: space-between;
 }
 
+* {
+  transition: background-color .5s;
+}
+
 .accuracy-streak-content {
   position: relative;
   flex: 1;
