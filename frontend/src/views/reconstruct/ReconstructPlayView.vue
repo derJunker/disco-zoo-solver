@@ -222,8 +222,6 @@ export default defineComponent({
     },
 
     async onCoordsClicked(coords: Coords) {
-      if (this.loadingData)
-        return
       this.loadingData = true
       let clickInfo = await gameStore.clickReconstruct(this.game!, this.animalToPlace, coords)
       if (!clickInfo)
@@ -233,8 +231,6 @@ export default defineComponent({
     },
 
     async rightClickedCoords(coords: Coords) {
-      if (this.loadingData)
-        return
       this.loadingData = true
       let clickInfo = await gameStore.clickReconstruct(this.game!, null, coords)
       if (!clickInfo)

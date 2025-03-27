@@ -1,8 +1,8 @@
 <template>
-  <div class="accuracy-single-click-result-details-view">
-    <div class="accuracy-single-click-result-details-content">
+  <div class="accuracy-streak-result-details-view">
+    <div class="accuracy-streak-result-details-content">
       <div class="wood-menu menu-bottom dock-bottom" id="details-menu">
-        <h1>Details - Single Click</h1>
+        <h1>Details - Streak</h1>
         <div class="stats wood-menu-group" v-if="singleClickHistory.length > 0">
           <h2>Game {{showIndex+1}}</h2>
           <div class="animals">
@@ -44,12 +44,12 @@
 </template>
 
 <style scoped>
-.accuracy-single-click-result-details-view {
+.accuracy-streak-result-details-view {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
 }
-.accuracy-single-click-result-details-content {
+.accuracy-streak-result-details-content {
   flex: 1;
   position: relative;
 }
@@ -172,12 +172,12 @@ import {generateSeed} from "@/util/seed-generator";
 const state = useAccuracyState()
 
 export default defineComponent({
-  name: "AccuracySingleClickResultDetailsView",
+  name: "AccuracyStreakResultDetailsView",
   components: {AnimalSquare, MenuBar},
   data() {
     return {
       singleClickHistory: state.singleClickHistory,
-      showIndex: 0
+      showIndex: Math.max(0, state.singleClickHistory.length-1)
     }
   },
 
@@ -233,12 +233,12 @@ export default defineComponent({
       router.push({name: 'home'})
     },
     onRetry() {
-      router.push({name: 'accuracy-' + AccuracyGameType.SINGLE_CLICK + '-play',
+      router.push({name: 'accuracy-' + AccuracyGameType.STREAK + '-play',
         params: {seed: generateSeed(), region: state.region, difficulty: state.difficulty},
         query: {timeless: state.withTimeless + ""}})
     },
     onBack() {
-      router.push({name: 'accuracy-' + AccuracyGameType.SINGLE_CLICK + '-result'})
+      router.push({name: 'accuracy-' + AccuracyGameType.STREAK + '-result'})
     },
 
     getReconstructLink() {

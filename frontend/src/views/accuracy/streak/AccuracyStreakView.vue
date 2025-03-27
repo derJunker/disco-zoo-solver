@@ -1,11 +1,11 @@
 <template>
-  <div class="accuracy-single-click-view" :style="getBackgroundStyle()">
+  <div class="accuracy-streak-view" :style="getBackgroundStyle()">
     {{setRouteValuesToVars($route.params.seed, $route.params.region, $route.params.difficulty,  $route.query.timeless)}}
-    <div class="accuracy-single-click-content">
+    <div class="accuracy-streak-content">
       <div class="acc-container" v-if="game && animalToFind">
         <top-info-bar :region="displayRegion">
           <span>
-            Game: {{limitedGameRound() + 1}}
+            Game: {{gameRound}}
           </span>
         </top-info-bar>
         <animal-display :tracker="new Map()" :animals="game.containedAnimals" class="animal-display"
@@ -24,13 +24,13 @@
 </template>
 
 <style scoped>
-.accuracy-single-click-view {
+.accuracy-streak-view {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
 }
 
-.accuracy-single-click-content {
+.accuracy-streak-content {
   position: relative;
   flex: 1;
 }
@@ -53,32 +53,32 @@
   max-width: min(90%, 400px);
   margin-inline: auto;
 }
-
 </style>
 
 <script lang="ts">
-import {defineComponent} from 'vue'
-import MenuBar from "@/components/MenuBar.vue";
 import router from "@/router";
-import {Game} from "@/types/Game";
+import {defineComponent} from 'vue'
 import {useGame} from "@/store/useGame";
-import {AccuracySingleClickGameResponse} from "@/types/accuracy/AccuracySingleClickGameResponse";
-import {Animal} from "@/types/Animal";
+import {useAccuracyState} from "@/store/useState";
+import {useErrors} from "@/store/useErrors";
+import MenuBar from "@/components/MenuBar.vue";
 import AnimalDisplay from "@/components/AnimalDisplay.vue";
 import DiscoBoard from "@/components/Basic/DiscoBoard.vue";
-import {getRegionColors} from "@/util/region-colors";
+import TopInfoBar from "@/components/TopInfoBar.vue";
+import {Game} from "@/types/Game";
+import {Animal} from "@/types/Animal";
 import {Coords} from "@/types/Coords";
 import {AccuracyGameHistoryElement} from "@/types/accuracy/AccuracyGameHistoryElement";
-import {useAccuracyState} from "@/store/useState";
-import {calculateAccuracy} from "@/util/score-calculator";
-import TopInfoBar from "@/components/TopInfoBar.vue";
 import {AccuracyDifficulty} from "@/types/accuracy/AccuracyDifficulty";
+import {getRegionColors} from "@/util/region-colors";
+import {calculateAccuracy} from "@/util/score-calculator";
 
 const gameApi = useGame()
 const accuracyState = useAccuracyState()
+const errorState = useErrors()
 
 export default defineComponent({
-  name: "AccuracyPlayView",
+  name: "accuracy-streak-view",
   components: {TopInfoBar, DiscoBoard, AnimalDisplay, MenuBar},
   data() {
     return {
@@ -126,6 +126,7 @@ export default defineComponent({
 
     async nextGame() {
       if (this.seed === null || this.region === null) {
+        errorState.addError("Seed or region not set, redirecting to accuracy")
         await router.push({name: 'accuracy'})
         return
       }
@@ -140,7 +141,7 @@ export default defineComponent({
     },
 
     async onCoordsClicked(coords: Coords) {
-      const maxGameAmount = process.env.VUE_APP_ACCURACY_GAME_AMOUNT
+      const maxGameAmount = 100
       if (this.gameRound >= maxGameAmount) {
         return
       }
@@ -148,45 +149,45 @@ export default defineComponent({
       const region = this.region
       const animalToFind = this.animalToFind
       const currentGameAmount = this.gameRound
-      gameApi.accuracyPerformance(this.game!, this.animalToFind!, coords).then(resp => {
-        if (!resp)
-          return
-        const wasBestClick = resp.bestClicks.filter(click => click.x == coords.x && click.y == coords.y).length > 0
-        const maxProb = Math.max(...resp.probabilities.flat())
-        const minProb = Math.min(...resp.probabilities.flat())
-        this.accuracyHistory[currentGameAmount] = {
-          click: coords,
-          accuracy: calculateAccuracy(resp.accuracy, wasBestClick ? 1 : 0),
-          animalToFind: animalToFind!,
+      this.loadingResults = true;
+      const resp = await gameApi.accuracyPerformance(this.game!, this.animalToFind!, coords)
+      if (!resp) {
+        return
+      }
+      const wasBestClick = resp.bestClicks.filter(click => click.x == coords.x && click.y == coords.y).length > 0
+      const maxProb = Math.max(...resp.probabilities.flat())
+      const minProb = Math.min(...resp.probabilities.flat())
+      this.accuracyHistory[currentGameAmount] = {
+        click: coords,
+        accuracy: calculateAccuracy(resp.accuracy, wasBestClick ? 1 : 0),
+        animalToFind: animalToFind!,
 
-          game: game!,
-          region: region!,
-          probabilities: resp.probabilities,
-          minProb: minProb,
-          maxProb: maxProb,
-          bestClicks: resp.bestClicks,
-          wasBestClick: wasBestClick,
-        }
-        this.computedRounds++
-        if (this.computedRounds >= maxGameAmount) {
-          accuracyState.singleClickHistory = this.accuracyHistory
-          accuracyState.withTimeless = this.timeless
-          accuracyState.region = this.region
-          accuracyState.difficulty = this.difficulty
-          router.push({name: 'accuracy-single-click-result'})
-        }
-      })
+        game: game!,
+        region: region!,
+        probabilities: resp.probabilities,
+        minProb: minProb,
+        maxProb: maxProb,
+        bestClicks: resp.bestClicks,
+        wasBestClick: wasBestClick,
+      }
+      this.computedRounds++
+      if (!wasBestClick || this.computedRounds >= maxGameAmount) {
+        accuracyState.singleClickHistory = this.accuracyHistory
+        accuracyState.withTimeless = this.timeless
+        accuracyState.region = this.region
+        accuracyState.difficulty = this.difficulty
+        await router.push({name: 'accuracy-streak-result'})
+        return
+      }
       this.gameRound++
       if (this.gameRound < maxGameAmount) {
         await this.nextGame()
+        this.loadingResults = false
       } else {
         this.loadingResults = true
       }
     },
 
-    limitedGameRound() {
-      return Math.min(Math.max(0, this.gameRound), process.env.VUE_APP_ACCURACY_GAME_AMOUNT-1)
-    }
   },
 
   async mounted() {

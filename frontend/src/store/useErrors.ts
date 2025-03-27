@@ -2,7 +2,7 @@ import {defineStore} from "pinia";
 
 export const useErrors = defineStore( 'errors', {
     state: () => ({
-        errors: ["TestError something went wrong, very long error"] as string[]
+        errors: [] as string[]
     }),
     actions: {
         addError(error: string) {

@@ -92,11 +92,15 @@ export default defineComponent({
     },
 
     onCoordsClicked(coords: Coords) {
+      if(this.loading)
+        return
       this.$emit('clicked-coords', coords)
     },
 
     onCoordsRightClick(event: MouseEvent, coords: Coords) {
       event.preventDefault()
+      if (this.loading)
+        return
       this.$emit('right-clicked-coords', coords)
     },
 
