@@ -137,6 +137,8 @@ html, body, #app, #router-view {
 }
 
 #app {
+    position: fixed;
+    width: 100%;
     background: var(--background-color);
 }
 
@@ -487,4 +489,13 @@ html, body, #app, #router-view {
             4px 4px,
             0px 4px
     );
+}
+
+
+.overlay-enter-active, .overlay-leave-active {
+    transition: transform .2s ease-out;
+}
+
+.overlay-enter-from, .overlay-leave-to {
+    transform: translateY(100%);
 }

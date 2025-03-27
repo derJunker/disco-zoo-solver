@@ -1,29 +1,30 @@
 <template>
   <div class="accuracy-streak-result-view">
     <div class="accuracy-streak-result-content">
-      <div id="overview-menu" class="wood-menu dock-bottom menu-bottom">
-        <h1>Results - Streak</h1>
-        <div class="wood-menu-group">
-          <h2>🔥 Streak 🔥</h2>
-          <div id="streak">{{bestClickCount}}</div>
+      <transition name="overlay">
+        <div v-if="show" id="overview-menu" class="wood-menu dock-bottom menu-bottom">
+          <h1>Results - Streak</h1>
+          <div class="wood-menu-group">
+            <h2>🔥 Streak 🔥</h2>
+            <div id="streak">{{bestClickCount}}</div>
+          </div>
+          <div class="wood-menu-group">
+            <div>Score: {{(score)}}</div>
+          </div>
+          <div class="wood-menu-group">
+            <div>Region: {{ region }}</div>
+            <div>Difficulty: {{ difficulty }}</div>
+          </div>
+          <div class="nav-buttons">
+            <button class="btn btn-gradient color-action-info" @click="onShare">
+              Share
+            </button>
+            <button class="btn btn-gradient color-action-neutral-2" @click="onDetailsClick">
+              Details
+            </button>
+          </div>
         </div>
-        <div class="wood-menu-group">
-          <div>Score: {{(score)}}</div>
-        </div>
-        <div class="wood-menu-group">
-          <div>Region: {{ region }}</div>
-          <div>Difficulty: {{ difficulty }}</div>
-        </div>
-        <div class="nav-buttons">
-          <button class="btn btn-gradient color-action-info" @click="onShare">
-            Share
-          </button>
-          <button class="btn btn-gradient color-action-neutral-2" @click="onDetailsClick">
-            Details
-          </button>
-        </div>
-      </div>
-
+      </transition>
       <div id="overview-menu-screenshot" class="wood-menu" hidden>
         <h1>Results - Streak</h1>
         <div class="wood-menu-group-compatible">
@@ -101,7 +102,7 @@ h2 {
 </style>
 
 <script lang="ts">
-import {defineComponent} from 'vue'
+import {defineComponent, ref} from 'vue'
 import MenuBar from "@/components/MenuBar.vue";
 import {useAccuracyState} from "@/store/useState";
 import router from "@/router";
@@ -115,6 +116,16 @@ const state = useAccuracyState()
 export default defineComponent({
   name: "AccuracyStreakResultView",
   components: {MenuBar},
+
+  setup() {
+    const show = ref(false)
+
+    return {show}
+  },
+
+  mounted() {
+    this.show = true
+  },
 
   created() {
     const clickHistory = state.singleClickHistory

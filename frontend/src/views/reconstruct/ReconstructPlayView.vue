@@ -20,12 +20,14 @@
             @clicked-coords="onCoordsClicked"
             @right-clicked-coords="rightClickedCoords" class="disco-board" :loading="loadingData"/>
       </div>
-      <reconstruct-play-config :style="!showConfig ? 'display: none;' : ''"
-                               class="reconstruct-play-config dock-bottom dock-bottom-shadow"
-                   :animals="animals" :heat-map-animal="animalForHeatmap" :place-animal="animalToPlace"
-                   :can-add-attempts="canAddAttempts()" :can-remove-attempts="canRemoveAttempts()"
-                   @animal-heatmap-select="onHeatMapSelectChange" @animal-place-select="onPlaceSelectChange"
-                   @add-attempts="addAttempts()" @remove-attempts="removeAttempts()"/>
+      <transition name="overlay">
+        <reconstruct-play-config v-if="showConfig"
+                                 class="reconstruct-play-config dock-bottom dock-bottom-shadow"
+                     :animals="animals" :heat-map-animal="animalForHeatmap" :place-animal="animalToPlace"
+                     :can-add-attempts="canAddAttempts()" :can-remove-attempts="canRemoveAttempts()"
+                     @animal-heatmap-select="onHeatMapSelectChange" @animal-place-select="onPlaceSelectChange"
+                     @add-attempts="addAttempts()" @remove-attempts="removeAttempts()"/>
+      </transition>
     </div>
     <menu-bar :on-first-button-click="onBack" first-color-class="color-action-neutral-1" first-button-name="back"
               :on-second-button-click="onConfig" :second-color-class="getConfigMenuColorClass()"

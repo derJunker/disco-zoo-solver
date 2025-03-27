@@ -1,18 +1,20 @@
 <template>
   <div class="accuracy-view">
     <div class="accuracy-content">
-      <accuracy-config class="accuracy-config dock-bottom menu-bottom"
-                       :selected-region="selectedRegion" :selected-game-type="selectedGameType" :timeless="timeless"
-                       :selected-difficulty="selectedDifficulty"
-                       @timeless-changed="onTimelessChanged"
-                       @region-clicked="onRegionClicked" @game-type-selected="onGameTypeSelected"
-                       @difficulty-selected="onDifficultySelected"/>
-      <region-select v-if="showRegionSelect"  @region-select="onRegionSelect"
-                      class="region-select dock-bottom dock-bottom-shadow menu-bottom" :any-option-available="true"/>
+      <transition name="overlay">
+        <accuracy-config v-if="!showRegionSelect" class="accuracy-config dock-bottom menu-bottom"
+                         :selected-region="selectedRegion" :selected-game-type="selectedGameType" :timeless="timeless"
+                         :selected-difficulty="selectedDifficulty"
+                         @timeless-changed="onTimelessChanged"
+                         @region-clicked="onRegionClicked" @game-type-selected="onGameTypeSelected"
+                         @difficulty-selected="onDifficultySelected"/>
+        <region-select v-else-if="showRegionSelect"  @region-select="onRegionSelect"
+                        class="region-select dock-bottom dock-bottom-shadow menu-bottom" :any-option-available="true"/>
+      </transition>
     </div>
-    <menu-bar :on-first-button-click="onBack" :on-second-button-click="onPlay" second-button-name="play"
+    <menu-bar :on-first-button-click="onBack" :on-second-button-click="showRegionSelect? onCloseRegionSelect : onPlay" :second-button-name="showRegionSelect? 'close' : 'play'"
               first-button-name="back" first-color-class="color-action-neutral-1"
-              second-color-class="color-action-neutral-2"/>
+              :second-color-class="showRegionSelect? 'color-action-bad' : 'color-action-neutral-2'"/>
   </div>
 </template>
 
@@ -77,6 +79,10 @@ export default defineComponent({
         params: {seed: generateSeed(), region:
           this.selectedRegion, difficulty: this.selectedDifficulty},
         query: {timeless: this.timeless + ""}})
+    },
+
+    onCloseRegionSelect() {
+      this.showRegionSelect = false
     },
 
     onRegionClicked() {

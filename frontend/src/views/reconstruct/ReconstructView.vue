@@ -1,17 +1,20 @@
 <template>
 <div class="reconstruction-view">
   <div class="reconstruction-view-content">
-    <reconstruct-config :selected-region="selectedRegion" :timeless="timeless"
-                        :selected-animals="selectedAnimals"
-                        @region-clicked="onRegionClicked" @timeless-changed="onTimelessChanged"
-                        @animals-selected="onAnimalsSelected"
-                        class="menu-bottom dock-bottom reconstruct-config"/>
-    <RegionSelect v-if="showRegionSelect" @region-select="onRegionSelect"
-                  class="region-select dock-bottom dock-bottom-shadow menu-bottom"/>
+    <transition name="overlay">
+      <reconstruct-config v-if="!showRegionSelect" :selected-region="selectedRegion" :timeless="timeless"
+                          :selected-animals="selectedAnimals"
+                          @region-clicked="onRegionClicked" @timeless-changed="onTimelessChanged"
+                          @animals-selected="onAnimalsSelected"
+                          class="menu-bottom dock-bottom reconstruct-config"/>
+      <RegionSelect v-else @region-select="onRegionSelect"
+                    class="region-select dock-bottom dock-bottom-shadow menu-bottom"/>
+    </transition>
   </div>
-  <menu-bar :on-first-button-click="onBack" :on-second-button-click="onPlay" second-button-name="play"
+  <menu-bar :on-first-button-click="onBack" :on-second-button-click="showRegionSelect? onCloseRegionSelect : onPlay"
+            :second-button-name="showRegionSelect? 'close' : 'play'"
            first-button-name="back" first-color-class="color-action-neutral-1"
-           second-color-class="color-action-neutral-2"
+           :second-color-class="showRegionSelect? 'color-action-bad' : 'color-action-neutral-2'"
   />
 </div>
 </template>
@@ -106,6 +109,10 @@ export default defineComponent({
     onBack() {
       router.push({name: "home"})
     },
+
+    onCloseRegionSelect() {
+      this.showRegionSelect = false
+    }
   }
 })
 </script>

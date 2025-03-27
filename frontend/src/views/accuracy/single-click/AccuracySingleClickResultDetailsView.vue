@@ -1,41 +1,43 @@
 <template>
   <div class="accuracy-single-click-result-details-view">
     <div class="accuracy-single-click-result-details-content">
-      <div class="wood-menu menu-bottom dock-bottom" id="details-menu">
-        <h1>Details - Single Click</h1>
-        <div class="stats wood-menu-group" v-if="singleClickHistory.length > 0">
-          <h2>Game {{showIndex+1}}</h2>
-          <div class="animals">
-            <animal-square :animal="animal" v-for="animal in getContainedAnimals(showIndex)"
-                           :key="animal.name"
-                           class="animal-square" :class="singleClickHistory[showIndex].animalToFind.name ===
+      <transition name="overlay">
+        <div v-if="show" class="wood-menu menu-bottom dock-bottom" id="details-menu">
+          <h1>Details - Single Click</h1>
+          <div class="stats wood-menu-group" v-if="singleClickHistory.length > 0">
+            <h2>Game {{showIndex+1}}</h2>
+            <div class="animals">
+              <animal-square :animal="animal" v-for="animal in getContainedAnimals(showIndex)"
+                             :key="animal.name"
+                             class="animal-square" :class="singleClickHistory[showIndex].animalToFind.name ===
                            animal.name ? 'animal-highlighted' : ''" tabindex="-1"/>
-          </div>
-          <div class="boardNav">
-            <button class="btn game-nav-btn" @click="showIndex = loopIndex(showIndex-1)">{{"<"}}</button>
-            <div class="tinyBoard border-dark">
-              <div class="tile" v-for="coords in getCoords()" :key="coords" :style="getStyle(coords)">
-                <img v-if="isClickedTile(coords)" src="/mouse-click.png" :alt="'You Clicked ' + coords"
-                     rel="preload"/>
-<!--                <span>-->
-<!--                  {{(singleClickHistory[showIndex].probabilities[coords.x][coords.y]*100).toFixed(1)}}%-->
-<!--                </span>-->
-              </div>
-              <div class="score">Accuracy: {{(singleClickHistory[showIndex].accuracy*100).toFixed(2)}}%</div>
             </div>
-            <button class="btn game-nav-btn" @click="showIndex = loopIndex(showIndex+1)">{{">"}}</button>
+            <div class="boardNav">
+              <button class="btn game-nav-btn" @click="showIndex = loopIndex(showIndex-1)">{{"<"}}</button>
+              <div class="tinyBoard border-dark">
+                <div class="tile" v-for="coords in getCoords()" :key="coords" :style="getStyle(coords)">
+                  <img v-if="isClickedTile(coords)" src="/mouse-click.png" :alt="'You Clicked ' + coords"
+                       rel="preload"/>
+                  <!--                <span>-->
+                  <!--                  {{(singleClickHistory[showIndex].probabilities[coords.x][coords.y]*100).toFixed(1)}}%-->
+                  <!--                </span>-->
+                </div>
+                <div class="score">Accuracy: {{(singleClickHistory[showIndex].accuracy*100).toFixed(2)}}%</div>
+              </div>
+              <button class="btn game-nav-btn" @click="showIndex = loopIndex(showIndex+1)">{{">"}}</button>
+            </div>
+          </div>
+
+          <div class="nav-btn-container">
+            <button class="btn btn-gradient color-action-info" @click="onBack">
+              Back
+            </button>
+            <a class="btn btn-gradient color-action-neutral-2" :href="getReconstructLink()" target="_blank">
+              Reconstruct
+            </a>
           </div>
         </div>
-
-        <div class="nav-btn-container">
-          <button class="btn btn-gradient color-action-info" @click="onBack">
-            Back
-          </button>
-          <a class="btn btn-gradient color-action-neutral-2" :href="getReconstructLink()" target="_blank">
-            Reconstruct
-          </a>
-        </div>
-      </div>
+      </transition>
     </div>
     <menu-bar :on-first-button-click="onHome" first-color-class="color-action-neutral-1" first-button-name="Home"
               :on-second-button-click="onRetry" second-color-class="color-action-good"
@@ -158,7 +160,7 @@ h2, .score {
 </style>
 
 <script lang="ts">
-import {defineComponent} from 'vue'
+import {defineComponent, ref} from 'vue'
 import MenuBar from "@/components/MenuBar.vue";
 import {useAccuracyState} from "@/store/useState";
 import AnimalSquare from "@/components/Basic/AnimalSquare.vue";
@@ -174,6 +176,17 @@ const state = useAccuracyState()
 export default defineComponent({
   name: "AccuracySingleClickResultDetailsView",
   components: {AnimalSquare, MenuBar},
+
+  setup() {
+    const show = ref(false)
+
+    return {show}
+  },
+
+  mounted() {
+    this.show = true
+  },
+
   data() {
     return {
       singleClickHistory: state.singleClickHistory,

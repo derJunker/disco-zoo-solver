@@ -52,6 +52,7 @@ export default defineComponent({
   position: relative;
   height: 3rem;
   border-width: 4px;
+  z-index: 50;
 }
 
 .first, .second {
