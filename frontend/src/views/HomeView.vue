@@ -1,8 +1,15 @@
 <template>
   <div class="home-view">
     <div class="home-view-content">
-      <div class="heading-container">
-        <h1 class="rare btn-gradient btn btn-highlighted">Disco Zoo Solver</h1>
+      <div id="home-text">
+        <div class="heading-container">
+          <h1 class="rare btn-gradient btn btn-highlighted">Disco Zoo Solver</h1>
+        </div>
+        <p>Welcome to the Disco Zoo Solver Website!</p>
+        <p>This is the place to sharpen your disco zoo rescue abilities and perfect your accuracy to the extreme ;).</p>
+        <p>You can also use this website to find those pescy disco bux and pets easier</p>
+        <p>If you're wondering how to play/use this site: <span tabindex="0" class="btn btn-gradient rare"> Click
+                                                                                                            Here</span></p>
       </div>
       <transition name="overlay">
         <menu-overlay v-if="showMenuOverlay" class="menu-overlay dock-bottom menu-bottom"/>
@@ -18,13 +25,31 @@
 </template>
 
 <style scoped>
+#home-text {
+  max-width: 90%;
+  margin: auto;
+}
+p {
+  line-height: 2rem;
+  margin-bottom: 1rem;
+}
+span.btn {
+  max-width: fit-content;
+  display: inline;
+  padding: 0.25rem .5rem;
+  text-wrap: nowrap;
+}
 h1 {
   text-align: center;
+  max-width: fit-content;
+  padding: 1rem 3rem;
+  margin-inline: auto;
+  margin-bottom: 2rem;
+  font-size: 1.6rem;
 }
 .heading-container {
-  margin-top: 5rem;
+  margin-top: 2rem;
   margin-inline: auto;
-  max-width: min(90%, 600px);
   filter: drop-shadow(0 0 30px var(--animal-highlight-color));
 }
 .home-view {
@@ -81,7 +106,7 @@ export default defineComponent({
   data() {
     return {
       showMenuOverlay: false,
-      showPlayOverlay: true
+      showPlayOverlay: false
     }
   }
 });
