@@ -50,7 +50,7 @@
 }
 
 .disco-board {
-  max-width: min(90%, 400px);
+  max-width: min(90%, 400px, 55dvh);
   margin-inline: auto;
   margin-top: 3rem;
   aspect-ratio: 1;
