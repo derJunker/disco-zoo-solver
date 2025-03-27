@@ -6,10 +6,8 @@ import App from './App.vue'
 import router from './router'
 import './assets/global.css'
 
-const app = createApp(App);
 const pinia = createPinia()
-
-app.config.globalProperties.$baseUrl = process.env.VUE_APP_BACKEND_URL;
+const app = createApp(App);
 
 app.use(pinia);
 app.use(router);

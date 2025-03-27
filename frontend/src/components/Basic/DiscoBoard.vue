@@ -150,6 +150,7 @@ button:focus {
   grid-template-columns: repeat(5, 1fr);
   gap: 3px;
   padding: 3px;
+  isolation: isolate;
 }
 
 .tile {

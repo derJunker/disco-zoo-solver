@@ -39,6 +39,9 @@ export default defineComponent({
       this.regions.unshift("Any")
 
     regionStore.getAllRegions().then(list => {
+      if (list.length == 0) {
+        return
+      }
       if (JSON.stringify(regionStore.hardcodedRegions) !== JSON.stringify(list)) {
         if (this.anyOptionAvailable)
           list.unshift("Any")

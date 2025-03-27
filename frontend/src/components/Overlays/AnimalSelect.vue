@@ -160,6 +160,8 @@ export default defineComponent({
   methods: {
     async onRegionChange(region: string) {
       const animals = await animalStore.getAnimalsOfRegion(region)
+      if (animals.length == 0)
+        return;
       this.commonAnimals = animals.filter(a => a.rarity === "COMMON")
       this.rareAnimals = animals.filter(a => a.rarity === "RARE")
       this.epicAnimal = animals.find(a => a.rarity === "EPIC")!

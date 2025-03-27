@@ -56,6 +56,7 @@ import MenuBar from "@/components/MenuBar.vue";
 import {defineComponent} from "vue";
 import MenuOverlay from "@/components/Overlays/MenuOverlay.vue";
 import PlayOverlay from "@/components/Overlays/PlayOverlay.vue";
+import {useErrors} from "@/store/useErrors";
 
 export default defineComponent({
   name: 'HomeView',

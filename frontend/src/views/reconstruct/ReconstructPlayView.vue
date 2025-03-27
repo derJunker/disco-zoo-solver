@@ -68,7 +68,7 @@
   right: 0;
   margin: auto;
   max-width: min(90%, 600px);
-  z-index: 1;
+  z-index: 10;
 }
 
 #attemptNum {
@@ -154,6 +154,9 @@ export default defineComponent({
     }
     this.animals = await animalStore.getAnimalsByNames(this.animalNames)
 
+    if (this.animals.length == 0)
+      return;
+
     gameStore.startReconstruct(this.animals, this.region!).then(game => {
       this.game = game
     })
@@ -223,6 +226,8 @@ export default defineComponent({
         return
       this.loadingData = true
       let clickInfo = await gameStore.clickReconstruct(this.game!, this.animalToPlace, coords)
+      if (!clickInfo)
+        return
       await this.updateGame(clickInfo, coords)
       this.loadingData = false
     },
@@ -232,6 +237,8 @@ export default defineComponent({
         return
       this.loadingData = true
       let clickInfo = await gameStore.clickReconstruct(this.game!, null, coords)
+      if (!clickInfo)
+        return
       await this.updateGame(clickInfo, coords)
       this.loadingData = false
     },

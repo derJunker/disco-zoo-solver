@@ -131,6 +131,8 @@ export default defineComponent({
       }
       let response: AccuracySingleClickGameResponse = await gameApi.accuracySingleClick(this.seed!, this.region!,
           this.timeless, this.gameRound, this.difficulty!)
+      if (!response)
+        return
       this.game = response.game
       this.displayRegion = this.game.region;
       this.displayRegionColors = getRegionColors(this.game.region)
@@ -147,6 +149,8 @@ export default defineComponent({
       const animalToFind = this.animalToFind
       const currentGameAmount = this.gameRound
       gameApi.accuracyPerformance(this.game!, this.animalToFind!, coords).then(resp => {
+        if (!resp)
+          return
         const wasBestClick = resp.bestClicks.filter(click => click.x == coords.x && click.y == coords.y).length > 0
         const maxProb = Math.max(...resp.probabilities.flat())
         const minProb = Math.min(...resp.probabilities.flat())
