@@ -18,8 +18,8 @@
       </div>
     </div>
     <menu-bar :on-first-button-click="onBack" first-color-class="color-action-neutral-1" first-button-name="back"
-              :on-second-button-click="console.log" second-color-class="color-action-neutral-2"
-              second-button-name="info"/>
+              :on-second-button-click="onHome" second-color-class="color-action-info"
+              second-button-name="Home"/>
   </div>
 </template>
 
@@ -31,7 +31,7 @@
 }
 
 * {
-  transition: background-color .5s;
+  transition: .5s;
 }
 
 .accuracy-streak-content {
@@ -109,6 +109,10 @@ export default defineComponent({
   methods: {
     onBack() {
       router.push({name: 'accuracy'})
+    },
+
+    onHome() {
+      router.push({name: 'home'})
     },
 
     setRouteValuesToVars(seed: number, region: string, difficulty:string,  timeless: boolean | null) {
