@@ -1,15 +1,17 @@
 <template>
   <div class="home-view">
     <div class="home-view-content">
-      <div id="home-text">
-        <div class="heading-container">
-          <h1 class="rare btn-gradient btn btn-highlighted">Disco Zoo Solver</h1>
+      <div id="home-text" class="wood-menu dock-top-shadow">
+        <div class="heading-container wood-menu-group">
+          <h1 class="rare btn btn-gradient">Disco Zoo Solver</h1>
         </div>
-        <p>Welcome to the Disco Zoo Solver Website!</p>
-        <p>This is the place to sharpen your disco zoo rescue abilities and perfect your accuracy to the extreme ;).</p>
-        <p>You can also use this website to find those pescy disco bux and pets easier</p>
-        <p>If you're wondering how to play/use this site: <span tabindex="0" class="btn btn-gradient rare"> Click
+        <div class="wood-menu-group">
+          <p>Welcome to the Disco Zoo Solver Website!</p>
+          <p>This is the place to sharpen your disco zoo rescue abilities and perfect your accuracy to the extreme ;).</p>
+          <p>You can also use this website to find those pescy disco bux and pets easier!</p>
+          <p>If you're wondering how to play/use this site: <span tabindex="0" class="btn btn-gradient color-action-info"> Click
                                                                                                             Here</span></p>
+        </div>
       </div>
       <transition name="overlay">
         <menu-overlay v-if="showMenuOverlay" class="menu-overlay dock-bottom menu-bottom"/>
@@ -26,8 +28,9 @@
 
 <style scoped>
 #home-text {
-  max-width: 90%;
-  margin: auto;
+  max-width: min(90%, 700px);
+  margin-inline: auto;
+  margin-top: 1rem;
 }
 p {
   line-height: 2rem;
@@ -42,14 +45,13 @@ span.btn {
 h1 {
   text-align: center;
   max-width: fit-content;
-  padding: 1rem 3rem;
+  padding: 1rem 1.5rem;
   margin-inline: auto;
-  margin-bottom: 2rem;
-  font-size: 1.6rem;
+  font-size: 1.5rem;
 }
 .heading-container {
-  margin-top: 2rem;
   margin-inline: auto;
+  margin-bottom: 1rem;
   filter: drop-shadow(0 0 30px var(--animal-highlight-color));
 }
 .home-view {
@@ -83,7 +85,6 @@ import MenuBar from "@/components/MenuBar.vue";
 import {defineComponent} from "vue";
 import MenuOverlay from "@/components/Overlays/MenuOverlay.vue";
 import PlayOverlay from "@/components/Overlays/PlayOverlay.vue";
-import {useErrors} from "@/store/useErrors";
 
 export default defineComponent({
   name: 'HomeView',
