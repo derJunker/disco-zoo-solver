@@ -45,6 +45,8 @@ export default defineComponent({
     getAnimalPictureUrl(animal: Animal) {
       if (animal.name.length == 0)
         return ""
+      if (animal.rarity === "PET")
+        return animalStore.getPetPictureUrl(animal)
       return animalStore.getAnimalPictureUrl(animal)
     }
   }

@@ -11,9 +11,10 @@ export const useGame = defineStore('game', () => {
     const api = useApi();
     const errorStore = useErrors();
 
-    async function startReconstruct(animals: Animal[], region: string): Promise<Game | null> {
+    async function startReconstruct(animals: Animal[], region: string, petName: string | null): Promise<Game | null> {
         const resp = await api.postUrl("/reconstruct/start", {
             animals: animals,
+            petName: petName,
             region: region
         }).catch(reason => errorStore.addError("Error starting game: " + reason));
         if(!resp) {

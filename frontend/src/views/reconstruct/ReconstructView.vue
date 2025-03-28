@@ -114,7 +114,7 @@ export default defineComponent({
         return;
       }
       router.push({name: "reconstruct-play", params: {region: this.selectedRegion!}, query: {animals:
-          this.selectedAnimals.map(animal => animal.name).join(",")}})
+          this.selectedAnimals.map(animal => animal.name).join(","), pet: this.selectedPet?.name}})
     },
 
     onBack() {

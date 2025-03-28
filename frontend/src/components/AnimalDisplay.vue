@@ -103,6 +103,8 @@ export default defineComponent({
 
   methods: {
     getAnimalPicture(animal: Animal) {
+      if (animal.rarity === "PET")
+        return animalStore.getPetPictureUrl(animal)
       return animalStore.getAnimalPictureUrl(animal)
     },
     calcRegionColors() {

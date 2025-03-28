@@ -6,6 +6,7 @@ import junker.disco.zoo.solver.model.animals.Animal;
 
 public record ReconstructStartBody(
         List<Animal> animals,
-        String region
+        String region,
+        String petName
 ) {
 }

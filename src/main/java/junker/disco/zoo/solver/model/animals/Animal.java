@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import junker.disco.zoo.solver.board.Coords;
 
@@ -37,6 +38,12 @@ public record Animal(
                 .filter(Objects::nonNull)
                 .toList();
         return animals;
+    }
+
+    public static Optional<Animal> findPetByName(String name) {
+        return ALL_PETS.stream()
+                .filter(animal -> animal.name().equalsIgnoreCase(name))
+                .findFirst();
     }
 
     public static List<Animal> getAnimalListByRegion(Region region, boolean timeless) {

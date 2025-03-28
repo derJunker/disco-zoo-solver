@@ -37,6 +37,7 @@
     --rarity-rare: #9CD7FD;
     --rarity-epic: #FFA593;
     --rarity-timeless: #EBD227;
+    --rarity-pet: #9d69af;
 
     /* region colors */
 
@@ -288,7 +289,7 @@ html, body, #app, #router-view {
     background-color: var(--rarity-common);
 }
 .pet {
-    background-color: #9d69af;
+    background-color: var(--rarity-pet);
 }
 
 .rounded,

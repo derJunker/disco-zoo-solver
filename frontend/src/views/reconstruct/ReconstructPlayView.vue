@@ -1,6 +1,6 @@
 <template>
   <div class="reconstruct-play-view" :style="getBackgroundStyle()">
-    {{loadPathVariables($route.params.region, $route.query.animals)}}
+    {{loadPathVariables($route.params.region, $route.query.animals, $route.query.pet)}}
     <div class="reconstruct-content">
       <top-info-bar :region="region">
         <div id="attempts">
@@ -10,9 +10,9 @@
           Attempts
         </div>
       </top-info-bar>
-      <AnimalDisplay :animals="animals" :tracker="animalTracker" class="animal-display"
+      <AnimalDisplay v-if="game" :animals="game?.containedAnimals" :tracker="animalTracker" class="animal-display"
                      @animal-click="onPlaceSelectChange" :animal-to-place="animalToPlace"
-                    :region="region"/>
+                     :region="region"/>
       <div class="disco-board-wrapper">
         <disco-board
             :game="game" :best-clicks="bestClicks" :region="region"
@@ -23,7 +23,7 @@
       <transition name="overlay">
         <reconstruct-play-config v-if="showConfig"
                                  class="reconstruct-play-config dock-bottom dock-bottom-shadow"
-                     :animals="animals" :heat-map-animal="animalForHeatmap" :place-animal="animalToPlace"
+                     :animals="game?.containedAnimals" :heat-map-animal="animalForHeatmap" :place-animal="animalToPlace"
                      :can-add-attempts="canAddAttempts()" :can-remove-attempts="canRemoveAttempts()"
                      @animal-heatmap-select="onHeatMapSelectChange" @animal-place-select="onPlaceSelectChange"
                      @add-attempts="addAttempts()" @remove-attempts="removeAttempts()"/>
@@ -119,6 +119,7 @@ export default defineComponent({
     return {
       animals: [] as Animal[],
       animalNames: [] as string[],
+      petName: null as string | null,
       region: null as string | null,
       game: null as Game | null,
       probabilities: null as number[][] | null,
@@ -159,8 +160,9 @@ export default defineComponent({
     if (this.animals.length == 0)
       return;
 
-    gameStore.startReconstruct(this.animals, this.region!).then(game => {
+    gameStore.startReconstruct(this.animals, this.region!, this.petName).then(game => {
       this.game = game
+      console.log(this.game?.containedAnimals)
     })
     sortAnimalsByRarity(this.animals)
 
@@ -169,8 +171,9 @@ export default defineComponent({
   },
 
   methods: {
-    loadPathVariables(region: string, animalList: string) {
+    loadPathVariables(region: string, animalList: string, petName: string|null) {
       this.animalNames = animalList.split(",")
+      this.petName = petName
       this.region = region
       return ''
     },
