@@ -20,6 +20,12 @@
           </div>
         </div>
       </div>
+      <div v-if="animals.length < 3" class="disco-bux">
+        <h4>Find Bux:</h4>
+        <button id="disco-bux-btn" class="rare btn btn-gradient" @click="onBuxFind">
+          <img alt="find-discobux" src="/animals/discobux.png"/>
+        </button>
+      </div>
       <div class="attempt-btns">
         <button id="add-attempts" class="btn btn-gradient"
              :class="canAddAttempts? 'color-action-good' : 'color-action-disabled'"
@@ -80,6 +86,18 @@ h4 {
   justify-content: space-evenly;
   gap: .1rem;
 }
+
+#disco-bux-btn {
+  padding: 0;
+  width: 4rem;
+  height: 4rem;
+}
+
+#disco-bux-btn > img {
+  width: 100%;
+  height: 100%;
+  padding: 6px;
+}
 </style>
 
 <script lang="ts">
@@ -124,6 +142,9 @@ export default defineComponent ({
     onAnimalPlaceSelected(animal: Animal | null) {
       this.$emit('animal-place-select', animal)
     },
+    onBuxFind() {
+      this.$emit('bux-find')
+    }
   }
 })
 </script>

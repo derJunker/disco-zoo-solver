@@ -55,8 +55,7 @@ public record Animal(
 
     public static void initAnimals() {
         ALL_ANIMALS.addAll(List.of(
-//            new Animal( "Discobux", Rarity.BUX, List.of(coords(0, 0)), Region.ANY),
-//            new Animal("Discobux 2", Rarity.BUX, List.of(coords(0, 0)), Region.ANY),
+            new Animal( "Discobux", Rarity.BUX, List.of(coords(0, 0)), Region.ANY),
 
             new Animal("Sheep", Rarity.COMMON, List.of(coords(0, 0), coords(1, 0), coords(2, 0), coords(3, 0)),
                     Region.FARM),

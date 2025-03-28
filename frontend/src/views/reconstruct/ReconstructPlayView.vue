@@ -26,7 +26,8 @@
                      :animals="game?.containedAnimals" :heat-map-animal="animalForHeatmap" :place-animal="animalToPlace"
                      :can-add-attempts="canAddAttempts()" :can-remove-attempts="canRemoveAttempts()"
                      @animal-heatmap-select="onHeatMapSelectChange" @animal-place-select="onPlaceSelectChange"
-                     @add-attempts="addAttempts()" @remove-attempts="removeAttempts()"/>
+                     @add-attempts="addAttempts()" @remove-attempts="removeAttempts()"
+                    @bux-find="onBuxFind()"/>
       </transition>
     </div>
     <menu-bar :on-first-button-click="onBack" first-color-class="color-action-neutral-1" first-button-name="back"
@@ -153,7 +154,7 @@ export default defineComponent({
   },
 
   async mounted() {
-    if (this.animalNames.length === 0) {
+    if (this.animalNames.length === 0 && !this.petName) {
       await router.push({name: "reconstruct"})
       return
     }
@@ -163,40 +164,48 @@ export default defineComponent({
     }
     this.animals = await animalStore.getAnimalsByNames(this.animalNames)
 
-    if (this.animals.length == 0)
+    if (this.animals.length == 0 && this.animals.length != this.animalNames.length)
       return;
 
     gameStore.startReconstruct(this.animals, this.region!, this.petName).then(game => {
       this.game = game
-      console.log(this.game?.containedAnimals)
+      this.animals = game?.containedAnimals || []
+      this.animalForHeatmap = this.animals[this.animals.length - 1]
     })
     sortAnimalsByRarity(this.animals)
 
-    this.animalForHeatmap = this.animals[this.animals.length - 1]
     this.animalToPlace = null
   },
 
   methods: {
     loadPathVariables(region: string, animalList: string, petName: string|null) {
-      this.animalNames = animalList.split(",")
+      this.animalNames = this.animalNames = animalList.split(",").filter(name => name !== "")
       this.petName = petName
       this.region = region
       return ''
     },
 
     checkRareSneakyCases() {
-      if (!this.petName || this.animalNames.length === 0)
+      if (this.animalNames.length === 0)
         return
       const animalAndPets = [...this.animalNames, this.petName]
-      const rareCase = (this.animalNames.every(animal =>
-          ["zebra", "hippo"].includes(animal.toLowerCase())) && this.petName.toLowerCase() ===
-          "hamster")
-      const superSneakyCase = animalAndPets.every(animal => ["zebra", "hippo", "hamster"].includes(animal.toLowerCase()))
-      if (rareCase)
+      const rareCase = (this.petName && this.animalNames.every(animal =>
+              ["zebra", "hippo"].includes(animal.toLowerCase())) && this.petName.toLowerCase() ===
+          "hamster" && this.animalNames.length === 2)
+      const discobuxSneak = this.animalNames.some(animal =>
+          ["discobux"].includes(animal.toLowerCase()))
+      const superSneakyCase = animalAndPets.every(animal =>
+          ["zebra", "hippo", "hamster"].includes(animal?.toLowerCase()||"") && animalAndPets.length === 3)
+      if (rareCase) {
         errorState.addError("Wow you went behind my back and tried anyways! Here are 5 Cookies 🍪🍪🍪🍪🍪")
+        console.log("pet: ", this.petName)
+        console.log("animals: ", this.animalNames)
+      }
       else if (superSneakyCase)
         errorState.addError("🍪🍪🍪🍪🍪🍪🍪 This was very smart! You get all the cookies you want ;) 🍪🍪🍪🍪🍪🍪🍪🍪🍪")
-      return rareCase || superSneakyCase
+      else if(discobuxSneak)
+        errorState.addError("You earned yourself some discobux! respect :D")
+      return rareCase || superSneakyCase || discobuxSneak
     },
 
     async updateProbabilityInfo() {
@@ -337,6 +346,13 @@ export default defineComponent({
       if (!this.game)
         return
       this.attempts = Math.max(this.attempts - 5, 0)
+    },
+
+    async onBuxFind() {
+      this.animalForHeatmap = {name: "Discobux", rarity: "BUX", region: "ANY", pattern: [{x:0, y:0}]}
+      this.loadingData = true
+      await this.updateProbabilityInfo()
+      this.loadingData = false
     },
 
     canAddAttempts() {

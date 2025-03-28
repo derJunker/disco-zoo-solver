@@ -101,7 +101,6 @@ export default defineComponent({
     onAnimalsSelected(animals: Animal[]) {
       const rareCase = (this.selectedPet && animals.length == 2 && animals.every(animal =>
           ["zebra", "hippo"].includes(animal.name.toLowerCase())) && this.selectedPet.name.toLowerCase() === "hamster")
-      console.log("animals", animals)
       if (animals.length == 4 || (animals.length == 3 && this.selectedPet) || rareCase) {
         animals.shift()
         if (rareCase)
@@ -122,7 +121,7 @@ export default defineComponent({
     },
 
     onPlay() {
-      if (this.selectedAnimals.length === 0 || this.selectedRegion === null) {
+      if ((this.selectedAnimals.length === 0 && this.selectedPet === null) || this.selectedRegion === null) {
         return;
       }
       router.push({name: "reconstruct-play", params: {region: this.selectedRegion!}, query: {animals:

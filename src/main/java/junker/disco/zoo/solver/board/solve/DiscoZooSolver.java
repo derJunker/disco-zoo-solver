@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -31,6 +32,19 @@ public class DiscoZooSolver {
         var overlaps = calculateOverlaps(wipedGame);
         var solutions = getBestSolutions(animalToSolve, wipedGame, overlaps, includeSolvedInSolution);
         return new BestMoveInformation(overlaps.animalOverlapProbability().get(animalToSolve), solutions);
+    }
+
+    public static Double[][] getInvertedProbabilities(Game game) {
+        var wipedGame = new Game(game, true);
+        var overlaps = calculateOverlaps(wipedGame);
+        var nullProbs = overlaps.animalOverlapProbability().get(null);
+        var invertedProbs = new Double[game.getBoard().length][game.getBoard()[0].length];
+        for (int x = 0; x < game.getBoard().length; x++) {
+            for (int y = 0; y < game.getBoard()[0].length; y++) {
+                invertedProbs[x][y] = nullProbs[x][y]/(double)overlaps.permutations().size();
+            }
+        }
+        return invertedProbs;
     }
 
     public static BestMoveInformation getBestMoveInformation(Animal animalToSolve, Game game) {
