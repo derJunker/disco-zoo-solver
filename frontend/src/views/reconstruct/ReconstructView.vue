@@ -3,9 +3,10 @@
   <div class="reconstruction-view-content">
     <transition name="overlay">
       <reconstruct-config v-if="!showRegionSelect" :selected-region="selectedRegion" :timeless="timeless"
-                          :selected-animals="selectedAnimals"
+                          :selected-animals="selectedAnimals" :selected-pet="selectedPet"
                           @region-clicked="onRegionClicked" @timeless-changed="onTimelessChanged"
                           @animals-selected="onAnimalsSelected"
+                          @pet-selected="onPetSelected"
                           class="menu-bottom dock-bottom reconstruct-config"/>
       <RegionSelect v-else @region-select="onRegionSelect"
                     class="region-select dock-bottom dock-bottom-shadow menu-bottom"/>
@@ -63,6 +64,7 @@ export default defineComponent({
       timeless: userSettings.isTimelessRegionAllowed(reconstructState.getLastSelectedRegion || "farm"),
       selectedAnimals: [] as Animal[],
       showRegionSelect: false,
+      selectedPet: null as Animal | null
     }
   },
 
@@ -96,6 +98,10 @@ export default defineComponent({
 
     onAnimalsSelected(animals: Animal[]) {
       this.selectedAnimals = animals
+    },
+
+    onPetSelected(pet: Animal | null) {
+      this.selectedPet = pet
     },
 
     onPlay() {

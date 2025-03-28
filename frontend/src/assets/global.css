@@ -106,7 +106,10 @@ a {
     color: var(--text-color);
     text-decoration: none;
 }
-
+img {
+    max-width: 100%;
+    height: auto;
+}
 /* CSS Reset */
 *,
 *::before,
@@ -283,6 +286,9 @@ html, body, #app, #router-view {
 }
 .common {
     background-color: var(--rarity-common);
+}
+.pet {
+    background-color: #9d69af;
 }
 
 .rounded,
@@ -502,4 +508,12 @@ html, body, #app, #router-view {
 
 .overlay-enter-from, .overlay-leave-to {
     transform: translateY(100%);
+}
+
+.fade-enter-active, .fade-leave-active {
+    transition: opacity .1s ease-in-out;
+}
+
+.fade-enter-from, .fade-leave-to {
+    opacity: 0;
 }

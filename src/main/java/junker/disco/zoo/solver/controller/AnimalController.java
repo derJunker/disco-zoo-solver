@@ -33,4 +33,9 @@ public class AnimalController {
 
         return new ResponseEntity<>(animals, HttpStatus.OK);
     }
+
+    @GetMapping("/pets")
+    public ResponseEntity<List<Animal>> getAllPets() {
+        return new ResponseEntity<>(Animal.ALL_PETS, HttpStatus.OK);
+    }
 }

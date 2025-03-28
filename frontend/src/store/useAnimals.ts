@@ -29,8 +29,23 @@ export const useAnimals = defineStore('animals', () => {
         return await resp.json();
     }
 
+    async function getAllPets(): Promise<Animal[]> {
+        const resp = await api.fetchUrl("/animals/pets").catch(
+            reason => errorStore.addError("Error fetching pets: " + reason)
+        );
+        if (!resp) {
+            return []
+        }
+        return await resp.json();
+    }
+
     function getAnimalPictureUrl(animal: Animal): string {
         return `/animals/${animal.name.toLowerCase()}.png`;
     }
-    return {getAnimalsOfRegion, getAnimalPictureUrl, getAnimalsByNames}
+
+    function getPetPictureUrl(animal: Animal): string {
+        return `/pets/${animal.name.toLowerCase()}.png`;
+    }
+
+    return {getAnimalsOfRegion, getAnimalPictureUrl, getAnimalsByNames, getAllPets, getPetPictureUrl}
 })

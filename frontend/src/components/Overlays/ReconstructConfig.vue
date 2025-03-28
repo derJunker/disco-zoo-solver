@@ -18,7 +18,9 @@
       </div>
       <AnimalSelect v-if="selectedRegion"
                     :region="selectedRegion" :selected-animals="selectedAnimals" :timeless="timeless"
+                    :selectedPet="selectedPet"
                     @animals-selected="(newVal:Animal[]) => $emit('animals-selected', newVal)"
+                    @pet-selected="(newVal:Animal|null) => $emit('pet-selected', newVal)"
                     class="animal-select"/>
     </div>
   </div>
@@ -65,6 +67,11 @@ export default defineComponent({
     selectedAnimals: {
       type: Array as () => Animal[],
       required: false
+    },
+    selectedPet: {
+      type: Object as  () =>  Animal | null,
+      required: false,
+      default: null
     }
   },
 

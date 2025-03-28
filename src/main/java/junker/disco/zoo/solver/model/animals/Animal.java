@@ -16,9 +16,11 @@ public record Animal(
         Region region
 ) {
     public static List<Animal> ALL_ANIMALS = new ArrayList<>();
+    public static List<Animal> ALL_PETS = new ArrayList<>();
 
     static {
         initAnimals();
+        initPets();
     }
 
     @Override
@@ -210,6 +212,32 @@ public record Animal(
             new Animal("Pegasus", Rarity.EPIC,  List.of(coords(0,0), coords(2, -2)), Region.CONSTELLATION),
             new Animal("Horologium", Rarity.TIMELESS,  List.of(coords(0, 0), coords(2, 1), coords(2, 2)),
                     Region.CONSTELLATION)
+        ));
+    }
+
+    public static void initPets() {
+        ALL_PETS.addAll(List.of(
+                new Animal("Rabbit", Rarity.PET, List.of(coords(0,0), coords(0, 1), coords(1, 2), coords(2, 1),
+                        coords(2, 0)), Region.ANY),
+                new Animal("Bird", Rarity.PET, List.of(coords(0,0), coords(1, 1), coords(2, 0), coords(3,1), coords(4,0)), Region.ANY),
+                new Animal("Dog", Rarity.PET, List.of(coords(0,0), coords(0, 1), coords(1, 1), coords(1, 0), coords(1
+                        ,-1)),
+                        Region.ANY),
+                new Animal("Cat", Rarity.PET, List.of(coords(0,0), coords(1, 0), coords(0,1), coords(0,2), coords(1,2)),
+                        Region.ANY),
+                new Animal("Fish", Rarity.PET, List.of(coords(0,0), coords(1,0), coords(2,0), coords(3,1), coords(3,
+                        -1)),
+                        Region.ANY),
+                new Animal("Turtle", Rarity.PET, List.of(coords(0,0), coords(1,0), coords(1,1), coords(1,2), coords(2
+                        ,0)),
+                        Region.ANY),
+                new Animal("Lizard", Rarity.PET, List.of(coords(0,0), coords(0, 1), coords(0,2), coords(1,2),
+                        coords(2,2)),
+                        Region.ANY),
+                new Animal("Hamster", Rarity.PET, List.of(coords(0,0), coords(1,1), coords(0,2), coords(2,0),
+                        coords(2,2)),
+                        Region.ANY)
+
         ));
     }
 }
