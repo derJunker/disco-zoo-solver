@@ -292,9 +292,6 @@ export default defineComponent({
         this.$emit('animals-selected', this.selectedAnimals.filter(a => a.name !== animal.name))
       } else {
         let newAnimals = [...this.selectedAnimals]
-        if (newAnimals.length == 3 || (newAnimals.length == 1 && this.selectedPet)) {
-          newAnimals.shift()
-        }
 
         newAnimals.push(animal)
         this.$emit('animals-selected', newAnimals)

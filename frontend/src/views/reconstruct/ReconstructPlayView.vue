@@ -106,11 +106,13 @@ import {sortAnimalsByRarity} from "@/util/animal-sorter";
 import DiscoBoard from "@/components/Basic/DiscoBoard.vue";
 import {useAnimals} from "@/store/useAnimals";
 import TopInfoBar from "@/components/TopInfoBar.vue";
+import {useErrors} from "@/store/useErrors";
 
 
 const gameStore = useGame()
 const animalStore = useAnimals()
 const solver = useSolver()
+const errorState = useErrors()
 
 export default defineComponent({
   name: "ReconstructPlayView",
@@ -155,6 +157,10 @@ export default defineComponent({
       await router.push({name: "reconstruct"})
       return
     }
+    if (this.checkRareSneakyCases()) {
+      await router.push('/reconstruct')
+      return
+    }
     this.animals = await animalStore.getAnimalsByNames(this.animalNames)
 
     if (this.animals.length == 0)
@@ -176,6 +182,21 @@ export default defineComponent({
       this.petName = petName
       this.region = region
       return ''
+    },
+
+    checkRareSneakyCases() {
+      if (!this.petName || this.animalNames.length === 0)
+        return
+      const animalAndPets = [...this.animalNames, this.petName]
+      const rareCase = (this.animalNames.every(animal =>
+          ["zebra", "hippo"].includes(animal.toLowerCase())) && this.petName.toLowerCase() ===
+          "hamster")
+      const superSneakyCase = animalAndPets.every(animal => ["zebra", "hippo", "hamster"].includes(animal.toLowerCase()))
+      if (rareCase)
+        errorState.addError("Wow you went behind my back and tried anyways! Here are 5 Cookies 🍪🍪🍪🍪🍪")
+      else if (superSneakyCase)
+        errorState.addError("🍪🍪🍪🍪🍪🍪🍪 This was very smart! You get all the cookies you want ;) 🍪🍪🍪🍪🍪🍪🍪🍪🍪")
+      return rareCase || superSneakyCase
     },
 
     async updateProbabilityInfo() {

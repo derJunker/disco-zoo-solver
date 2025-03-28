@@ -51,9 +51,11 @@ import router from "@/router";
 import ReconstructConfig from "@/components/Overlays/ReconstructConfig.vue";
 import {Animal} from "@/types/Animal";
 import {useReconstructState, userSettingsState} from "@/store/useState";
+import {useErrors} from "@/store/useErrors";
 
 const userSettings = userSettingsState()
 const reconstructState = useReconstructState()
+const errorState = useErrors()
 
 export default defineComponent({
   name: "ReconstructView",
@@ -97,15 +99,25 @@ export default defineComponent({
     },
 
     onAnimalsSelected(animals: Animal[]) {
+      const rareCase = (this.selectedPet && animals.length == 2 && animals.every(animal =>
+          ["zebra", "hippo"].includes(animal.name.toLowerCase())) && this.selectedPet.name.toLowerCase() === "hamster")
+      console.log("animals", animals)
+      if (animals.length == 4 || (animals.length == 3 && this.selectedPet) || rareCase) {
+        animals.shift()
+        if (rareCase)
+          errorState.addError("Congrats! You found the 1 impossible assortment of animals and pets! Here a cookie 🍪")
+      }
       this.selectedAnimals = animals
     },
 
     onPetSelected(pet: Animal | null) {
       this.selectedPet = pet
-      if (pet) {
-        while (this.selectedAnimals.length > 1) {
-          this.selectedAnimals.shift()
-        }
+      const rareCase = (pet && this.selectedAnimals.length == 2 && this.selectedAnimals.every(animal =>
+          ["zebra", "hippo"].includes(animal.name.toLowerCase())) && pet.name.toLowerCase() === "hamster")
+      if (pet && (this.selectedAnimals.length > 2 || rareCase)) {
+        this.selectedAnimals.shift()
+        if (rareCase)
+          errorState.addError("Congrats! You found the 1 impossible assortment of animals and pets! Here a cookie 🍪")
       }
     },
 
