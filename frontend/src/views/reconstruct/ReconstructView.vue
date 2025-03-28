@@ -102,6 +102,11 @@ export default defineComponent({
 
     onPetSelected(pet: Animal | null) {
       this.selectedPet = pet
+      if (pet) {
+        while (this.selectedAnimals.length > 1) {
+          this.selectedAnimals.shift()
+        }
+      }
     },
 
     onPlay() {

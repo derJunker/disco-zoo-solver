@@ -124,6 +124,7 @@ h2 {
   padding-right: .5rem;
   position: relative;
   margin-top: .4rem;
+  z-index: 3;
 }
 
 #pet-select-btn img, .pet-select-options img {
@@ -291,7 +292,7 @@ export default defineComponent({
         this.$emit('animals-selected', this.selectedAnimals.filter(a => a.name !== animal.name))
       } else {
         let newAnimals = [...this.selectedAnimals]
-        if (newAnimals.length == 3) {
+        if (newAnimals.length == 3 || (newAnimals.length == 1 && this.selectedPet)) {
           newAnimals.shift()
         }
 
