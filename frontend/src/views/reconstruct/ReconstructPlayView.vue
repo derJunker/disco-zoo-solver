@@ -254,6 +254,9 @@ export default defineComponent({
     },
 
     async onHeatMapSelectChange(animal: Animal) {
+      if (this.animalForHeatmap === animal) {
+        return;
+      }
       this.animalForHeatmap = animal
       this.loadingData = true
       await this.updateProbabilityInfo()
