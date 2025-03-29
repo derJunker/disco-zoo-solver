@@ -17,7 +17,7 @@ java {
     sourceCompatibility = JavaVersion.VERSION_23
 }
 
-tasks.bootWar {
+tasks.processResources {
     dependsOn("copyFrontend")
 }
 

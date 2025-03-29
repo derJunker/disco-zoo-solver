@@ -9,7 +9,7 @@
               <h3>Heatmap:</h3>
               <div id="koala-heatmap">
                 <img alt="koala heatmap" src="/koala_heatmap.jpg"/>
-                <p style="font-size: .7rem; line-height: .2rem; text-align: center">Heatmap of a Koala</p>
+                <p style="font-size: .7rem; line-height: 1rem; text-align: center">Heatmap of a Koala</p>
               </div>
               <p>The heatmap shows you the likelihood for each square to contain the animal you're looking for.</p>
               <p>Even when 2 squares have the same likelihood to contain an animal, it does not necessarily mean that both
@@ -25,16 +25,17 @@
             </div>
             <div class="content" v-else-if="showIndex == 2">
               <h3>Accuracy:</h3>
-              <p>In general these are to put your skills to the test.</p>
-              <p>Changing the difficulty increases the
-                 average amount of animals which will come up.</p>
+              <p>These challenges are designed to put your skills to the test.</p>
+              <p>Increasing the difficulty raises the average number of animals that will appear.</p>
+
               <h4>Single Click</h4>
-              <p>You will be given multiple games in a row where you each have to try and make the best click for the
-                 animal to search.</p>
-              <p>Afterwards you will see your accuracy and can go over each game to revise your mistakes.</p>
+              <p>You'll play through multiple rounds, aiming to make the best possible click for the animal you need
+                 to find (highlighted in white).</p>
+              <p>Afterward, you'll see your accuracy and have the chance to review each game to learn from any mistakes.</p>
+
               <h4>Streak</h4>
-              <p>This gamemode lets you play as long as you get each click right.</p>
-              <p>The goal is to get as many right in a row as possible; good luck!</p>
+              <p>In this mode, you can keep playing as long as you continue clicking correctly.</p>
+              <p>The goal is to get as many correct in a row as possible — good luck!</p>
             </div>
           </transition>
         </div>

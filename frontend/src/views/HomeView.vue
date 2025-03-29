@@ -7,13 +7,13 @@
         </div>
         <div class="wood-menu-group">
           <p>Welcome to the Disco Zoo Solver Website!</p>
-          <p>This is the place to sharpen your disco zoo rescue abilities and perfect your accuracy to the extreme ;).</p>
-          <p>You can also use this website to find those pescy disco bux and pets easier!</p>
+          <p>This is the place to sharpen your disco-zoo rescue abilities and perfect your accuracy to the extreme
+             ;).</p>
+          <p>You can also use this website to find those pesky discobux and pets easier!</p>
           <p>If you're wondering how to play/use this site: <span tabindex="0"
                                                                   class="btn btn-gradient color-action-info"
                                                                   @click="onTutorialClick">
-            Click
-                                                                                                            Here</span></p>
+            Click Here</span></p>
         </div>
       </div>
       <transition name="overlay">
