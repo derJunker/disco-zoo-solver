@@ -10,9 +10,12 @@ export const useSolver = defineStore('solver', () => {
     const errorStore = useErrors();
 
     async function solve(game: Game, animalToSolveFor: Animal): Promise<{bestClicks: Coords[], probabilities: number[][]}> {
-        const resp = await api.postUrl('/solve', {game, animalToSolveFor});
+        const resp = await api.postUrl('/solve', {game, animalToSolveFor}).catch(
+            (e) => errorStore.addError("Error solving game: " + e)
+        )
         if(!resp || !resp.ok) {
-            errorStore.addError("Error solving game: " + resp?.status);
+            if(resp)
+                errorStore.addError("Error solving game: " + resp?.status);
             return {bestClicks: [], probabilities: []};
         }
         return resp.json();

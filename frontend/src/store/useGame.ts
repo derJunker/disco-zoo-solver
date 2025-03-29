@@ -16,7 +16,12 @@ export const useGame = defineStore('game', () => {
             animals: animals,
             petName: petName,
             region: region
-        })
+        }).catch(
+            (e) => {
+                errorStore.addError("Error starting game: " + e);
+                return null;
+            }
+        )
         if(!resp || !resp.ok) {
             errorStore.addError("Error starting game: " + resp?.status);
             return null
@@ -29,9 +34,12 @@ export const useGame = defineStore('game', () => {
             "game": game,
             "animal": animal,
             "coords": coords
-        })
+        }).catch(
+            (e) => errorStore.addError("Error clicking game: " + e)
+        )
         if(!resp || !resp.ok) {
-            errorStore.addError("Error clicking game: " + resp?.status);
+            if(resp)
+                errorStore.addError("Error clicking game: " + resp?.status);
             return null
         }
         return resp.json();
@@ -43,9 +51,12 @@ export const useGame = defineStore('game', () => {
             difficulty: difficulty,
             timeless: timeless,
             gameNumber: gameNumber
-        })
+        }).catch(
+            (e) => errorStore.addError("Error fetching game: " + e)
+        )
         if(!resp || !resp.ok) {
-            errorStore.addError("Error fetching game: " + resp?.status);
+            if(resp)
+                errorStore.addError("Error fetching game: " + resp?.status);
             return null
         }
         return resp.json();
@@ -56,9 +67,12 @@ export const useGame = defineStore('game', () => {
             "game": game,
             "animalToFind": animalToFind,
             "click": click
-        })
+        }).catch(
+            (e) => errorStore.addError("Error fetching performance: " + e)
+        )
         if(!resp || !resp.ok) {
-            errorStore.addError("Error fetching performance: " + resp?.status);
+            if(resp)
+                errorStore.addError("Error fetching performance: " + resp?.status);
             return null;
         }
         return resp.json()

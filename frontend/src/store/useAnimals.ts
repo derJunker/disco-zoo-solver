@@ -9,9 +9,12 @@ export const useAnimals = defineStore('animals', () => {
 
 
     async function getAnimalsOfRegion(region: string): Promise<Animal[]> {
-        const resp =  await api.fetchUrl("/animals?region=" + region)
+        const resp =  await api.fetchUrl("/animals?region=" + region).catch(
+            (e) => errorStore.addError("Error fetching animals: " + e)
+        )
         if (!resp || !resp.ok) {
-            errorStore.addError("Error fetching animals: " + resp?.status);
+            if(resp)
+                errorStore.addError("Error fetching animals: " + resp?.status);
             return [] as Animal[]
         }
 
@@ -19,18 +22,24 @@ export const useAnimals = defineStore('animals', () => {
     }
 
     async function getAnimalsByNames(names: string[]): Promise<Animal[]> {
-        const resp = await api.fetchUrl("/animals/byName?names=" + names.join(","))
+        const resp = await api.fetchUrl("/animals/byName?names=" + names.join(",")).catch(
+            (e) => errorStore.addError("Error fetching animals by names " + e)
+        )
         if (!resp || !resp.ok) {
-            errorStore.addError("Error fetching animals by names " + resp?.status);
+            if(resp)
+                errorStore.addError("Error fetching animals by names " + resp?.status);
             return []
         }
         return await resp.json();
     }
 
     async function getAllPets(): Promise<Animal[]> {
-        const resp = await api.fetchUrl("/animals/pets");
+        const resp = await api.fetchUrl("/animals/pets").catch(
+            (e) => errorStore.addError("Error fetching pets: " + e)
+        )
         if (!resp || !resp.ok) {
-            errorStore.addError("Error fetching pets: " + resp?.status);
+            if(resp)
+                errorStore.addError("Error fetching pets: " + resp?.status);
             return []
         }
         return await resp.json();
