@@ -11,9 +11,11 @@ import junker.disco.zoo.solver.model.animals.Animal;
 import junker.disco.zoo.solver.model.animals.Rarity;
 import junker.disco.zoo.solver.model.solver.Solution;
 import junker.disco.zoo.solver.requests.return_objects.SolveResult;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 @Service
+@Slf4j
 public class SolveService {
 
     private final SlowSolutionService slowSolutionService;
@@ -30,7 +32,9 @@ public class SolveService {
         }
         final var potentialResult = slowSolutionService.getIfSaved(game, animalToSolverFor);
         if (potentialResult != null) {
-            System.out.println("Returning saved solution");
+            log.info("Found saved result with animals: {} and heatmap: {}",
+                    game.getContainedAnimals().stream().map(Animal::name).collect(Collectors.toList()),
+                    animalToSolverFor.name());
             return potentialResult;
         }
 

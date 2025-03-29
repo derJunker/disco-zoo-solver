@@ -92,10 +92,6 @@ public class Game {
         return true;
     }
 
-    public void printGame() {
-        System.out.println(this);
-    }
-
     @Override
     public String toString() {
         return arrayAsCoordinatesString(board);

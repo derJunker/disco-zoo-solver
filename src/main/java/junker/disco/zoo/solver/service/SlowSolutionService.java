@@ -11,12 +11,14 @@ import junker.disco.zoo.solver.db.entities.SlowSolutionEntry;
 import junker.disco.zoo.solver.db.repos.SlowSolutionEntryRepository;
 import junker.disco.zoo.solver.model.animals.Animal;
 import junker.disco.zoo.solver.requests.return_objects.SolveResult;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Service;
 
 @Service
+@Slf4j
 public class SlowSolutionService implements ApplicationListener<ApplicationReadyEvent> {
 
 
@@ -54,9 +56,9 @@ public class SlowSolutionService implements ApplicationListener<ApplicationReady
                         .bestClicks(result.bestClicks().stream().map(CoordsEntity::fromCoords).collect(Collectors.toSet()))
                         .probabilities(result.probabilities())
                         .build());
-                System.out.println("Saved solution to db, took " + (end - start) + "ms, hash: " + hash);
+                log.info("Saved solution to db, took {}ms, hash: {}", end - start, hash);
             } else {
-                System.out.println("Saved solution for this uptime, took " + (end - start) + "ms, hash: " + hash);
+                log.info("Saved solution for this uptime, took {}ms, hash: {}", end - start, hash);
             }
         }
         return result;
@@ -78,7 +80,7 @@ public class SlowSolutionService implements ApplicationListener<ApplicationReady
                     .map(CoordsEntity::toCoords).collect(Collectors.toSet()),
                     probabilities));
         });
-        System.out.println("Loaded " + entries.size() + " slow solutions into memory");
+        log.info("Loaded {} slow solutions into memory", entries.size());
     }
 
     @Override
