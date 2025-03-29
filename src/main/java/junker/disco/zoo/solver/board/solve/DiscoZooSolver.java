@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -34,17 +33,32 @@ public class DiscoZooSolver {
         return new BestMoveInformation(overlaps.animalOverlapProbability().get(animalToSolve), solutions);
     }
 
-    public static Double[][] getInvertedProbabilities(Game game) {
+    public static BestMoveInformation getBuxProbability(Game game) {
         var wipedGame = new Game(game, true);
         var overlaps = calculateOverlaps(wipedGame);
         var nullProbs = overlaps.animalOverlapProbability().get(null);
-        var invertedProbs = new Double[game.getBoard().length][game.getBoard()[0].length];
+        var pNullSum = 0.0d;
         for (int x = 0; x < game.getBoard().length; x++) {
             for (int y = 0; y < game.getBoard()[0].length; y++) {
-                invertedProbs[x][y] = nullProbs[x][y]/(double)overlaps.permutations().size();
+                var pNull = nullProbs[x][y];
+                pNullSum += pNull;
             }
         }
-        return invertedProbs;
+        var coordsWithHighestProb = new ArrayList<Coords>();
+        var highestProb = Double.NEGATIVE_INFINITY;
+        var buxProb = new Double[game.getBoard().length][game.getBoard()[0].length];
+        for (int x = 0; x < game.getBoard().length; x++) {
+            for (int y = 0; y < game.getBoard()[0].length; y++) {
+                var pNull = nullProbs[x][y];
+                var buxProbValue = pNull / pNullSum;
+                buxProb[x][y] = buxProbValue;
+                highestProb = ListUtil.resetAddIfAboveLimit(coordsWithHighestProb, List.of(new Coords(x, y)),
+                        buxProbValue,
+                        highestProb);
+            }
+        }
+
+        return new BestMoveInformation(buxProb, coordsWithHighestProb.stream().map(coords -> new Solution(List.of(coords))).toList());
     }
 
     public static BestMoveInformation getBestMoveInformation(Animal animalToSolve, Game game) {

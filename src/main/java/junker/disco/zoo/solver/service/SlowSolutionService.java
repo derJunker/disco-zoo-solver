@@ -48,13 +48,16 @@ public class SlowSolutionService implements ApplicationListener<ApplicationReady
         if (end - start > saveThresholdMs) {
             final var hash = hash(game, animalToSolveFor);
             sharedSlowResultsMap.put(hash, result);
-            if (useDb)
+            if (useDb) {
                 slowSolutionEntryRepository.save(SlowSolutionEntry.builder()
                         .hash(hash)
                         .bestClicks(result.bestClicks().stream().map(CoordsEntity::fromCoords).collect(Collectors.toSet()))
                         .probabilities(result.probabilities())
                         .build());
-            System.out.println("Saved solution, took " + (end - start) + "ms, hash: " + hash);
+                System.out.println("Saved solution to db, took " + (end - start) + "ms, hash: " + hash);
+            } else {
+                System.out.println("Saved solution for this uptime, took " + (end - start) + "ms, hash: " + hash);
+            }
         }
         return result;
     }

@@ -198,8 +198,6 @@ export default defineComponent({
           ["zebra", "hippo", "hamster"].includes(animal?.toLowerCase()||"") && animalAndPets.length === 3)
       if (rareCase) {
         errorState.addError("Wow you went behind my back and tried anyways! Here are 5 Cookies 🍪🍪🍪🍪🍪")
-        console.log("pet: ", this.petName)
-        console.log("animals: ", this.animalNames)
       }
       else if (superSneakyCase)
         errorState.addError("🍪🍪🍪🍪🍪🍪🍪 This was very smart! You get all the cookies you want ;) 🍪🍪🍪🍪🍪🍪🍪🍪🍪")
