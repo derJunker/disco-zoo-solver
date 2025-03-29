@@ -2,6 +2,11 @@
   <span class="menu-bar wood-menu dock-bottom dock-bottom-shadow dock-left dock-left">
     <button :class="firstColorClass + ' btn btn-gradient dock-bottom dock-left first'" @click="onFirstButtonClick">
       {{firstButtonName}}</button>
+    <span id="links">
+      <a :href="backendPageUrl + 'impressum.html'" target="_blank">Impressum</a>
+      <span>Privacy Policy: <a :href="backendPageUrl + 'privacy-policy-en.html'" target="_blank">en</a>/
+        <a :href="backendPageUrl + 'privacy-policy-de.html'" target="_blank">de</a></span>
+    </span>
     <button :class="secondColorClass + ' btn btn-gradient dock-bottom dock-right second'" @click="onSecondButtonClick">
       {{secondButtonName}}
     </button>
@@ -38,6 +43,11 @@ export default defineComponent({
       type: Function,
       required: true
     },
+  },
+  data() {
+    return {
+      backendPageUrl: process.env.VUE_APP_BACKEND_URL + "/pages/"
+    }
   }
 })
 </script>
@@ -45,8 +55,6 @@ export default defineComponent({
 <style scoped>
 .menu-bar {
   width: 100%;
-  display: flex;
-  justify-content: space-between;
   background-color: var(--wood-color-light);
   padding: 0;
   position: relative;
@@ -68,5 +76,18 @@ export default defineComponent({
 
 .second {
   right: -5px;
+}
+
+#links {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  font-size: .8rem;
+  margin-top: .3rem;
+}
+
+a {
+  text-decoration: underline;
 }
 </style>
