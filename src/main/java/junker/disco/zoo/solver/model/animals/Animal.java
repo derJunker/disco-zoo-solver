@@ -48,7 +48,7 @@ public record Animal(
 
     public static List<Animal> getAnimalListByRegion(Region region, boolean timeless) {
         return ALL_ANIMALS.stream()
-                .filter(spec -> spec.region.equals(region) || spec.region == Region.ANY || region == Region.ANY)
+                .filter(spec -> spec.region.equals(region) || region == Region.ANY)
                 .filter(spec -> timeless || spec.rarity != Rarity.TIMELESS)
                 .toList();
     }

@@ -258,7 +258,7 @@ export default defineComponent({
       const gameRegion = element.game.region.toLowerCase()
       const animals =
           element.game.containedAnimals.map((animal: Animal) => `${animal.name}`.toLowerCase()).join(",")
-      return `/reconstruct/${gameRegion}?animals=${animals}`
+      return `/reconstruct/${gameRegion}?animals=${animals}&heatmap=${element.animalToFind.name}`
     }
   },
 

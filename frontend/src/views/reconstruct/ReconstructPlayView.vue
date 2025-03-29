@@ -1,6 +1,6 @@
 <template>
   <div class="reconstruct-play-view" :style="getBackgroundStyle()">
-    {{loadPathVariables($route.params.region, $route.query.animals, $route.query.pet)}}
+    {{loadPathVariables($route.params.region, $route.query.animals, $route.query.pet, $route.query.heatmap)}}
     <div class="reconstruct-content">
       <top-info-bar :region="region">
         <div id="attempts">
@@ -132,6 +132,7 @@ export default defineComponent({
       showConfig: false,
       animalToPlace: null as Animal | null,
       animalForHeatmap: null as Animal | null,
+      initialHeatMapAnimalName: null as string | null,
       animalTracker: new Map<Animal, number>(),
       attempts: process.env.VUE_APP_DEFAULT_ATTEMPTS,
 
@@ -168,7 +169,8 @@ export default defineComponent({
     gameStore.startReconstruct(this.animals, this.region!, this.petName).then(game => {
       this.game = game
       this.animals = game?.containedAnimals || []
-      this.animalForHeatmap = this.animals[this.animals.length - 1]
+      this.animalForHeatmap = this.initialHeatMapAnimalName? this.animals.filter(animal => animal.name ===
+              this.initialHeatMapAnimalName)[0] || this.animals[this.animals.length - 1] : this.animals[this.animals.length - 1]
     })
     sortAnimalsByRarity(this.animals)
 
@@ -180,8 +182,9 @@ export default defineComponent({
   },
 
   methods: {
-    loadPathVariables(region: string, animalList: string, petName: string|null) {
+    loadPathVariables(region: string, animalList: string, petName: string|null, heatmap: string|null) {
       this.animalNames = this.animalNames = animalList.split(",").filter(name => name !== "")
+      this.initialHeatMapAnimalName = heatmap
       this.petName = petName
       this.region = region
       return ''
