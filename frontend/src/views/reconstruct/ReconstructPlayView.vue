@@ -163,8 +163,10 @@ export default defineComponent({
 
     this.animals = await animalStore.getAnimalsByNames(this.animalNames)
 
-    if (this.animals.length == 0 && this.animals.length != this.animalNames.length)
+    if (this.animals.length == 0 && this.animals.length != this.animalNames.length) {
+      await router.push({name: "reconstruct"})
       return;
+    }
 
     gameStore.startReconstruct(this.animals, this.region!, this.petName).then(game => {
       this.game = game

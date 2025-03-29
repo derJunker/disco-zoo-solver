@@ -9,10 +9,9 @@ export const useRegions = defineStore('regions', () => {
     const hardcodedRegions = ["Farm", "Outback", "Savanna", "Northern", "Polar", "Jungle", "Jurassic", "Ice Age", "City", "Mountain", "Nocturnal", "Moon", "Mars", "Constellation"];
 
     async function getAllRegions(): Promise<string[]> {
-        const resp = await api.fetchUrl("/regions").catch(
-            reason => errorStore.addError("Error fetching regions: " + reason
-        ));
-        if (!resp) {
+        const resp = await api.fetchUrl("/regions");
+        if (!resp || !resp.ok) {
+            errorStore.addError("Error fetching regions: " + resp?.status);
             return []
         }
 

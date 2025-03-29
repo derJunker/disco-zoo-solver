@@ -16,8 +16,9 @@ export const useGame = defineStore('game', () => {
             animals: animals,
             petName: petName,
             region: region
-        }).catch(reason => errorStore.addError("Error starting game: " + reason));
-        if(!resp) {
+        })
+        if(!resp || !resp.ok) {
+            errorStore.addError("Error starting game: " + resp?.status);
             return null
         }
         return resp.json();
@@ -28,8 +29,9 @@ export const useGame = defineStore('game', () => {
             "game": game,
             "animal": animal,
             "coords": coords
-        }).catch(reason => errorStore.addError("Error clicking game: " + reason));
-        if(!resp) {
+        })
+        if(!resp || !resp.ok) {
+            errorStore.addError("Error clicking game: " + resp?.status);
             return null
         }
         return resp.json();
@@ -41,8 +43,9 @@ export const useGame = defineStore('game', () => {
             difficulty: difficulty,
             timeless: timeless,
             gameNumber: gameNumber
-        }).catch(reason => errorStore.addError("Error fetching game: " + reason));
-        if(!resp) {
+        })
+        if(!resp || !resp.ok) {
+            errorStore.addError("Error fetching game: " + resp?.status);
             return null
         }
         return resp.json();
@@ -53,8 +56,9 @@ export const useGame = defineStore('game', () => {
             "game": game,
             "animalToFind": animalToFind,
             "click": click
-        }).catch(reason => errorStore.addError("Error fetching performance: " + reason));
-        if(!resp) {
+        })
+        if(!resp || !resp.ok) {
+            errorStore.addError("Error fetching performance: " + resp?.status);
             return null;
         }
         return resp.json()
