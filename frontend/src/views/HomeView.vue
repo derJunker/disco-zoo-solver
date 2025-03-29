@@ -63,7 +63,7 @@ h1 {
   flex: 1;
   position: relative;
 }
-.menu-overlay, .play-overlay {
+.menu-overlay, .play-overlay, .tutorial-overlay {
   position: absolute;
   bottom: 0;
   left: 0;
@@ -72,7 +72,7 @@ h1 {
 }
 
 .menu-overlay {
-  max-width: min(70%, 400px);
+  max-width: min(90%, 400px);
 }
 
 .play-overlay {
