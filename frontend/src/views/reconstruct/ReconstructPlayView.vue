@@ -27,12 +27,12 @@
                      :can-add-attempts="canAddAttempts()" :can-remove-attempts="canRemoveAttempts()"
                      @animal-heatmap-select="onHeatMapSelectChange" @animal-place-select="onPlaceSelectChange"
                      @add-attempts="addAttempts()" @remove-attempts="removeAttempts()"
-                    @bux-find="onBuxFind()"/>
+                    @bux-find="onBuxFind()" ref="playConfig"/>
       </transition>
     </div>
     <menu-bar :on-first-button-click="onBack" first-color-class="color-action-neutral-1" first-button-name="back"
               :on-second-button-click="onConfig" :second-color-class="getConfigMenuColorClass()"
-              :second-button-name="getConfigMenuName()"/>
+              :second-button-name="getConfigMenuName()" ref="menuBar"/>
   </div>
 </template>
 
@@ -154,14 +154,12 @@ export default defineComponent({
   },
 
   async mounted() {
-    if (this.animalNames.length === 0 && !this.petName) {
+    if ((this.animalNames.length === 0 && !this.petName) || this.checkRareSneakyCases()) {
       await router.push({name: "reconstruct"})
       return
     }
-    if (this.checkRareSneakyCases()) {
-      await router.push('/reconstruct')
-      return
-    }
+    document.addEventListener('click', this.handleClickOutside);
+
     this.animals = await animalStore.getAnimalsByNames(this.animalNames)
 
     if (this.animals.length == 0 && this.animals.length != this.animalNames.length)
@@ -177,12 +175,24 @@ export default defineComponent({
     this.animalToPlace = null
   },
 
+  beforeUnmount() {
+    document.removeEventListener('click', this.handleClickOutside);
+  },
+
   methods: {
     loadPathVariables(region: string, animalList: string, petName: string|null) {
       this.animalNames = this.animalNames = animalList.split(",").filter(name => name !== "")
       this.petName = petName
       this.region = region
       return ''
+    },
+
+    handleClickOutside(event:any) {
+      if (this.showConfig
+          && !(this.$refs.menuBar as any).$el.contains(event.target)
+          && !(this.$refs.playConfig as any).$el.contains(event.target)) {
+        this.showConfig = false
+      }
     },
 
     checkRareSneakyCases() {

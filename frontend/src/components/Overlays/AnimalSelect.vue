@@ -247,8 +247,7 @@ export default defineComponent({
 
   methods: {
     handleClickOutside(event:any) {
-      if
-      (this.$refs.elementToDetectOutsideClick
+      if (this.$refs.elementToDetectOutsideClick
           && !(this.$refs.elementToDetectOutsideClick as any).contains(event.target)) {
         this.showPets = false
       }

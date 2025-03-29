@@ -27,15 +27,16 @@
         </form>
       </div>
       <transition name="overlay">
-        <menu-overlay v-if="showMenu" class="menu-overlay dock-bottom menu-bottom dock-bottom-shadow"/>
-        <play-overlay v-else-if="showPlay" class="play-overlay dock-bottom menu-bottom dock-bottom-shadow"/>
+        <menu-overlay v-if="showMenu" class="menu-overlay dock-bottom menu-bottom dock-bottom-shadow" ref="menuRef"/>
+        <play-overlay v-else-if="showPlay" class="play-overlay dock-bottom menu-bottom dock-bottom-shadow"
+                      ref="playRef"/>
       </transition>
     </div>
     <menu-bar :on-first-button-click="onMenuClick" :first-color-class="!showMenu ? 'color-action-neutral-1' :
     'color-action-bad'" :first-button-name="!showMenu? 'menu':'Close'"
               :on-second-button-click="onPlayClick" :second-color-class="!showPlay ? 'color-action-neutral-2' :
     'color-action-bad'"
-              :second-button-name="!showPlay? 'play':'Close'"></menu-bar>
+              :second-button-name="!showPlay? 'play':'Close'" ref="menuBar"></menu-bar>
   </div>
 </template>
 <style scoped>
@@ -79,6 +80,7 @@ import { defineComponent } from 'vue';
 import MenuBar from "@/components/MenuBar.vue";
 import MenuOverlay from "@/components/Overlays/MenuOverlay.vue";
 import PlayOverlay from "@/components/Overlays/PlayOverlay.vue";
+import playOverlay from "@/components/Overlays/PlayOverlay.vue";
 
 export default defineComponent({
   name: 'AboutView',
@@ -89,7 +91,27 @@ export default defineComponent({
       showPlay: false
     }
   },
+
+  mounted() {
+    document.addEventListener('click', this.handleClickOutside);
+  },
+  beforeUnmount() {
+    document.removeEventListener('click', this.handleClickOutside);
+  },
+
   methods: {
+    handleClickOutside(event:any) {
+      if (this.showMenu
+          && !(this.$refs.menuRef as any).$el.contains(event.target)
+          && !(this.$refs.menuBar as any).$el.contains(event.target)) {
+        this.showMenu = false
+      }
+      if (this.showPlay
+          && !(this.$refs.playRef as any).$el.contains(event.target)
+      && !(this.$refs.menuBar as any).$el.contains(event.target)) {
+        this.showPlay = false
+      }
+    },
     onMenuClick() {
       if (!this.showMenu) {
         this.showPlay = false;
