@@ -4,13 +4,48 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
-    <link rel="icon" href="<%= BASE_URL %>favicon.ico">
+    <link rel="icon" href="/favicon.ico">
     <link href='https://fonts.googleapis.com/css?family=Silkscreen' rel='stylesheet'>
-    <title><%= htmlWebpackPlugin.options.title %></title>
+    <title>Disco Zoo Solver - Get the most animals out of each rescue</title>
+  <meta name="description"
+        content="Always find the best guess to save as many animals as you can. Solve or train for the game Disco-Zoo by Milkbag Games.">
   </head>
   <body>
     <noscript>
-      <strong>We're sorry but <%= htmlWebpackPlugin.options.title %> doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
+      <strong>We're sorry but this site doesn't work properly without JavaScript enabled. Please enable it to continue!!</strong>
+        <h1>Explanation</h1>
+        <div class="content">
+            <h3>Heatmap:</h3>
+            <div id="koala-heatmap">
+                <img alt="koala heatmap" src="/koala_heatmap.jpg"/>
+                <p style="font-size: .7rem; line-height: 1rem; text-align: center">Heatmap of a Koala</p>
+            </div>
+            <p>The heatmap shows you the likelihood for each square to contain the animal you're looking for.</p>
+            <p>Even when 2 squares have the same likelihood to contain an animal, it does not necessarily mean that both
+               are equally as good to click. For clarity a white border is added to the best squares to click.</p>
+        </div>
+        <div class="content">
+            <h3>Reconstruct:</h3>
+            <p>Use this mode to quickly locate animals, pets, or Discobux with higher accuracy.</p>
+            <p>If you're unsure how to find certain animals in Disco Zoo, open Reconstruct, select your region and animals, then use the config to choose which animal's heatmap you want to display.
+               This way you can emulate the disco-zoo game and see which squares are the best to click!</p>
+            <p>It also helps you gain insights into the best clicking patterns for different animals, sharpening your strategy over time.</p>
+
+        </div>
+        <div class="content">
+            <h3>Accuracy:</h3>
+            <p>These challenges are designed to put your skills to the test.</p>
+            <p>Increasing the difficulty raises the average number of animals that will appear.</p>
+
+            <h4>Single Click</h4>
+            <p>You'll play through multiple rounds, aiming to make the best possible click for the animal you need
+               to find (highlighted in white).</p>
+            <p>Afterward, you'll see your accuracy and have the chance to review each game to learn from any mistakes.</p>
+
+            <h4>Streak</h4>
+            <p>In this mode, you can keep playing as long as you continue clicking correctly.</p>
+            <p>The goal is to get as many correct in a row as possible — good luck!</p>
+        </div>
     </noscript>
     <div id="app"></div>
     <!-- built files will be auto injected -->
