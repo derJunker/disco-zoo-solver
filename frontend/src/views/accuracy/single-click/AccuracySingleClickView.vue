@@ -142,8 +142,10 @@ export default defineComponent({
       }
       let response = await gameApi.accuracySingleClick(this.seed!, this.region!,
           this.timeless, this.gameRound, this.difficulty!)
-      if (!response)
+      if (!response) {
+        await router.push({name: 'accuracy'})
         return
+      }
       this.game = response.game
       this.displayRegion = this.game.region;
       this.displayRegionColors = getRegionColors(this.game.region)

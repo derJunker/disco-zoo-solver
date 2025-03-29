@@ -140,8 +140,10 @@ export default defineComponent({
       }
       let response = await gameApi.accuracySingleClick(this.seed!, this.region!,
           this.timeless, this.gameRound, this.difficulty!)
-      if (!response)
+      if (!response) {
+        await router.push({name: 'accuracy'})
         return
+      }
       this.game = response.game
       this.displayRegion = this.game.region;
       this.displayRegionColors = getRegionColors(this.game.region)
@@ -160,6 +162,7 @@ export default defineComponent({
       this.loadingResults = true;
       const resp = await gameApi.accuracyPerformance(this.game!, this.animalToFind!, coords)
       if (!resp) {
+        await router.push({name: 'accuracy'})
         return
       }
       const wasBestClick = resp.bestClicks.filter(click => click.x == coords.x && click.y == coords.y).length > 0
