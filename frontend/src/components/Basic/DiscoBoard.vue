@@ -8,8 +8,8 @@
       <AnimalSquare
           v-if="game.board[coords.x][coords.y].occupied && game.board[coords.x][coords.y].revealed"
           :animal="game.board[coords.x][coords.y].animalBoardInstance.animal" class="animal-square" />
-                <span style="user-select: none;" v-else-if="probabilities">{{probabilities[coords.x][coords.y].toFixed
-                (3)}}</span>
+<!--                <span style="user-select: none;" v-else-if="probabilities">{{probabilities[coords.x][coords.y].toFixed-->
+<!--                (3)}}</span>-->
     </button>
     <transition name="fade">
       <div class="loading" v-if="showLoading">

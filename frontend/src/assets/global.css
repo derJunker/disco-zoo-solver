@@ -166,6 +166,11 @@ html, body, #app, #router-view {
     font-size: var(--font-size-larger);
 }
 
+.wood-menu p {
+    line-height: 1.5rem;
+    margin-bottom: 1rem;
+}
+
 .wood-menu-group, .wood-menu-group-compatible {
     background-color: #8A5416;
     border-radius: var(--border-radius);
