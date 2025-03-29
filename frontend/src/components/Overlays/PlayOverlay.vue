@@ -10,11 +10,10 @@
 
 <style scoped>
 .play-buttons {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(auto-fit , minmax(10rem, 1fr));
   column-gap: .5rem;
   row-gap: .3rem;
-  justify-content: space-between;
 }
 .btn {
   padding: .7rem 1rem;
