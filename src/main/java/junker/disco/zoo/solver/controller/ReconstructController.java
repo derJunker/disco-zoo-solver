@@ -2,6 +2,7 @@ package junker.disco.zoo.solver.controller;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import junker.disco.zoo.solver.model.animals.Animal;
@@ -23,21 +24,41 @@ import org.springframework.web.bind.annotation.RestController;
 @CrossOrigin
 public class ReconstructController {
     @PostMapping("/start")
-    public ResponseEntity<Game> start(@RequestBody ReconstructStartBody body) {
-        Optional<Region> regionOpt;
-        try {
-            regionOpt =
-                    Region.byRepr(body.region()).or(() -> Optional.of(Region.valueOf(body.region().toUpperCase())));
+    public ResponseEntity<Object> start(@RequestBody ReconstructStartBody body) {
+        var validateReconstructStartBody = validateReconstructStartBody(body);
+        if (validateReconstructStartBody != null) {
+            return validateReconstructStartBody;
         }
-        catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().build();
-        }
+        var region =
+                Region.byRepr(body.region()).or(() -> Optional.of(Region.valueOf(body.region().toUpperCase()))).get();
         final var petOpt = Animal.findPetByName(body.petName());
         var fullAnimals = new ArrayList<>(body.animals());
         petOpt.ifPresent(fullAnimals::add);
 
-        final var game =  new Game(fullAnimals, regionOpt.get());
+        final var game =  new Game(fullAnimals, region);
         return new ResponseEntity<>(new Game(game, true), HttpStatus.OK);
+    }
+
+    private static ResponseEntity<Object> validateReconstructStartBody(ReconstructStartBody body) {
+        try {
+            Region.byRepr(body.region()).or(() -> Optional.of(Region.valueOf(body.region().toUpperCase())));
+        }
+        catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().build();
+        }
+        if (body.petName() != null && Animal.findPetByName(body.petName()).isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        }
+        if ((body.animals() == null || body.animals().isEmpty()) && (body.petName() == null)) {
+            return ResponseEntity.badRequest().build();
+        }
+        if (body.animals() != null) {
+            var firstAnimalRegion = body.animals().getFirst().region();
+            if (body.animals().stream().anyMatch(animal -> !animal.region().equals(firstAnimalRegion) && animal.region() != Region.ANY)) {
+                return ResponseEntity.badRequest().build();
+            }
+        }
+        return null;
     }
 
     @PostMapping("/click")

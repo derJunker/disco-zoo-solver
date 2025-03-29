@@ -169,6 +169,10 @@ export default defineComponent({
     }
 
     gameStore.startReconstruct(this.animals, this.region!, this.petName).then(game => {
+      if (!game) {
+        router.push({name: "reconstruct"})
+        return
+      }
       this.game = game
       this.animals = game?.containedAnimals || []
       this.animalForHeatmap = this.initialHeatMapAnimalName? this.animals.filter(animal => animal.name ===

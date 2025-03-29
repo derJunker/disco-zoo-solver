@@ -77,9 +77,11 @@ import {useAccuracyState} from "@/store/useState";
 import {calculateAccuracy} from "@/util/score-calculator";
 import TopInfoBar from "@/components/TopInfoBar.vue";
 import {AccuracyDifficulty} from "@/types/accuracy/AccuracyDifficulty";
+import {useErrors} from "@/store/useErrors";
 
 const gameApi = useGame()
 const accuracyState = useAccuracyState()
+const errorState = useErrors()
 
 export default defineComponent({
   name: "AccuracyPlayView",
@@ -134,6 +136,7 @@ export default defineComponent({
 
     async nextGame() {
       if (this.seed === null || this.region === null) {
+        errorState.addError("Missing seed or region? How did you get here :D")
         await router.push({name: 'accuracy'})
         return
       }
