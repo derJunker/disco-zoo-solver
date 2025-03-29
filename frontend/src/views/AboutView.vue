@@ -31,9 +31,11 @@
         <play-overlay v-else-if="showPlay" class="play-overlay dock-bottom menu-bottom dock-bottom-shadow"/>
       </transition>
     </div>
-    <menu-bar :on-first-button-click="onMenuClick" first-color-class="color-action-neutral-1" first-button-name="menu"
-              :on-second-button-click="onPlayClick" second-color-class="color-action-neutral-2"
-              second-button-name="play"></menu-bar>
+    <menu-bar :on-first-button-click="onMenuClick" :first-color-class="!showMenu ? 'color-action-neutral-1' :
+    'color-action-bad'" :first-button-name="!showMenu? 'menu':'Close'"
+              :on-second-button-click="onPlayClick" :second-color-class="!showPlay ? 'color-action-neutral-2' :
+    'color-action-bad'"
+              :second-button-name="!showPlay? 'play':'Close'"></menu-bar>
   </div>
 </template>
 <style scoped>

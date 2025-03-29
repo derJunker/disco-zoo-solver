@@ -22,9 +22,12 @@
         <tutorial-overlay v-else-if="showTutorial" class="tutorial-overlay dock-bottom menu-bottom dock-bottom-shadow"/>
       </transition>
     </div>
-    <menu-bar :on-first-button-click="onMenuClick" first-color-class="color-action-neutral-1" first-button-name="Menu"
-              :on-second-button-click="onPlayClick" second-color-class="color-action-neutral-2"
-              second-button-name="Play"/>
+    <menu-bar :on-first-button-click="onMenuClick" :first-color-class="!showMenuOverlay ? 'color-action-neutral-1' :
+    'color-action-bad'"
+              :first-button-name="!showMenuOverlay?'Menu':'Close'"
+              :on-second-button-click="onPlayClick" :second-color-class="(!showTutorial && !showPlayOverlay) ?
+              'color-action-neutral-2' : 'color-action-bad'"
+              :second-button-name="(!showTutorial && !showPlayOverlay) ? 'Play' : 'Close'"/>
   </div>
 
 
@@ -106,11 +109,14 @@ export default defineComponent({
     },
 
     onPlayClick() {
-      if (!this.showPlayOverlay) {
-        this.showMenuOverlay = false;
+      if (this.showPlayOverlay || this.showTutorial) {
+        this.showPlayOverlay = false;
         this.showTutorial = false;
+      } else {
+        this.showPlayOverlay = true;
+        this.showTutorial = false;
+        this.showMenuOverlay = false;
       }
-      this.showPlayOverlay = !this.showPlayOverlay;
     },
 
     onTutorialClick() {
