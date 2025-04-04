@@ -15,7 +15,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 @Service
-@Slf4j
 public class SolveService {
 
     private final SlowSolutionService slowSolutionService;
@@ -32,9 +31,9 @@ public class SolveService {
         }
         final var potentialResult = slowSolutionService.getIfSaved(game, animalToSolverFor);
         if (potentialResult != null) {
-            log.info("Found saved result with animals: {} and heatmap: {}",
-                    game.getContainedAnimals().stream().map(Animal::name).collect(Collectors.toList()),
-                    animalToSolverFor.name());
+//            log.info("Found saved result with animals: {} and heatmap: {}",
+//                    game.getContainedAnimals().stream().map(Animal::name).collect(Collectors.toList()),
+//                    animalToSolverFor.name());
             return potentialResult;
         }
 

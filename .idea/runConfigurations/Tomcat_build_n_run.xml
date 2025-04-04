@@ -90,12 +90,6 @@
         <option name="PROGRAM_PARAMETERS" value="" />
       </SHUTDOWN>
     </ConfigurationWrapper>
-    <method v="2">
-      <option name="Gradle.BeforeRunTask" enabled="true" tasks="clean" externalProjectPath="$PROJECT_DIR$" vmOptions="" scriptParameters="" />
-      <option name="Gradle.BeforeRunTask" enabled="true" tasks="bootWar" externalProjectPath="$PROJECT_DIR$" vmOptions="" scriptParameters="" />
-      <option name="BuildArtifacts" enabled="true">
-        <artifact name="Gradle : junker.disco.solver : disco-solver#api.war" />
-      </option>
-    </method>
+    <method v="2" />
   </configuration>
 </component>

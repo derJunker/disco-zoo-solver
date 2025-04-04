@@ -18,7 +18,6 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Service;
 
 @Service
-@Slf4j
 public class SlowSolutionService implements ApplicationListener<ApplicationReadyEvent> {
 
 
@@ -56,9 +55,9 @@ public class SlowSolutionService implements ApplicationListener<ApplicationReady
                         .bestClicks(result.bestClicks().stream().map(CoordsEntity::fromCoords).collect(Collectors.toSet()))
                         .probabilities(result.probabilities())
                         .build());
-                log.info("Saved solution to db, took {}ms, hash: {}", end - start, hash);
+//                log.info("Saved solution to db, took {}ms, hash: {}", end - start, hash);
             } else {
-                log.info("Saved solution for this uptime, took {}ms, hash: {}", end - start, hash);
+//                log.info("Saved solution for this uptime, took {}ms, hash: {}", end - start, hash);
             }
         }
         return result;
@@ -80,11 +79,12 @@ public class SlowSolutionService implements ApplicationListener<ApplicationReady
                     .map(CoordsEntity::toCoords).collect(Collectors.toSet()),
                     probabilities));
         });
-        log.info("Loaded {} slow solutions into memory", entries.size());
+//        log.info("Loaded {} slow solutions into memory", entries.size());
     }
 
     @Override
     public void onApplicationEvent(ApplicationReadyEvent event) {
+        System.out.println("STARTUP");
         if(useDb && useCaching)
             loadSlowResultsIntoMemory();
     }

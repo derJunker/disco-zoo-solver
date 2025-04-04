@@ -31,7 +31,7 @@ public class NoOverlapSolutionFinder {
                 animalToSolve, boardWidth, boardHeight);
         var minSolutionLength = minSolutionLength(animalBoardInstancesClickableCoordsMap, previousClicks);
         if (minSolutionLength > smallestSolutionLength)
-            return List.of(new Solution(IntStream.range(0, minSolutionLength).mapToObj(_ -> new Coords(-1, -1)).toList()));
+            return List.of(new Solution(IntStream.range(0, minSolutionLength).mapToObj(unused -> new Coords(-1, -1)).toList()));
         return allSolutionsForDifferentClickPermutations(animalBoardInstancesClickableCoordsMap, previousClicks,
                 highestOverlapCoords);
     }
