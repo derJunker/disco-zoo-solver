@@ -2,7 +2,7 @@
   <div class="animal-display">
     <div v-for="animal in animals" :key="animal.name" class="animal-container dock-top border-dark"
          :class="animalToPlace?.name === animal.name ? 'highlighted' : ''"
-         :style="'background-color: ' + calcRegionColors().dark + ';'"
+         :style="'background-color: ' + regionColors?.dark + ';'"
          @click="$emit('animal-click', animal)">
       <img :src="getAnimalPicture(animal)" :alt="animal.name" class="animal-picture" rel="preload"/>
       <div class="animal-name">
@@ -76,6 +76,7 @@ import {defineComponent} from 'vue'
 import {Animal} from "@/types/Animal";
 import {useAnimals} from "@/store/useAnimals";
 import {getRegionColors} from "@/util/region-colors";
+import {RegionColors} from "@/types/RegionColors";
 
 const animalStore = useAnimals()
 
@@ -95,8 +96,8 @@ export default defineComponent({
       required: false,
       default: null
     },
-    region: {
-      type: String,
+    regionColors: {
+      type: Object as () => RegionColors,
       required: false
     }
   },
@@ -107,9 +108,6 @@ export default defineComponent({
         return animalStore.getPetPictureUrl(animal)
       return animalStore.getAnimalPictureUrl(animal)
     },
-    calcRegionColors() {
-      return getRegionColors(this.region!)
-    }
   }
 })
 </script>

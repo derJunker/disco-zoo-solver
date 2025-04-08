@@ -1,5 +1,5 @@
 <template>
-  <div class="top-info-bar btn-gradient" :style="getStyle()">
+  <div class="top-info-bar btn-gradient" :style="{backgroundColor: regionColors?.primary}">
     <div id="region">
       {{region}}
     </div>
@@ -31,25 +31,16 @@
 
 <script lang="ts">
 import {defineComponent} from "vue";
-import {getRegionColors} from "@/util/region-colors";
+import {RegionColors} from "@/types/RegionColors";
 
 export default defineComponent({
   name: 'top-info-bar',
   props: {
-    region: {
-      type: String,
+    regionColors: {
+      type: Object as () => RegionColors,
       required: false,
       default: null
     }
   },
-
-  methods: {
-    getStyle() {
-      const regionColors = getRegionColors(this.region)
-      return {
-        backgroundColor: regionColors.primary,
-      }
-    }
-  }
 })
 </script>

@@ -3,13 +3,13 @@
     {{setRouteValuesToVars($route.params.seed, $route.params.region, $route.params.difficulty,  $route.query.timeless)}}
     <div class="accuracy-single-click-content">
       <div class="acc-container" v-if="game && animalToFind">
-        <top-info-bar :region="displayRegion">
+        <top-info-bar :region="displayRegionColors">
           <span>
             Game: {{limitedGameRound() + 1}}
           </span>
         </top-info-bar>
         <animal-display :tracker="new Map()" :animals="game.containedAnimals" class="animal-display"
-                        :animal-to-place="animalToFind" :region="displayRegion"/>
+                        :animal-to-place="animalToFind" :region-colors="displayRegionColors"/>
         <div class="disco-board-wrapper">
           <disco-board :game="game" :region-colors="displayRegionColors"
                        class="disco-board" @clicked-coords="onCoordsClicked"

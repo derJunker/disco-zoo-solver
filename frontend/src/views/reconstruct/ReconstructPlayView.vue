@@ -2,7 +2,7 @@
   <div class="reconstruct-play-view" :style="getBackgroundStyle()">
     {{loadPathVariables($route.params.region, $route.query.animals, $route.query.pet, $route.query.heatmap)}}
     <div class="reconstruct-content">
-      <top-info-bar :region="region">
+      <top-info-bar :region="regionColors">
         <div id="attempts">
           <span id="attemptNum">
             {{ attempts }}
@@ -12,7 +12,7 @@
       </top-info-bar>
       <AnimalDisplay v-if="game" :animals="game?.containedAnimals" :tracker="animalTracker" class="animal-display"
                      @animal-click="onPlaceSelectChange" :animal-to-place="animalToPlace"
-                     :region="region"/>
+                     :region-colors="regionColors"/>
       <div class="disco-board-wrapper">
         <disco-board
             :game="game" :best-clicks="bestClicks" :region-colors="regionColors"
