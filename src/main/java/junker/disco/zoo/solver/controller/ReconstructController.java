@@ -40,10 +40,12 @@ public class ReconstructController {
     }
 
     private static ResponseEntity<Object> validateReconstructStartBody(ReconstructStartBody body) {
+        Region region;
         try {
-            Region.byRepr(body.region()).or(() -> Optional.of(Region.valueOf(body.region().toUpperCase())));
+            region =
+                    Region.byRepr(body.region()).or(() -> Optional.of(Region.valueOf(body.region().toUpperCase()))).orElseThrow();
         }
-        catch (IllegalArgumentException e) {
+        catch (Exception e) {
             return ResponseEntity.badRequest().build();
         }
         if (body.petName() != null && Animal.findPetByName(body.petName()).isEmpty()) {
@@ -53,8 +55,7 @@ public class ReconstructController {
             return ResponseEntity.badRequest().build();
         }
         if (body.animals() != null) {
-            var firstAnimalRegion = body.animals().getFirst().region();
-            if (body.animals().stream().anyMatch(animal -> !animal.region().equals(firstAnimalRegion) && animal.region() != Region.ANY)) {
+            if (body.animals().stream().anyMatch(animal -> !animal.region().equals(region) && animal.region() != Region.ANY)) {
                 return ResponseEntity.badRequest().build();
             }
         }

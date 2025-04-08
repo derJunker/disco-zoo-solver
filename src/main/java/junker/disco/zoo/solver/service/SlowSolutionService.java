@@ -84,7 +84,6 @@ public class SlowSolutionService implements ApplicationListener<ApplicationReady
 
     @Override
     public void onApplicationEvent(ApplicationReadyEvent event) {
-        System.out.println("STARTUP");
         if(useDb && useCaching)
             loadSlowResultsIntoMemory();
     }
