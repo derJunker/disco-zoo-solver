@@ -11,7 +11,7 @@
         <animal-display :tracker="new Map()" :animals="game.containedAnimals" class="animal-display"
                         :animal-to-place="animalToFind" :region="displayRegion"/>
         <div class="disco-board-wrapper">
-          <disco-board :game="game" :region="displayRegion"
+          <disco-board :game="game" :region-colors="displayRegionColors"
                        class="disco-board" @clicked-coords="onCoordsClicked"
                        @right-clicked-coords="onCoordsClicked" :loading="loadingResults"/>
         </div>
@@ -78,6 +78,7 @@ import {calculateAccuracy} from "@/util/score-calculator";
 import TopInfoBar from "@/components/TopInfoBar.vue";
 import {AccuracyDifficulty} from "@/types/accuracy/AccuracyDifficulty";
 import {useErrors} from "@/store/useErrors";
+import {RegionColors} from "@/types/RegionColors";
 
 const gameApi = useGame()
 const accuracyState = useAccuracyState()
@@ -93,11 +94,7 @@ export default defineComponent({
       seed: null as number | null,
       region: null as string | null,
       displayRegion: null as string | null,
-      displayRegionColors: null as {
-        primary: string,
-        light: string,
-        dark: string
-      } | null,
+      displayRegionColors: null as RegionColors | null,
       difficulty: null as AccuracyDifficulty | null,
       timeless: false,
 
@@ -108,6 +105,16 @@ export default defineComponent({
       accuracyHistory: [] as AccuracyGameHistoryElement[],
     }
   },
+
+  watch: {
+    displayRegion: {
+      handler(newVal) {
+        this.displayRegionColors = getRegionColors(newVal)
+      },
+      immediate: true
+    },
+  },
+
   methods: {
     onBack() {
       router.push({name: 'accuracy'})
@@ -148,7 +155,6 @@ export default defineComponent({
       }
       this.game = response.game
       this.displayRegion = this.game.region;
-      this.displayRegionColors = getRegionColors(this.game.region)
       this.animalToFind = response.animalToFind
     },
 

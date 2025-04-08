@@ -15,7 +15,7 @@
                      :region="region"/>
       <div class="disco-board-wrapper">
         <disco-board
-            :game="game" :best-clicks="bestClicks" :region="region"
+            :game="game" :best-clicks="bestClicks" :region-colors="regionColors"
             :probabilities="probabilities" :min-prob="minProb" :max-prob="maxProb"
             @clicked-coords="onCoordsClicked"
             @right-clicked-coords="rightClickedCoords" class="disco-board" :loading="loadingData"/>
@@ -108,6 +108,7 @@ import DiscoBoard from "@/components/Basic/DiscoBoard.vue";
 import {useAnimals} from "@/store/useAnimals";
 import TopInfoBar from "@/components/TopInfoBar.vue";
 import {useErrors} from "@/store/useErrors";
+import {RegionColors} from "@/types/RegionColors";
 
 
 const gameStore = useGame()
@@ -124,6 +125,7 @@ export default defineComponent({
       animalNames: [] as string[],
       petName: null as string | null,
       region: null as string | null,
+      regionColors: null as RegionColors | null,
       game: null as Game | null,
       probabilities: null as number[][] | null,
       maxProb: null as number | null,
@@ -148,6 +150,14 @@ export default defineComponent({
           await this.updateProbabilityInfo()
           this.loadingData = false
           this.updateTracker()
+        }
+      },
+      immediate: true
+    },
+    region: {
+      handler(region: string | null) {
+        if (region) {
+          this.regionColors = getRegionColors(region)
         }
       },
       immediate: true
@@ -342,11 +352,10 @@ export default defineComponent({
     },
 
     getBackgroundStyle() {
-      if (!this.region) {
+      if (!this.regionColors) {
         return {}
       }
-      const regionColors = getRegionColors(this.region)
-      return {backgroundColor: regionColors.light}
+      return {backgroundColor: this.regionColors.light}
     },
 
     getConfigMenuName() {

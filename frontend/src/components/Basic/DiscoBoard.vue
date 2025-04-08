@@ -27,6 +27,7 @@ import {getRegionColors} from "@/util/region-colors";
 import {getHeatmapColor} from "@/util/heatmap-colors";
 import {defineComponent} from "vue";
 import LoadingCircle from "@/components/Basic/LoadingCircle.vue";
+import {RegionColors} from "@/types/RegionColors";
 
 export default defineComponent({
   name: 'disco-board',
@@ -41,8 +42,8 @@ export default defineComponent({
       type: Array as () => Coords[],
       required: false
     },
-    region: {
-      type: String,
+    regionColors: {
+      type: Object as () => RegionColors,
       required: false
     },
     probabilities: {
@@ -109,16 +110,10 @@ export default defineComponent({
       if (!this.game) {
         return {}
       }
-      const regionColors = this.region ? getRegionColors(this.region) : {
-        dark: "black", light: "white", primary: "gray"
-      }
-      return {backgroundColor: regionColors.dark}
+      return {backgroundColor: this.regionColors?.dark || "black"}
     },
 
     getTileStyle(coords: Coords) {
-      const regionColors = this.region ? getRegionColors(this.region) : {
-        dark: "black", light: "white", primary: "gray"
-      }
       if (!this.game) {
         return {}
       }
@@ -132,7 +127,7 @@ export default defineComponent({
       }
       else {
         if (!this.probabilities) {
-          return {backgroundColor: regionColors.primary}
+          return {backgroundColor: this.regionColors?.primary || "gray"}
         } else {
           const probability = this.probabilities[coords.x][coords.y]
           return {backgroundColor: getHeatmapColor(probability, this.minProb!, this.maxProb!)}

@@ -1,4 +1,6 @@
-export function getRegionColors(region: string): { primary: string, dark: string, light: string } {
+import {RegionColors} from "@/types/RegionColors";
+
+export function getRegionColors(region: string): RegionColors {
     if (!region)
         return {
             primary: "white",
