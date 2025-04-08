@@ -524,8 +524,12 @@ html, body, #app, #router-view {
 }
 
 
-.overlay-enter-active, .overlay-leave-active {
-    transition: transform .2s ease-out;
+.overlay-enter-active {
+    transition: transform 150ms cubic-bezier(0.74, 1.38, 0.77, 0.87);
+}
+
+.overlay-leave-active {
+    transition: transform 150ms ease-in;
 }
 
 .overlay-enter-from, .overlay-leave-to {
