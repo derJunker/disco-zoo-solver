@@ -209,7 +209,7 @@ button:focus {
   align-content: center;
 
   color: white;
-  background-color: red;
+  background-color: #ff00a6;
 }
 
 </style>
