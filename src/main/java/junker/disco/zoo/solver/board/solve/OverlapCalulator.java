@@ -18,7 +18,6 @@ import junker.disco.zoo.solver.model.animals.Animal;
 import junker.disco.zoo.solver.model.solver.Overlaps;
 
 public class OverlapCalulator {
-    // TODO precomputable in Overlaps class
     public static List<Coords> findHighestOverlapCoords(Overlaps overlaps, Animal animalToSolve,
                                                         boolean includeSolved) {
         var overallOverlap = overlaps.overallOverlap();
