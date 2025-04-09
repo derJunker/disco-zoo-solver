@@ -1,0 +1,19 @@
+.btn {
+    padding: .4rem 0.75rem;
+    box-shadow:var(--btn-shadow);
+    cursor: pointer;
+    user-select: none;
+}
+
+.btn-gradient {
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.1) 45%, rgba(0, 0, 0, 0) 46%);
+}
+
+
+button {
+    font-size: inherit;
+    font-family: inherit;
+    color: inherit;
+    text-shadow: inherit;
+    border: inherit;
+}
