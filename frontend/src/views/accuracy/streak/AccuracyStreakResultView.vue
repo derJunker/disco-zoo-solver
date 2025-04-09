@@ -25,21 +25,23 @@
           </div>
         </div>
       </transition>
-      <div id="overview-menu-screenshot" class="wood-menu" hidden>
-        <h1>Results - Streak</h1>
-        <div class="wood-menu-group-compatible">
-          <h2>🔥 Streak 🔥</h2>
-          <div id="streak">{{bestClickCount}}</div>
+      <div style="position: relative">
+        <div id="overview-menu-screenshot" class="wood-menu" hidden>
+          <h1>Results - Streak</h1>
+          <div class="wood-menu-group-compatible">
+            <h2>🔥 Streak 🔥</h2>
+            <div id="streak">{{bestClickCount}}</div>
+          </div>
+          <div class="wood-menu-group-compatible">
+            <div>Score: {{(score)}}</div>
+          </div>
+          <div class="wood-menu-group-compatible">
+            <div>Region: {{ region }}</div>
+            <div>Difficulty: {{ difficulty }}</div>
+          </div>
         </div>
-        <div class="wood-menu-group-compatible">
-          <div>Score: {{(score)}}</div>
-        </div>
-        <div class="wood-menu-group-compatible">
-          <div>Region: {{ region }}</div>
-          <div>Difficulty: {{ difficulty }}</div>
-        </div>
+        <div style="background-color: var(--background-color); width: 100%; height: 100%; position: absolute; top:0;"/>
       </div>
-
     </div>
     <menu-bar :on-first-button-click="onHomeClick" first-color-class="color-action-neutral-1" first-button-name="Home"
               :on-second-button-click="onRetryClick" second-color-class="color-action-good"

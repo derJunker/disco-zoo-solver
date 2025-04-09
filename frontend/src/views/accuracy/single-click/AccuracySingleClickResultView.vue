@@ -27,22 +27,24 @@
           </div>
         </div>
       </transition>
-
-      <div id="overview-menu-screenshot" class="wood-menu" hidden>
-        <h1>Results - Single Click</h1>
-        <div class="wood-menu-group-compatible">
-          <h2>Grade</h2>
-          <div id="grade" :style="gradeColor()">{{grade}}</div>
+      <div style="position: relative">
+        <div id="overview-menu-screenshot" class="wood-menu" hidden>
+          <h1>Results - Single Click</h1>
+          <div class="wood-menu-group-compatible">
+            <h2>Grade</h2>
+            <div id="grade" :style="gradeColor()">{{grade}}</div>
+          </div>
+          <div class="wood-menu-group-compatible">
+            <div>Score: {{(score)}}</div>
+            <div>Perfect Clicks: {{bestClickCount}}/{{gameAmount}}</div>
+            <div>Accuracy: {{(overallAccuracy*100).toFixed(2)}}%</div>
+          </div>
+          <div class="wood-menu-group-compatible">
+            <div>Region: {{ region }}</div>
+            <div>Difficulty: {{ difficulty }}</div>
+          </div>
         </div>
-        <div class="wood-menu-group-compatible">
-          <div>Score: {{(score)}}</div>
-          <div>Perfect Clicks: {{bestClickCount}}/{{gameAmount}}</div>
-          <div>Accuracy: {{(overallAccuracy*100).toFixed(2)}}%</div>
-        </div>
-        <div class="wood-menu-group-compatible">
-          <div>Region: {{ region }}</div>
-          <div>Difficulty: {{ difficulty }}</div>
-        </div>
+        <div style="background-color: var(--background-color); width: 100%; height: 100%; position: absolute; top:0;"/>
       </div>
 
     </div>
