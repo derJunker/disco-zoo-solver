@@ -75,25 +75,25 @@
 }
 
 .dock-top {
-    border-top: none;
+    border-top: none !important;
     border-top-left-radius: 0!important;
     border-top-right-radius: 0!important;
 }
 
 .dock-bottom {
-    border-bottom: none;
+    border-bottom: none !important;
     border-bottom-left-radius: 0!important;
     border-bottom-right-radius: 0 !important;
 }
 
 .dock-left {
-    border-left: none;
+    border-left: none !important;
     border-top-left-radius: 0!important;
     border-bottom-left-radius: 0!important;
 }
 
 .dock-right {
-    border-right: none;
+    border-right: none !important;
     border-top-right-radius: 0!important;
     border-bottom-right-radius: 0!important;
 }
