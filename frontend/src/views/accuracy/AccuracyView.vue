@@ -2,7 +2,7 @@
   <div class="accuracy-view">
     <div class="accuracy-content">
       <transition name="overlay">
-        <accuracy-config v-if="!showRegionSelect" class="accuracy-config dock-bottom menu-bottom"
+        <accuracy-config v-if="!showRegionSelect && showConfig" class="accuracy-config dock-bottom menu-bottom"
                          :selected-region="selectedRegion" :selected-game-type="selectedGameType" :timeless="timeless"
                          :selected-difficulty="selectedDifficulty"
                          @timeless-changed="onTimelessChanged"
@@ -45,7 +45,7 @@
 </style>
 
 <script lang="ts">
-import {defineComponent} from "vue";
+import {defineComponent, ref} from "vue";
 import MenuBar from "@/components/MenuBar.vue";
 import AccuracyConfig from "@/components/Overlays/AccuracyConfig.vue";
 import router from "@/router";
@@ -69,6 +69,13 @@ export default defineComponent({
       showRegionSelect: false,
       timeless: userSettings.isTimelessRegionAllowed(accuracyState.getLastSelectedRegion || "farm")
     }
+  },
+  setup() {
+    const showConfig = ref(false)
+    return {showConfig}
+  },
+  mounted() {
+    this.showConfig = true;
   },
   methods: {
     onBack() {

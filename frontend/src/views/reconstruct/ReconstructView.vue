@@ -2,13 +2,13 @@
 <div class="reconstruction-view">
   <div class="reconstruction-view-content">
     <transition name="overlay">
-      <reconstruct-config v-if="!showRegionSelect" :selected-region="selectedRegion" :timeless="timeless"
+      <reconstruct-config v-if="!showRegionSelect && showConfig" :selected-region="selectedRegion" :timeless="timeless"
                           :selected-animals="selectedAnimals" :selected-pet="selectedPet"
                           @region-clicked="onRegionClicked" @timeless-changed="onTimelessChanged"
                           @animals-selected="onAnimalsSelected"
                           @pet-selected="onPetSelected"
                           class="menu-bottom dock-bottom reconstruct-config"/>
-      <RegionSelect v-else @region-select="onRegionSelect"
+      <RegionSelect v-else-if="showRegionSelect" @region-select="onRegionSelect"
                     class="region-select dock-bottom dock-bottom-shadow menu-bottom"/>
     </transition>
   </div>
@@ -44,7 +44,7 @@
 </style>
 
 <script lang="ts">
-import {defineComponent} from "vue";
+import {defineComponent, ref} from "vue";
 import RegionSelect from "@/components/Overlays/RegionSelect.vue";
 import MenuBar from "@/components/MenuBar.vue";
 import router from "@/router";
@@ -68,6 +68,14 @@ export default defineComponent({
       showRegionSelect: false,
       selectedPet: null as Animal | null
     }
+  },
+
+  setup() {
+    const showConfig = ref(false)
+    return {showConfig}
+  },
+  mounted() {
+    this.showConfig = true;
   },
 
   methods: {
