@@ -4,10 +4,12 @@
       <transition name="overlay">
         <div v-if="showSettings" id="settings-menu" class="wood-menu menu-bottom dock-bottom dock-bottom-shadow">
           <h1>Settings</h1>
+          <labled-check-box input-id="show-perc" label="Show probabilities in Heatmap" :checked="showPercentages"
+                            @checked="onShowPercentagesClicked"/>
         </div>
         <menu-overlay v-else-if="!showSettings && showMenuOverlay"
                       class="menu-overlay dock-bottom menu-bottom dock-bottom-shadow"
-                      ref="menuRef"/>
+                      ref="menuRef" @clicked-settings="onMenuClick"/>
         <play-overlay v-else-if="!showSettings && showPlayOverlay" class="play-overlay dock-bottom menu-bottom dock-bottom-shadow"
                       ref="playRef"/>
       </transition>
@@ -55,14 +57,20 @@ import {defineComponent, ref} from 'vue'
 import MenuBar from "@/components/MenuBar.vue";
 import MenuOverlay from "@/components/Overlays/MenuOverlay.vue";
 import PlayOverlay from "@/components/Overlays/PlayOverlay.vue";
+import LabledCheckBox from "@/components/Basic/LabledCheckBox.vue";
+import {useSettings} from "@/store/useSettings";
+
+const settings = useSettings()
 
 export default defineComponent({
   name: "SettingsView",
-  components: {PlayOverlay, MenuOverlay, MenuBar},
+  components: {LabledCheckBox, PlayOverlay, MenuOverlay, MenuBar},
   data() {
     return {
       showMenuOverlay: false,
       showPlayOverlay: false,
+
+      showPercentages: settings.showPercentages
     }
   },
   setup() {
@@ -101,6 +109,11 @@ export default defineComponent({
   },
 
   methods: {
+    onShowPercentagesClicked(val: boolean) {
+      this.showPercentages = val
+      settings.setShowPercentages(val)
+    },
+
     onMenuClick() {
       if (!this.showMenuOverlay) {
         this.showPlayOverlay = false;
