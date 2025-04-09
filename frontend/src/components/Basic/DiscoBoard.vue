@@ -8,8 +8,9 @@
       <AnimalSquare
           v-if="game.board[coords.x][coords.y].occupied && game.board[coords.x][coords.y].revealed"
           :animal="game.board[coords.x][coords.y].animalBoardInstance.animal" class="animal-square" />
-<!--                <span style="user-select: none;" v-else-if="probabilities">{{probabilities[coords.x][coords.y].toFixed-->
-<!--                (3)}}</span>-->
+                <span style="user-select: none;"
+                      v-else-if="showPercentages && probabilities">{{probabilities[coords.x][coords.y].toFixed
+                (3)}}</span>
     </button>
     <transition name="fade">
       <div class="loading" v-if="showLoading">
@@ -28,6 +29,7 @@ import {getHeatmapColor} from "@/util/heatmap-colors";
 import {defineComponent} from "vue";
 import LoadingCircle from "@/components/Basic/LoadingCircle.vue";
 import {RegionColors} from "@/types/RegionColors";
+import {useSettings} from "@/store/useSettings";
 
 export default defineComponent({
   name: 'disco-board',
@@ -67,7 +69,8 @@ export default defineComponent({
 
   data() {
     return {
-      showLoading: this.loading
+      showLoading: this.loading,
+      showPercentages: useSettings().showPercentages
     }
   },
 

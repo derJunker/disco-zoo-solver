@@ -1,7 +1,7 @@
 <template>
  <span class="labeled-checkbox">
    <button :id="inputId" :class="{ 'checked': checked }" @click="$emit('checked', !checked)"></button>
-   <label :for="inputId" @click="$emit('checked', !checked)">{{ label }}</label>
+   <label :for="inputId">{{ label }}</label>
  </span>
 </template>
 
@@ -52,8 +52,5 @@ export default defineComponent({
       default: false
     }
   },
-  methods: {
-
-  }
 })
 </script>

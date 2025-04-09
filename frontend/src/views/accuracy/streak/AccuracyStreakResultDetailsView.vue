@@ -18,9 +18,9 @@
                 <div class="tile" v-for="coords in getCoords()" :key="coords" :style="getStyle(coords)">
                   <img v-if="isClickedTile(coords)" src="/mouse-click.png" :alt="'You Clicked ' + coords"
                        rel="preload"/>
-                  <!--                <span>-->
-                  <!--                  {{(singleClickHistory[showIndex].probabilities[coords.x][coords.y]*100).toFixed(1)}}%-->
-                  <!--                </span>-->
+                                  <span v-if="showPercentages">
+                                    {{(singleClickHistory[showIndex].probabilities[coords.x][coords.y]*100).toFixed(1)}}%
+                                  </span>
                 </div>
                 <div class="score">Accuracy: {{(singleClickHistory[showIndex].accuracy*100).toFixed(2)}}%</div>
               </div>
@@ -161,6 +161,7 @@ import {getHeatmapColor} from "@/util/heatmap-colors";
 import {AccuracyGameType} from "@/types/accuracy/AccuracyGameType";
 import {Animal} from "@/types/Animal";
 import {generateSeed} from "@/util/seed-generator";
+import {useSettings} from "@/store/useSettings";
 
 const state = useAccuracyState()
 
@@ -170,7 +171,8 @@ export default defineComponent({
   data() {
     return {
       singleClickHistory: state.singleClickHistory,
-      showIndex: Math.max(0, state.singleClickHistory.length-1)
+      showIndex: Math.max(0, state.singleClickHistory.length-1),
+      showPercentages: useSettings().showPercentages
     }
   },
 

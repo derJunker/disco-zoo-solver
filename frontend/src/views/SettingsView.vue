@@ -4,8 +4,13 @@
       <transition name="overlay">
         <div v-if="showSettings" id="settings-menu" class="wood-menu menu-bottom dock-bottom dock-bottom-shadow">
           <h1>Settings</h1>
-          <labled-check-box input-id="show-perc" label="Show probabilities in Heatmap" :checked="showPercentages"
-                            @checked="onShowPercentagesClicked"/>
+          <div class="wood-menu-group">
+            <h2>Heatmap</h2>
+            <labled-check-box input-id="show-perc" label="Show probabilities in Heatmap" :checked="showPercentages"
+                              @checked="onShowPercentagesClicked"/>
+            <labled-check-box input-id="highlight-solved" label="highlight solved squares" :checked="highlightSolved"
+                              @checked="onHighlightSolvedClicked"/>
+          </div>
         </div>
         <menu-overlay v-else-if="!showSettings && showMenuOverlay"
                       class="menu-overlay dock-bottom menu-bottom dock-bottom-shadow"
@@ -70,7 +75,8 @@ export default defineComponent({
       showMenuOverlay: false,
       showPlayOverlay: false,
 
-      showPercentages: settings.showPercentages
+      showPercentages: settings.showPercentages,
+      highlightSolved: settings.highlightSolved
     }
   },
   setup() {
@@ -112,6 +118,11 @@ export default defineComponent({
     onShowPercentagesClicked(val: boolean) {
       this.showPercentages = val
       settings.setShowPercentages(val)
+    },
+
+    onHighlightSolvedClicked(val: boolean) {
+      this.highlightSolved = val
+      settings.setHighlightSolved(val)
     },
 
     onMenuClick() {
