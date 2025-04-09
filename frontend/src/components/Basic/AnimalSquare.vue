@@ -1,5 +1,6 @@
 <template>
  <button class="animal-square" :style="getStyle()">
+   <slot/>
     <img :src="getAnimalPictureUrl(animal)" :alt="animal.name" rel="preload"/>
  </button>
 </template>
@@ -10,6 +11,7 @@
   display: grid;
   place-items: center;
   padding: 6px;
+  position: relative;
 }
 img {
   max-width: 100%;

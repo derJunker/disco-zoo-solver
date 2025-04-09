@@ -2,9 +2,8 @@
   <div class="disco-board" :style="getBoardStyle()" v-if="game">
     <button
         v-for="coords in getCoords()" :key="coords" class="tile" :style="getTileStyle(coords)"
-        :class="bestClicks && bestClicks.filter((click: Coords) => click.x === coords.x && click.y === coords.y).length
-        > 0 ?
-             'best-click' : ''" @click="onCoordsClicked(coords)" @contextmenu="onCoordsRightClick($event, coords)">
+        :class="getTileClasses(coords)" @click="onCoordsClicked(coords)" @contextmenu="onCoordsRightClick($event,
+        coords)">
       <AnimalSquare
           v-if="game.board[coords.x][coords.y].occupied && game.board[coords.x][coords.y].revealed"
           :animal="game.board[coords.x][coords.y].animalBoardInstance.animal" class="animal-square" />
@@ -24,12 +23,13 @@
 import AnimalSquare from "@/components/Basic/AnimalSquare.vue"
 import {Coords} from "@/types/Coords";
 import {Game} from "@/types/Game";
-import {getRegionColors} from "@/util/region-colors";
 import {getHeatmapColor} from "@/util/heatmap-colors";
 import {defineComponent} from "vue";
 import LoadingCircle from "@/components/Basic/LoadingCircle.vue";
 import {RegionColors} from "@/types/RegionColors";
 import {useSettings} from "@/store/useSettings";
+
+const settings = useSettings()
 
 export default defineComponent({
   name: 'disco-board',
@@ -70,7 +70,8 @@ export default defineComponent({
   data() {
     return {
       showLoading: this.loading,
-      showPercentages: useSettings().showPercentages
+      showPercentages: settings.showPercentages,
+      highlightSolved: settings.highlightSolved
     }
   },
 
@@ -89,6 +90,17 @@ export default defineComponent({
   },
 
   methods: {
+    getTileClasses(coords: Coords) {
+      if (!this.game) {
+        return {}
+      }
+      return {
+        'best-click': this.bestClicks && this.bestClicks.filter((click: Coords) => click.x === coords.x && click.y === coords.y).length > 0,
+        'highlight-solved': this.highlightSolved && !this.game?.board[coords.x][coords.y].revealed &&
+            this.probabilities && Math.abs(this.probabilities[coords.x][coords.y] - 1) <= 0.0001
+      }
+    },
+
     getCoords(): Coords[] {
       if (!this.game) {
         return []
@@ -186,12 +198,19 @@ button:focus {
   place-items: center;
 }
 
-.fade-enter-active, .fade-leave-active {
-  transition: opacity 0.8s ease;
-}
+.highlight-solved::after {
+  content: 'Solved';
+  font-size: .7rem;
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: auto;
 
-.fade-enter-from, .fade-leave-to {
-  opacity: 0;
+  align-content: center;
+
+  color: white;
+  background-color: red;
 }
 
 </style>

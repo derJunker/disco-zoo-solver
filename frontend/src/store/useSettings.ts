@@ -9,7 +9,8 @@ export const useSettings = defineStore('settings', () => {
     const highlightSolved = ref(getSettingFromLocalStorage('highlightSolved', true));
 
     function getSettingFromLocalStorage(settingName: string, defaultValue: any) {
-        const storedValue = localStorage.getItem(`disco_settings_${settingName}`);
+        const storedValue = localStorage.getItem(`disco-zoo_settings_${settingName}`);
+        console.log(`disco_settings_${settingName}`, storedValue);
         return storedValue !== null ? JSON.parse(storedValue) : defaultValue;
     }
 
