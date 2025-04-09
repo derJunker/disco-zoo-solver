@@ -181,7 +181,6 @@ button:focus {
   border: var(--best-click-border);
 }
 
-
 .animal-square {
   max-width: 100%;
   max-height: 100%;
@@ -200,7 +199,7 @@ button:focus {
 
 .highlight-solved::after {
   content: 'Solved';
-  font-size: .7rem;
+  font-size: .8rem;
   position: absolute;
   inset: 0;
   width: 100%;
