@@ -1,0 +1,11 @@
+.footer-view {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.footer-view-content {
+    position: relative;
+    flex: 1;
+}
+

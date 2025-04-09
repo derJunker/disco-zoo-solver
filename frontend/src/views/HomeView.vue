@@ -1,6 +1,6 @@
 <template>
-  <div class="home-view">
-    <div class="home-view-content">
+  <div class="home-view footer-view">
+    <div class="home-view-content footer-view-content">
       <div id="home-text" class="wood-menu dock-top-shadow">
         <div class="heading-container wood-menu-group">
           <h1 class="rare btn btn-gradient">Disco Zoo Solver</h1>
@@ -59,15 +59,6 @@ h1 {
   margin-inline: auto;
   margin-bottom: 1rem;
   filter: drop-shadow(0 0 30px var(--animal-highlight-color));
-}
-.home-view {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
-.home-view-content {
-  flex: 1;
-  position: relative;
 }
 .menu-overlay, .play-overlay, .tutorial-overlay {
   position: absolute;

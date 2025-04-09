@@ -1,6 +1,6 @@
 <template>
-  <div class="accuracy-streak-result-view">
-    <div class="accuracy-streak-result-content">
+  <div class="accuracy-streak-result-view footer-view">
+    <div class="accuracy-streak-result-content footer-view-content">
       <transition name="overlay">
         <div v-if="show" id="overview-menu" class="wood-menu dock-bottom menu-bottom">
           <h1>Results - Streak</h1>
@@ -48,15 +48,7 @@
 </template>
 
 <style scoped>
-.accuracy-streak-result-view {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
-
 .accuracy-streak-result-content {
-  position: relative;
-  flex: 1;
   display: grid;
   place-items: center;
 }

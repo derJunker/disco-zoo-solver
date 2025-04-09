@@ -1,6 +1,6 @@
 <template>
-<div class="reconstruction-view">
-  <div class="reconstruction-view-content">
+<div class="reconstruction-view footer-view">
+  <div class="reconstruction-view-content footer-view-content">
     <transition name="overlay">
       <reconstruct-config v-if="!showRegionSelect && showConfig" :selected-region="selectedRegion" :timeless="timeless"
                           :selected-animals="selectedAnimals" :selected-pet="selectedPet"
@@ -21,14 +21,7 @@
 </template>
 
 <style scoped>
-.reconstruction-view {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
 .reconstruction-view-content {
-  position: relative;
-  flex: 1;
   display: flex;
   flex-direction: column;
   justify-content: end;

@@ -1,7 +1,7 @@
 <template>
-  <div class="reconstruct-play-view" :style="getBackgroundStyle()">
+  <div class="reconstruct-play-view footer-view" :style="getBackgroundStyle()">
     {{loadPathVariables($route.params.region, $route.query.animals, $route.query.pet, $route.query.heatmap)}}
-    <div class="reconstruct-content">
+    <div class="reconstruct-content footer-view-content">
       <top-info-bar :region="regionColors">
         <div id="attempts">
           <span id="attemptNum">
@@ -37,14 +37,7 @@
 </template>
 
 <style scoped>
-.reconstruct-play-view {
-  display: flex;
-  flex-direction: column;
-}
-
 .reconstruct-content {
-  position: relative;
-  flex: 1;
   display: flex;
   justify-content: space-between;
   flex-direction: column;

@@ -1,7 +1,7 @@
 <template>
-  <div class="accuracy-single-click-view" :style="getBackgroundStyle()">
+  <div class="accuracy-single-click-view footer-view" :style="getBackgroundStyle()">
     {{setRouteValuesToVars($route.params.seed, $route.params.region, $route.params.difficulty,  $route.query.timeless)}}
-    <div class="accuracy-single-click-content">
+    <div class="accuracy-single-click-content footer-view-content">
       <div class="acc-container" v-if="game && animalToFind">
         <top-info-bar :region="displayRegionColors">
           <span>
@@ -26,18 +26,6 @@
 <style scoped>
 * {
   transition: background-color .5s;
-}
-
-
-.accuracy-single-click-view {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
-
-.accuracy-single-click-content {
-  position: relative;
-  flex: 1;
 }
 
 .acc-container {

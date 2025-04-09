@@ -1,6 +1,6 @@
 <template>
-  <div class="about-view">
-    <div class="about-view-content">
+  <div class="about-view footer-view">
+    <div class="about-view-content footer-view-content">
       <div id="about-menu" class="wood-menu">
         <h1>About</h1>
         <p>
@@ -40,17 +40,6 @@
   </div>
 </template>
 <style scoped>
-.about-view {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
-
-.about-view-content {
-  flex: 1;
-  position: relative;
-}
-
 .menu-overlay, .play-overlay {
   position: absolute;
   bottom: 0;

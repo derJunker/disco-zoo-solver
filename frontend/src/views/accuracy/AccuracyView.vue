@@ -1,6 +1,6 @@
 <template>
-  <div class="accuracy-view">
-    <div class="accuracy-content">
+  <div class="accuracy-view footer-view">
+    <div class="accuracy-content footer-view-content">
       <transition name="overlay">
         <accuracy-config v-if="!showRegionSelect && showConfig" class="accuracy-config dock-bottom menu-bottom"
                          :selected-region="selectedRegion" :selected-game-type="selectedGameType" :timeless="timeless"
@@ -19,15 +19,7 @@
 </template>
 
 <style scoped>
-.accuracy-view {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
-
 .accuracy-content {
-  position: relative;
-  flex: 1;
   display: flex;
   flex-direction: column;
   justify-content: center;

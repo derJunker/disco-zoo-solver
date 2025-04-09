@@ -1,7 +1,7 @@
 <template>
-  <div class="accuracy-streak-view" :style="getBackgroundStyle()">
+  <div class="accuracy-streak-view footer-view" :style="getBackgroundStyle()">
     {{setRouteValuesToVars($route.params.seed, $route.params.region, $route.params.difficulty,  $route.query.timeless)}}
-    <div class="accuracy-streak-content">
+    <div class="accuracy-streak-content footer-view-content">
       <div class="acc-container" v-if="game && animalToFind">
         <top-info-bar :region="displayRegionColors">
           <span>
@@ -24,19 +24,8 @@
 </template>
 
 <style scoped>
-.accuracy-streak-view {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
-
 * {
   transition: .5s;
-}
-
-.accuracy-streak-content {
-  position: relative;
-  flex: 1;
 }
 
 .acc-container {

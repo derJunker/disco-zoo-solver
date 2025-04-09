@@ -1,6 +1,6 @@
 <template>
-  <div class="accuracy-single-click-result-view">
-    <div class="accuracy-single-click-result-content">
+  <div class="accuracy-single-click-result-view footer-view">
+    <div class="accuracy-single-click-result-content footer-view-content">
       <transition name="overlay">
         <div v-if="show" id="overview-menu" class="wood-menu dock-bottom menu-bottom">
           <h1>Results - Single Click</h1>
@@ -53,15 +53,7 @@
 </template>
 
 <style scoped>
-.accuracy-single-click-result-view {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
-
 .accuracy-single-click-result-content {
-  position: relative;
-  flex: 1;
   display: grid;
   place-items: center;
 }

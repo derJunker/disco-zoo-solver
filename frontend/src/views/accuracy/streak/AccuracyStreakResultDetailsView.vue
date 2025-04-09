@@ -1,6 +1,6 @@
 <template>
-  <div class="accuracy-streak-result-details-view">
-    <div class="accuracy-streak-result-details-content">
+  <div class="accuracy-streak-result-details-view footer-view">
+    <div class="accuracy-streak-result-details-content footer-view-content">
       <transition name="overlay">
         <div v-if="show" class="wood-menu menu-bottom dock-bottom" id="details-menu">
           <h1>Details - Streak</h1>
@@ -46,15 +46,6 @@
 </template>
 
 <style scoped>
-.accuracy-streak-result-details-view {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
-.accuracy-streak-result-details-content {
-  flex: 1;
-  position: relative;
-}
 #details-menu {
   max-width: min(90%, 500px);
 }

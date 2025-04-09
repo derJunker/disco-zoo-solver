@@ -7,6 +7,7 @@ import router from './router'
 import './assets/css/transitions.css'
 import './assets/css/menus.css'
 import './assets/css/buttons.css'
+import './assets/css/footer.css'
 import './assets/css/global.css'
 
 const pinia = createPinia()
