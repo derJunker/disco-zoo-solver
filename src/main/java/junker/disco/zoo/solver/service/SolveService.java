@@ -45,6 +45,6 @@ public class SolveService {
     }
 
     private static Set<Coords> solutionsToFirstClicks(List<Solution> solutions) {
-        return solutions.stream().map(solution -> solution.clicks().getFirst()).collect(Collectors.toSet());
+        return solutions.stream().map(solution -> solution.clicks().getFirst().coords()).collect(Collectors.toSet());
     }
 }

@@ -13,4 +13,16 @@ public record Coords(
     public String toString() {
         return "(" + x + ", " + y + ")";
     }
+
+    public Click toClick(double expectedProbability) {
+        return new Click(this, expectedProbability);
+    }
+
+    public Click toClickWithSize(int size) {
+        return new Click(this, (1.0 / size));
+    }
+
+    public Click toMaxProbabilityClick() {
+        return new Click(this, 1.0);
+    }
 }

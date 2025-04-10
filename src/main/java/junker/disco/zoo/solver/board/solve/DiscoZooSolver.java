@@ -1,15 +1,18 @@
 package junker.disco.zoo.solver.board.solve;
 
+import java.sql.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import junker.disco.zoo.solver.board.AnimalBoardInstance;
+import junker.disco.zoo.solver.board.Click;
 import junker.disco.zoo.solver.board.Coords;
 import junker.disco.zoo.solver.board.Game;
 import junker.disco.zoo.solver.model.animals.Animal;
@@ -56,8 +59,9 @@ public class DiscoZooSolver {
                         highestProb);
             }
         }
-
-        return new BestMoveInformation(buxProb, coordsWithHighestProb.stream().map(coords -> new Solution(List.of(coords))).toList());
+        final var highestProbValue = highestProb;
+        return new BestMoveInformation(buxProb,
+                coordsWithHighestProb.stream().map(coords -> new Solution(List.of(coords.toClick(highestProbValue)))).toList());
     }
 
     public static List<Solution> getBestSolutions(Animal animalToSolve, Game game) {
@@ -72,20 +76,28 @@ public class DiscoZooSolver {
         if (highestOverlapCoords.isEmpty())
             return List.of();
         else if (highestOverlapCoords.size() == 1) {
-            return List.of(new Solution(List.of(highestOverlapCoords.getFirst())));
+            return List.of(new Solution(List.of(highestOverlapCoords.getFirst().toMaxProbabilityClick())));
         }
         return emulateClicks(overlaps, animalToSolve, clonedGame, List.of(), highestOverlapCoords, Integer.MAX_VALUE);
     }
 
     private static List<Solution> emulateClicks(Overlaps overlaps, Animal animalToSolve, Game game,
-                                                List<Coords> previousClicks,
+                                                List<Click> previousClicks,
                                                 List<Coords> highestOverlapCoords, int smallestSolutionLength) {
         var maxOverlapCount = overlaps.animalMaxOverlapCounts().get(animalToSolve);
         if (maxOverlapCount == null || maxOverlapCount == 0) {
             return List.of(new Solution(previousClicks));
         } else if (maxOverlapCount == 1) {
-            return solutionsForNoOverlap(overlaps, animalToSolve, game, previousClicks, smallestSolutionLength,
-                    highestOverlapCoords);
+            var noOtherAnimalOverlaps =
+                    highestOverlapCoords.stream()
+                            .allMatch(coords -> overlaps.overallOverlap()[coords.x()][coords.y()]
+                                    .stream()
+                                    .filter(Objects::nonNull)
+                                    .map(instance -> instance.animal().name())
+                                    .distinct().count() == 1);
+            if (noOtherAnimalOverlaps)
+                return solutionsForNoOverlap(overlaps, animalToSolve, game, previousClicks, smallestSolutionLength,
+                        highestOverlapCoords);
         }
 
         if (overlaps.animalMaxOverlapCounts().size() == 1) {
@@ -100,7 +112,7 @@ public class DiscoZooSolver {
     }
 
     private static List<Solution> emulateClicksForMultipleAnimals(List<Coords> highestOverlapCoords, Overlaps overlaps,
-                                                                  Game game, List<Coords> previousClicks,
+                                                                  Game game, List<Click> previousClicks,
                                                                   Animal animalToSolve, int smallestSolutionLength) {
         var overallOverlap = overlaps.overallOverlap();
         List<Solution> allSolutions = new ArrayList<>();
@@ -122,7 +134,7 @@ public class DiscoZooSolver {
                 ExpectedValueCalculator.mutateProbabilitiesForAnimal(animalToSolve, animalToPlace, overlaps, coords,
                         probabilitiesForDifferentAnimals, nextProbabilitiesForDifferentAnimals, nextOverlaps);
 
-                var nextPreviousClicks = ListUtil.putLast(previousClicks, coords);
+                var nextPreviousClicks = ListUtil.putLast(previousClicks, coords.toClick(-1));
                 if (nextPreviousClicks.size() > smallestSolutionLength) {
                     continue;
                 }
@@ -133,7 +145,7 @@ public class DiscoZooSolver {
                 // it is the worst solution compared to the other placeable animals.
                 if (solutions.isEmpty()) {
                     solutions = List.of(new Solution(IntStream.range(0,
-                            game.getBoard().length * game.getBoard()[0].length).mapToObj(i -> new Coords(-1, -1)).toList()));
+                            game.getBoard().length * game.getBoard()[0].length).mapToObj(i -> new Coords(-1, -1).toClick(-1)).toList()));
                 }
 
                 solutions = onlyMinSolutions(solutions);
@@ -146,16 +158,49 @@ public class DiscoZooSolver {
                     ExpectedValueCalculator.expectedNextProbability(probabilitiesForDifferentAnimals,
                     nextProbabilitiesForDifferentAnimals);
             expectedNextProbabilities.put(coords, expectedNextProbability);
-            if (differentAnimalSolutions.isEmpty())
+            var newDifferentAnimalSolutions = modifyExpectedProbabilityOfSolutionsAtIndex(differentAnimalSolutions,
+                    previousClicks.size(), expectedNextProbability);
+            if (newDifferentAnimalSolutions.isEmpty())
                 continue;
-            smallestSolutionLength = ListUtil.resetAddIfBelowLimit(allSolutions, differentAnimalSolutions,
+            smallestSolutionLength = ListUtil.resetAddIfBelowLimit(allSolutions, newDifferentAnimalSolutions,
                     differentAnimalSolutions.getFirst().clicks().size(),
                     smallestSolutionLength);
 
         }
+//        if (previousClicks.isEmpty()) {
+//            var newAllSolutions = new ArrayList<Solution>();
+//            for (var solution : allSolutions) {
+//                var newSolution = modifyExpectedProbabilityOfSolutionsAtIndex(List.of(solution), 0,
+//                        1).getFirst();
+//                newAllSolutions.add(newSolution);
+//            }
+//            allSolutions = newAllSolutions;
+//        }
 
         return filterSolutionsByOnlyBestExpectedProbabilities(allSolutions, expectedNextProbabilities,
                 previousClicks.size());
+    }
+
+    private static List<Solution> modifyExpectedProbabilityOfSolutionsAtIndex(List<Solution> differentAnimalSolutions,
+                                                                              int index,
+                                                                              double expectedNextProbability) {
+        var newDifferentAnimalSolutions = new ArrayList<Solution>();
+        for (var solutionForAnimal : differentAnimalSolutions) {
+            if (index < 0 || index >= solutionForAnimal.clicks().size())
+                continue;
+            var clickToChange = solutionForAnimal.clicks().get(index);
+            var newClick = clickToChange.coords().toClick(expectedNextProbability);
+            var newSolutionClicks = new ArrayList<Click>();
+            for (int i = 0; i < solutionForAnimal.clicks().size(); i++) {
+                if (i == index) {
+                    newSolutionClicks.add(newClick);
+                } else {
+                    newSolutionClicks.add(solutionForAnimal.clicks().get(i));
+                }
+            }
+            newDifferentAnimalSolutions.add(new Solution(newSolutionClicks));
+        }
+        return newDifferentAnimalSolutions;
     }
 
     private static List<Solution> filterSolutionsByOnlyBestExpectedProbabilities(List<Solution> solutions,
@@ -167,22 +212,25 @@ public class DiscoZooSolver {
                 expectedNextProbabilities.entrySet().stream()
                         .filter(entry ->
                                 solutions.stream()
-                                        .anyMatch(solution -> solution.clicks().get(clickIndex).equals(entry.getKey())))
+                                        .anyMatch(solution -> solution.clicks().get(clickIndex).coords().equals(entry.getKey())))
                         .toList();
         for (var entry : occurringProbabilities) {
             maxProbability = ListUtil.resetAddIfAboveLimit(bestCoords, List.of(entry.getKey()), entry.getValue(), maxProbability);
         }
         return solutions.stream()
-                        .filter(solution -> bestCoords.contains(solution.clicks().get(clickIndex)))
+                        .filter(solution -> bestCoords.contains(solution.clicks().get(clickIndex).coords()))
                         .toList();
 
     }
 
-    private static List<Solution> emulateClicksForSingleAnimal(Set<Set<Coords>> multipleClickSets, Overlaps overlaps, Game game, List<Coords> previousClicks, Animal animalToSolve, int smallestSolutionLength) {
+    private static List<Solution> emulateClicksForSingleAnimal(Set<Set<Coords>> multipleClickSets, Overlaps overlaps,
+                                                               Game game, List<Click> previousClicks,
+                                                               Animal animalToSolve, int smallestSolutionLength) {
         var allSolutions = new ArrayList<Solution>();
         for (var multiClickSet : multipleClickSets) {
             var nextOverlaps = overlaps;
             var nextGame = game;
+            List<Double> probabilitiesForMultiClickSet = new ArrayList<>();
             for (var click : multiClickSet) {
                 Set<AnimalBoardInstance> animalInstances =
                         new HashSet<>(nextOverlaps.overallOverlap()[click.x()][click.y()]);
@@ -194,14 +242,22 @@ public class DiscoZooSolver {
                 Animal animalToPlace = null;
                 if (placeableAnimals.size() == 1)
                     animalToPlace = placeableAnimals.iterator().next();
+                probabilitiesForMultiClickSet.add(nextOverlaps.animalOverlapProbability().get(animalToSolve)[click.x()][click.y()]);
                 nextOverlaps = emulateOverlapClick(nextOverlaps, animalToPlace, animalInstances, click, nextGame);
                 nextGame = new Game(nextGame, true);
                 nextGame.setTile(click.x(), click.y(), true, animalToPlace);
             }
             var differentFirstSolutions = new ArrayList<Solution>();
             var worstSolutionLengthForDifferentAnimals = 0;
+
             for (var firstClickPermutation : ListUtil.permuteFirst(multiClickSet)) {
-                var nextPreviousClicks = ListUtil.cloneThenAddAll(previousClicks, firstClickPermutation);
+                var firstClickPermutationWithProbabilities = new ArrayList<Click>();
+                for (int i = 0; i < firstClickPermutation.size(); i++) {
+                    var click = firstClickPermutation.get(i);
+                    var probability = probabilitiesForMultiClickSet.get(i);
+                    firstClickPermutationWithProbabilities.add(click.toClick(probability));
+                }
+                var nextPreviousClicks = ListUtil.cloneThenAddAll(previousClicks, firstClickPermutationWithProbabilities);
                 var highestOverlapCoords = findHighestOverlapCoords(nextOverlaps, animalToSolve, false);
                 var multiClickSolutions =  emulateClicks(nextOverlaps, animalToSolve, nextGame, nextPreviousClicks,
                         highestOverlapCoords,
@@ -210,7 +266,7 @@ public class DiscoZooSolver {
                 // it is the worst solution compared to the other placeable animals.
                 if (multiClickSolutions.isEmpty())
                     multiClickSolutions = List.of(new Solution(IntStream.range(0,
-                            game.getBoard().length * game.getBoard()[0].length + 1).mapToObj(i -> new Coords(-1, -1)).toList()));
+                            game.getBoard().length * game.getBoard()[0].length + 1).mapToObj(i -> new Coords(-1, -1).toClick(-1)).toList()));
 
                 multiClickSolutions = onlyMinSolutions(multiClickSolutions); // Get the best solutions of that animal click and check if
 
