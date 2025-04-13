@@ -13,7 +13,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
-
 import junker.disco.zoo.solver.board.Coords;
 
 public class DoubleArrayUtil {
@@ -94,6 +93,24 @@ public class DoubleArrayUtil {
             }
         }
         return result;
+    }
+
+    public static String aggregatedListArrayAsCoordinatesString(List<?>[][] array) {
+        String[][] stringArray = new String[array.length][array[0].length];
+        for (int i = 0; i < array.length; i++) {
+            for (int j = 0; j < array[i].length; j++) {
+                final var stringValueCounts = new HashMap<String, Integer>();
+                for (var value : array[j][i]) {
+                    var stringRepresentation = value == null ? "n" : value.toString();
+                    stringValueCounts.put(stringRepresentation,
+                            stringValueCounts.getOrDefault(stringRepresentation, 0) + 1);
+                }
+                var value =
+                        stringValueCounts.entrySet().stream().map(entry -> entry.getKey() + "x" + entry.getValue()).toList().toString();
+                stringArray[j][i] = value;
+            }
+        }
+        return arrayAsCoordinatesString(stringArray);
     }
 
     public static String arrayAsCoordinatesString(Object[][] array) {

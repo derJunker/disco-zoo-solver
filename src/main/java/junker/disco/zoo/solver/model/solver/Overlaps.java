@@ -37,7 +37,7 @@ public record Overlaps(
             sb.append("\n");
         }
         sb.append("overallOverlap=\n");
-        sb.append(DoubleArrayUtil.arrayAsCoordinatesString(overallOverlap));
+        sb.append(DoubleArrayUtil.aggregatedListArrayAsCoordinatesString(overallOverlap));
         sb.append(",\npermutations=\n");
         for (var perm : permutations) {
             sb.append(DoubleArrayUtil.arrayAsCoordinatesString(perm));

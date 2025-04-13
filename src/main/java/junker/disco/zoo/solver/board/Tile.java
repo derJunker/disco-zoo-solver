@@ -35,7 +35,6 @@ public class Tile {
 
     @Override
     public String toString() {
-
         if (isRevealed) {
             if (animalBoardInstance == null) {
                 return "0";

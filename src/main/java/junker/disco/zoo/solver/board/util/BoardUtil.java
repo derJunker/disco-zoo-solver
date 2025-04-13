@@ -9,7 +9,7 @@ import junker.disco.zoo.solver.model.animals.Animal;
 
 public class BoardUtil {
     public static void placeAnimal(Tile[][] board, Animal animal, Coords coords) {
-        var instance = new AnimalBoardInstance(animal, coords.x() + " " + coords.y(), coords);
+        var instance = AnimalBoardInstance.of(animal, coords);
         for (Coords coord : animal.pattern()) {
             int x = coords.x() + coord.x();
             int y = coords.y() + coord.y();

@@ -34,7 +34,7 @@ public class NoOverlapSolutionFinder {
         if (minSolutionLength > smallestSolutionLength)
             return List.of(new Solution(IntStream.range(0, minSolutionLength).mapToObj(unused -> new Coords(-1, -1).toClick(-1)).toList()));
         return allSolutionsForDifferentClickPermutations(animalBoardInstancesClickableCoordsMap, previousClicks,
-                highestOverlapCoords, overlaps.animalOverlapProbability().get(animalToSolve));
+                highestOverlapCoords);
     }
 
     private static Map<AnimalBoardInstance, Set<Coords>> getClickableCoordsForAnimalBoardInstance(Overlaps overlaps,
@@ -58,8 +58,7 @@ public class NoOverlapSolutionFinder {
 
     private static List<Solution> allSolutionsForDifferentClickPermutations(Map<AnimalBoardInstance, Set<Coords>> animalBoardInstancesClickableCoordsMap,
                                                                             List<Click> previousClicks,
-                                                                            List<Coords> highestOverlapCoords,
-                                                                            Double[][] animalProbabilities) {
+                                                                            List<Coords> highestOverlapCoords) {
         List<Solution> solutions = new ArrayList<>();
         for (var lastClickedInstanceToClickableCoords : animalBoardInstancesClickableCoordsMap.entrySet()) {
             var lastClickedInstance = lastClickedInstanceToClickableCoords.getKey();

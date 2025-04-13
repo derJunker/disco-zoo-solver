@@ -5,15 +5,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import junker.disco.zoo.solver.board.util.BoardUtil;
 import junker.disco.zoo.solver.board.util.PermutationUtil;
 import junker.disco.zoo.solver.model.animals.Animal;
 import junker.disco.zoo.solver.model.animals.Region;
 import lombok.Getter;
 
 import static junker.disco.zoo.solver.board.util.BoardUtil.cloneBoard;
-import static junker.disco.zoo.solver.board.util.PermutationUtil.canClickAndPlace;
 import static junker.disco.zoo.solver.board.util.DoubleArrayUtil.arrayAsCoordinatesString;
+import static junker.disco.zoo.solver.board.util.PermutationUtil.canClickAndPlace;
 
 @Getter
 public class Game {
@@ -78,7 +77,7 @@ public class Game {
         tile.setRevealed(revealed);
         tile.setAnimalBoardInstance(null);
         if (animal != null)
-            tile.setAnimalBoardInstance(new AnimalBoardInstance(animal, "", new Coords(-1, -1)));
+            tile.setAnimalBoardInstance(AnimalBoardInstance.of(animal, new Coords(-1, -1)));
     }
 
     public boolean setTileIfValid(int x, int y, boolean shouldReveal, Animal animal) {
