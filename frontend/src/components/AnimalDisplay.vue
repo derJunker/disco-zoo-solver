@@ -26,10 +26,6 @@
   position: relative;
 }
 
-.highlighted {
-  border-color: white;
-}
-
 .animal-container {
   display: grid;
   place-items: center;
@@ -39,10 +35,15 @@
   border-color: rgba(0,0,0, 0.2);
 }
 
+.highlighted {
+  border-color: white;
+}
+
 .animal-picture {
   width: 4rem;
   max-width: 60px;
   max-height: 60px;
+  user-select: none;
 }
 
 .animal-name {
