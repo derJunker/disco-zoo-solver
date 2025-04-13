@@ -36,6 +36,7 @@
   width: 8rem;
   min-height: 7rem;
   border-radius: var(--border-radius);
+  border-color: rgba(0,0,0, 0.2);
 }
 
 .animal-picture {

@@ -1,6 +1,5 @@
 package junker.disco.zoo.solver.board.solve;
 
-import java.sql.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -15,11 +14,11 @@ import junker.disco.zoo.solver.board.AnimalBoardInstance;
 import junker.disco.zoo.solver.board.Click;
 import junker.disco.zoo.solver.board.Coords;
 import junker.disco.zoo.solver.board.Game;
+import junker.disco.zoo.solver.board.util.ListUtil;
 import junker.disco.zoo.solver.model.animals.Animal;
 import junker.disco.zoo.solver.model.solver.BestMoveInformation;
 import junker.disco.zoo.solver.model.solver.Overlaps;
 import junker.disco.zoo.solver.model.solver.Solution;
-import junker.disco.zoo.solver.board.util.ListUtil;
 
 import static junker.disco.zoo.solver.board.solve.NoOverlapSolutionFinder.solutionsForNoOverlap;
 import static junker.disco.zoo.solver.board.solve.OverlapCalulator.calculateOverlaps;
