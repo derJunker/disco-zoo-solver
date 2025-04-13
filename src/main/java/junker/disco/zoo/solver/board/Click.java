@@ -11,4 +11,12 @@ public record Click(
     public int y() {
         return coords.y();
     }
+
+    @Override
+    public String toString() {
+        return "Click{" +
+                "(" + x() + ", " + y() + ")" +
+                "); P=" + expectedProbability +
+                '}';
+    }
 }

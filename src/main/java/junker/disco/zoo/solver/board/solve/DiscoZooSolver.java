@@ -100,6 +100,16 @@ public class DiscoZooSolver {
                         highestOverlapCoords);
         }
 
+        var minClicksNeeded = (animalToSolve.pattern().size() - overlaps.animalRevealedTileCounts().getOrDefault(animalToSolve
+                , 0) - 1);
+
+        if (minClicksNeeded + previousClicks.size() > smallestSolutionLength) {
+            System.out.printf("Not enough clicks needed: %d > %d\n", minClicksNeeded, smallestSolutionLength);
+            System.out.println("Game:");
+            System.out.println(game);
+            return List.of(new Solution(IntStream.range(0, minClicksNeeded).mapToObj(unused -> new Coords(-1, -1).toClick(-1)).toList()));
+        }
+
         if (overlaps.animalMaxOverlapCounts().size() == 1) {
             var multipleClickSets = MultiClickEmulator.calculateMultiClickSets(overlaps,
                     highestOverlapCoords, animalToSolve);
@@ -167,15 +177,6 @@ public class DiscoZooSolver {
                     smallestSolutionLength);
 
         }
-//        if (previousClicks.isEmpty()) {
-//            var newAllSolutions = new ArrayList<Solution>();
-//            for (var solution : allSolutions) {
-//                var newSolution = modifyExpectedProbabilityOfSolutionsAtIndex(List.of(solution), 0,
-//                        1).getFirst();
-//                newAllSolutions.add(newSolution);
-//            }
-//            allSolutions = newAllSolutions;
-//        }
 
         return filterSolutionsByOnlyBestExpectedProbabilities(allSolutions, expectedNextProbabilities,
                 previousClicks.size());
