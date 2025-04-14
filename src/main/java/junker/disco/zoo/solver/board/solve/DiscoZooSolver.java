@@ -16,6 +16,7 @@ import junker.disco.zoo.solver.board.Click;
 import junker.disco.zoo.solver.board.Coords;
 import junker.disco.zoo.solver.board.Game;
 import junker.disco.zoo.solver.board.util.ListUtil;
+import junker.disco.zoo.solver.board.util.StatTracker;
 import junker.disco.zoo.solver.model.animals.Animal;
 import junker.disco.zoo.solver.model.solver.BestMoveInformation;
 import junker.disco.zoo.solver.model.solver.Overlaps;
@@ -31,7 +32,12 @@ public class DiscoZooSolver {
     public static BestMoveInformation getBestMoveInformation(Animal animalToSolve, Game game) {
         var wipedGame = new Game(game, true);
         var overlaps = calculateOverlaps(wipedGame);
-        var solutions = getBestSolutions(animalToSolve, wipedGame, overlaps);
+        var tracker = StatTracker.ofGame(game, animalToSolve);
+        tracker.initialPermutationSize = overlaps.permutations().size();
+        tracker.startTimer();
+        var solutions = getBestSolutions(animalToSolve, wipedGame, overlaps, tracker);
+        tracker.endTimer();
+        tracker.printStats();
         return new BestMoveInformation(overlaps.animalOverlapProbability().get(animalToSolve), solutions);
     }
 
@@ -64,13 +70,7 @@ public class DiscoZooSolver {
                 coordsWithHighestProb.stream().map(coords -> new Solution(List.of(coords.toClick(highestProbValue)))).toList());
     }
 
-    public static List<Solution> getBestSolutions(Animal animalToSolve, Game game) {
-        var wipedGame = new Game(game, true);
-        var overlaps = calculateOverlaps(wipedGame);
-        return getBestSolutions(animalToSolve, wipedGame, overlaps);
-    }
-
-    private static List<Solution> getBestSolutions(Animal animalToSolve, Game game, Overlaps overlaps) {
+    private static List<Solution> getBestSolutions(Animal animalToSolve, Game game, Overlaps overlaps, StatTracker tracker) {
         var clonedGame = new Game(game, true);
         var highestOverlapCoords = findHighestOverlapCoords(overlaps, animalToSolve, true);
         if (highestOverlapCoords.isEmpty())
@@ -78,12 +78,14 @@ public class DiscoZooSolver {
         else if (highestOverlapCoords.size() == 1) {
             return List.of(new Solution(List.of(highestOverlapCoords.getFirst().toMaxProbabilityClick())));
         }
-        return emulateClicks(overlaps, animalToSolve, clonedGame, List.of(), highestOverlapCoords, Integer.MAX_VALUE);
+        return emulateClicks(overlaps, animalToSolve, clonedGame, List.of(), highestOverlapCoords, Integer.MAX_VALUE,
+                tracker);
     }
 
     private static List<Solution> emulateClicks(Overlaps overlaps, Animal animalToSolve, Game game,
                                                 List<Click> previousClicks,
-                                                List<Coords> highestOverlapCoords, int smallestSolutionLength) {
+                                                List<Coords> highestOverlapCoords, int smallestSolutionLength, StatTracker tracker) {
+        tracker.totalEmulateCalls++;
         var maxOverlapCount = overlaps.animalMaxOverlapCounts().get(animalToSolve);
         if (maxOverlapCount == null || maxOverlapCount == 0) {
             return List.of(new Solution(previousClicks));
@@ -114,16 +116,17 @@ public class DiscoZooSolver {
             var multipleClickSets = MultiClickEmulator.calculateMultiClickSets(overlaps,
                     highestOverlapCoords, animalToSolve);
             return emulateClicksForSingleAnimal(multipleClickSets, overlaps, game, previousClicks, animalToSolve,
-                    smallestSolutionLength); // This is recursive back to this main function
+                    smallestSolutionLength, tracker); // This is recursive back to this main function
         } else {
             return emulateClicksForMultipleAnimals(highestOverlapCoords, overlaps, game, previousClicks, animalToSolve,
-                    smallestSolutionLength);
+                    smallestSolutionLength, tracker);
         }
     }
 
     private static List<Solution> emulateClicksForMultipleAnimals(List<Coords> highestOverlapCoords, Overlaps overlaps,
                                                                   Game game, List<Click> previousClicks,
-                                                                  Animal animalToSolve, int smallestSolutionLength) {
+                                                                  Animal animalToSolve, int smallestSolutionLength,
+                                                                  StatTracker tracker) {
         var overallOverlap = overlaps.overallOverlap();
         List<Solution> allSolutions = new ArrayList<>();
         Map<Coords, Double> expectedNextProbabilities = new HashMap<>();
@@ -149,7 +152,7 @@ public class DiscoZooSolver {
                 var nextHighestOverlapCoords = findHighestOverlapCoords(nextOverlaps, animalToSolve, false);
 
                 var solutions = emulateClicks(nextOverlaps, animalToSolve, nextGame, nextPreviousClicks,
-                        nextHighestOverlapCoords, smallestSolutionLength);
+                        nextHighestOverlapCoords, smallestSolutionLength, tracker);
 
 
                 ExpectedValueCalculator.mutateProbabilitiesForAnimal(animalToSolve, animalToPlace, overlaps, coords,
@@ -232,7 +235,8 @@ public class DiscoZooSolver {
 
     private static List<Solution> emulateClicksForSingleAnimal(Set<Set<Coords>> multipleClickSets, Overlaps overlaps,
                                                                Game game, List<Click> previousClicks,
-                                                               Animal animalToSolve, int smallestSolutionLength) {
+                                                               Animal animalToSolve, int smallestSolutionLength,
+                                                               StatTracker tracker) {
         var allSolutions = new ArrayList<Solution>();
         for (var multiClickSet : multipleClickSets) {
             var nextOverlaps = overlaps;
@@ -268,7 +272,7 @@ public class DiscoZooSolver {
                 var highestOverlapCoords = findHighestOverlapCoords(nextOverlaps, animalToSolve, false);
                 var multiClickSolutions =  emulateClicks(nextOverlaps, animalToSolve, nextGame, nextPreviousClicks,
                         highestOverlapCoords,
-                        smallestSolutionLength);
+                        smallestSolutionLength, tracker);
 
                 // it is the worst solution compared to the other placeable animals.
                 if (multiClickSolutions.isEmpty())
