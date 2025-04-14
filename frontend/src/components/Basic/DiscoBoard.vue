@@ -155,8 +155,8 @@ export default defineComponent({
 <style scoped>
 
 button:focus {
-  transform: scale(99.50%);
-  transition-duration: .1s;
+  filter: brightness(200%);
+  transition: filter .05s;
 }
 
 .disco-board {
