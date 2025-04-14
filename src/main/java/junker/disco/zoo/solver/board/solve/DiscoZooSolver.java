@@ -99,13 +99,13 @@ public class DiscoZooSolver {
                         highestOverlapCoords);
         }
 
-        var minClicksNeeded = (animalToSolve.pattern().size() - overlaps.animalRevealedTileCounts().getOrDefault(animalToSolve
-                , 0) - 1);
+        var minClicksNeeded =
+                (animalToSolve.pattern().size() - overlaps.animalRevealedTileCounts().getOrDefault(animalToSolve
+                , 0) - 1) + (1-(int)Math.floor(overlaps.animalMinProbability().get(animalToSolve)));
 
         if (minClicksNeeded + previousClicks.size() > smallestSolutionLength) {
             System.out.printf("Not enough clicks needed: %d > %d\n", minClicksNeeded, smallestSolutionLength);
-            System.out.println("Game:");
-            System.out.println(game);
+            System.out.println("Previous clicks: " + previousClicks);
             return List.of(new Solution(IntStream.range(0, minClicksNeeded).mapToObj(unused -> new Coords(-1, -1).toClick(-1)).toList()));
         }
 
