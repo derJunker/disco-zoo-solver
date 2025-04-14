@@ -1,6 +1,7 @@
 package junker.disco.zoo.solver.board.solve;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -87,10 +88,12 @@ public class DiscoZooSolver {
         if (maxOverlapCount == null || maxOverlapCount == 0) {
             return List.of(new Solution(previousClicks));
         } else if (maxOverlapCount == 1) {
-            var noOtherAnimalOverlaps =
-                    highestOverlapCoords.stream()
-                            .allMatch(coords -> overlaps.overallOverlap()[coords.x()][coords.y()]
-                                    .stream()
+            var noOtherAnimalOverlaps = Arrays.stream(overlaps.overallOverlap())
+                    .flatMap(Arrays::stream)
+                    .filter(Objects::nonNull)
+                    .filter(list -> list.parallelStream().filter(Objects::nonNull).anyMatch(instance -> Objects.equals(instance.animal(), animalToSolve)))
+                    .allMatch(list ->
+                            list.stream()
                                     .filter(Objects::nonNull)
                                     .map(instance -> instance.animal().name())
                                     .distinct().count() == 1);
@@ -104,9 +107,7 @@ public class DiscoZooSolver {
                 , 0) - 1) + (1-(int)Math.floor(overlaps.animalMinProbability().get(animalToSolve)));
 
         if (minClicksNeeded + previousClicks.size() > smallestSolutionLength) {
-            System.out.printf("Not enough clicks needed: %d > %d\n", minClicksNeeded, smallestSolutionLength);
-            System.out.println("Previous clicks: " + previousClicks);
-            return List.of(new Solution(IntStream.range(0, minClicksNeeded).mapToObj(unused -> new Coords(-1, -1).toClick(-1)).toList()));
+            return List.of(new Solution(IntStream.range(0, minClicksNeeded + previousClicks.size()).mapToObj(unused -> new Coords(-1, -1).toClick(-1)).toList()));
         }
 
         if (overlaps.animalMaxOverlapCounts().size() == 1) {
@@ -140,8 +141,6 @@ public class DiscoZooSolver {
                 var nextOverlaps = emulateOverlapClick(overlaps, animalToPlace, animalInstances, coords, game);
                 var nextGame = new Game(game, true);
                 nextGame.setTile(coords.x(), coords.y(), true, animalToPlace);
-                ExpectedValueCalculator.mutateProbabilitiesForAnimal(animalToSolve, animalToPlace, overlaps, coords,
-                        probabilitiesForDifferentAnimals, nextProbabilitiesForDifferentAnimals, nextOverlaps);
 
                 var nextPreviousClicks = ListUtil.putLast(previousClicks, coords.toClick(-1));
                 if (nextPreviousClicks.size() > smallestSolutionLength) {
@@ -151,6 +150,12 @@ public class DiscoZooSolver {
 
                 var solutions = emulateClicks(nextOverlaps, animalToSolve, nextGame, nextPreviousClicks,
                         nextHighestOverlapCoords, smallestSolutionLength);
+
+
+                ExpectedValueCalculator.mutateProbabilitiesForAnimal(animalToSolve, animalToPlace, overlaps, coords,
+                        probabilitiesForDifferentAnimals, nextProbabilitiesForDifferentAnimals, nextOverlaps,
+                        solutions, nextPreviousClicks.size());
+
                 // it is the worst solution compared to the other placeable animals.
                 if (solutions.isEmpty()) {
                     solutions = List.of(new Solution(IntStream.range(0,
@@ -166,6 +171,8 @@ public class DiscoZooSolver {
             var expectedNextProbability =
                     ExpectedValueCalculator.expectedNextProbability(probabilitiesForDifferentAnimals,
                     nextProbabilitiesForDifferentAnimals);
+            if (previousClicks.isEmpty())
+                expectedNextProbability *= probabilitiesForDifferentAnimals.get(animalToSolve);
             expectedNextProbabilities.put(coords, expectedNextProbability);
             var newDifferentAnimalSolutions = modifyExpectedProbabilityOfSolutionsAtIndex(differentAnimalSolutions,
                     previousClicks.size(), expectedNextProbability);

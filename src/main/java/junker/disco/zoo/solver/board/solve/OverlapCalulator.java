@@ -30,10 +30,7 @@ public class OverlapCalulator {
         var maxOverlap = 1;
         for (int x = 0; x < overallOverlap.length; x++) {
             for (int y = 0; y < overallOverlap[0].length; y++) {
-                var animalTileOverlap =
-                        overallOverlap[x][y].stream()
-                                .filter(Objects::nonNull)
-                                .filter(animalBoardInstance -> animalBoardInstance.animal().equals(animalToSolve)).count();
+                var animalTileOverlap = overlaps.uniqueAnimalOverlapMap().get(animalToSolve)[x][y].size();
                 if (animalTileOverlap > 0 && isCompletelySolved) {
                     bestCandidates.add(new Coords(x, y));
                     continue;
