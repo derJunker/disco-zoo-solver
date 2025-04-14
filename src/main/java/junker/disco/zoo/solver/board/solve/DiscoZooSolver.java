@@ -15,6 +15,7 @@ import junker.disco.zoo.solver.board.AnimalBoardInstance;
 import junker.disco.zoo.solver.board.Click;
 import junker.disco.zoo.solver.board.Coords;
 import junker.disco.zoo.solver.board.Game;
+import junker.disco.zoo.solver.board.solve.return_objects.DifferentAnimalPlacementReturnObject;
 import junker.disco.zoo.solver.board.util.ListUtil;
 import junker.disco.zoo.solver.board.util.StatTracker;
 import junker.disco.zoo.solver.model.animals.Animal;
@@ -127,68 +128,97 @@ public class DiscoZooSolver {
                                                                   Game game, List<Click> previousClicks,
                                                                   Animal animalToSolve, int smallestSolutionLength,
                                                                   StatTracker tracker) {
-        var overallOverlap = overlaps.overallOverlap();
         List<Solution> allSolutions = new ArrayList<>();
         Map<Coords, Double> expectedNextProbabilities = new HashMap<>();
+        var results = new DifferentAnimalPlacementReturnObject();
         for (var coords : highestOverlapCoords) {
             Set<AnimalBoardInstance> animalInstances =
-                    new HashSet<>(overallOverlap[coords.x()][coords.y()]);
+                    new HashSet<>(overlaps.overallOverlap()[coords.x()][coords.y()]);
             var placeableAnimals = animalInstances.stream()
                     .map(animalBoardInstance -> animalBoardInstance != null? animalBoardInstance.animal() : null)
                     .collect(Collectors.toSet());
-            var differentAnimalSolutions = new ArrayList<Solution>();
-            var worstSolutionLengthForDifferentAnimals = 0;
-            var probabilitiesForDifferentAnimals = new HashMap<Animal, Double>();
-            var nextProbabilitiesForDifferentAnimals = new HashMap<Animal, Double>();
-            for (var animalToPlace : placeableAnimals) {
-                var nextOverlaps = emulateOverlapClick(overlaps, animalToPlace, animalInstances, coords, game);
-                var nextGame = new Game(game, true);
-                nextGame.setTile(coords.x(), coords.y(), true, animalToPlace);
+            placeAllPossibleAnimalsAtCoordsAndAddSolutionsToLists(placeableAnimals, animalToSolve,
+                    overlaps, animalInstances, coords, game, previousClicks, smallestSolutionLength, tracker, results);
 
-                var nextPreviousClicks = ListUtil.putLast(previousClicks, coords.toClick(-1));
-                if (nextPreviousClicks.size() > smallestSolutionLength) {
-                    continue;
-                }
-                var nextHighestOverlapCoords = findHighestOverlapCoords(nextOverlaps, animalToSolve, false);
+            expectedNextProbabilities.put(coords, results.expectedNextProbability);
 
-                var solutions = emulateClicks(nextOverlaps, animalToSolve, nextGame, nextPreviousClicks,
-                        nextHighestOverlapCoords, smallestSolutionLength, tracker);
-
-
-                ExpectedValueCalculator.mutateProbabilitiesForAnimal(animalToSolve, animalToPlace, overlaps, coords,
-                        probabilitiesForDifferentAnimals, nextProbabilitiesForDifferentAnimals, nextOverlaps,
-                        solutions, nextPreviousClicks.size());
-
-                // it is the worst solution compared to the other placeable animals.
-                if (solutions.isEmpty()) {
-                    solutions = List.of(new Solution(IntStream.range(0,
-                            game.getBoard().length * game.getBoard()[0].length).mapToObj(i -> new Coords(-1, -1).toClick(-1)).toList()));
-                }
-
-                solutions = onlyMinSolutions(solutions);
-
-                worstSolutionLengthForDifferentAnimals = ListUtil.resetAddIfAboveLimit(differentAnimalSolutions,
-                        solutions,
-                        solutions.getFirst().clicks().size(), worstSolutionLengthForDifferentAnimals);
-            }
-            var expectedNextProbability =
-                    ExpectedValueCalculator.expectedNextProbability(probabilitiesForDifferentAnimals,
-                    nextProbabilitiesForDifferentAnimals);
-            if (previousClicks.isEmpty())
-                expectedNextProbability *= probabilitiesForDifferentAnimals.get(animalToSolve);
-            expectedNextProbabilities.put(coords, expectedNextProbability);
-            var newDifferentAnimalSolutions = modifyExpectedProbabilityOfSolutionsAtIndex(differentAnimalSolutions,
-                    previousClicks.size(), expectedNextProbability);
-            if (newDifferentAnimalSolutions.isEmpty())
+            if (results.differentAnimalSolutions.isEmpty())
                 continue;
-            smallestSolutionLength = ListUtil.resetAddIfBelowLimit(allSolutions, newDifferentAnimalSolutions,
-                    differentAnimalSolutions.getFirst().clicks().size(),
-                    smallestSolutionLength);
 
+            smallestSolutionLength = ListUtil.resetAddIfBelowLimit(allSolutions, results.differentAnimalSolutions,
+                    results.differentAnimalSolutions.getFirst().clicks().size(),
+                    smallestSolutionLength);
         }
 
         return filterSolutionsByOnlyBestExpectedProbabilities(allSolutions, expectedNextProbabilities,
                 previousClicks.size());
+    }
+
+    private static void placeAllPossibleAnimalsAtCoordsAndAddSolutionsToLists
+            (Set<Animal> placeableAnimals, Animal animalToSolve, Overlaps overlaps, Set<AnimalBoardInstance> animalInstances,
+             Coords coords, Game game, List<Click> previousClicks, int smallestSolutionLength, StatTracker tracker,
+             DifferentAnimalPlacementReturnObject results) {
+        List<Solution> differentAnimalSolutions = new ArrayList<>();
+        var worstSolutionLengthForDifferentAnimals = 0;
+        var probabilitiesForDifferentAnimals = new HashMap<Animal, Double>();
+        var nextProbabilitiesForDifferentAnimals = new HashMap<Animal, Double>();
+        for (var animalToPlace : placeableAnimals) {
+            var solutions = placeAnimalAndEmulateFurtherClicks(animalToPlace, animalToSolve, overlaps,
+                    animalInstances, coords, game, previousClicks, smallestSolutionLength, tracker,
+                    probabilitiesForDifferentAnimals, nextProbabilitiesForDifferentAnimals);
+            if (solutions != null) {
+                worstSolutionLengthForDifferentAnimals = ListUtil.resetAddIfAboveLimit(differentAnimalSolutions,
+                        solutions,
+                        solutions.getFirst().clicks().size(), worstSolutionLengthForDifferentAnimals);
+            }
+        }
+
+        var expectedNextProbability =
+                ExpectedValueCalculator.expectedNextProbability(probabilitiesForDifferentAnimals,
+                        nextProbabilitiesForDifferentAnimals);
+
+        if (previousClicks.isEmpty())
+            expectedNextProbability *= probabilitiesForDifferentAnimals.get(animalToSolve);
+
+        differentAnimalSolutions = modifyExpectedProbabilityOfSolutionsAtIndex(differentAnimalSolutions,
+                previousClicks.size(), expectedNextProbability);
+
+        results.differentAnimalSolutions = differentAnimalSolutions;
+        results.expectedNextProbability = expectedNextProbability;
+    }
+
+    private static List<Solution> placeAnimalAndEmulateFurtherClicks(Animal animalToPlace,
+                                                          Animal animalToSolve, Overlaps overlaps, Set<AnimalBoardInstance> animalInstances,
+                                                          Coords coords, Game game, List<Click> previousClicks,
+                                                          int smallestSolutionLength, StatTracker tracker,
+                                                          Map<Animal, Double> probabilitiesForDifferentAnimals,
+                                                          Map<Animal, Double> nextProbabilitiesForDifferentAnimals){
+        var nextOverlaps = emulateOverlapClick(overlaps, animalToPlace, animalInstances, coords, game);
+        var nextGame = new Game(game, true);
+        nextGame.setTile(coords.x(), coords.y(), true, animalToPlace);
+
+        var nextPreviousClicks = ListUtil.putLast(previousClicks, coords.toClick(-1));
+        if (nextPreviousClicks.size() > smallestSolutionLength) {
+            return null;
+        }
+        var nextHighestOverlapCoords = findHighestOverlapCoords(nextOverlaps, animalToSolve, false);
+
+        var solutions = emulateClicks(nextOverlaps, animalToSolve, nextGame, nextPreviousClicks,
+                nextHighestOverlapCoords, smallestSolutionLength, tracker);
+
+
+        ExpectedValueCalculator.mutateProbabilitiesForAnimal(animalToSolve, animalToPlace, overlaps, coords,
+                probabilitiesForDifferentAnimals, nextProbabilitiesForDifferentAnimals, nextOverlaps,
+                solutions, nextPreviousClicks.size());
+
+        // it is the worst solution compared to the other placeable animals.
+        if (solutions.isEmpty()) {
+            solutions = List.of(new Solution(IntStream.range(0,
+                    game.getBoard().length * game.getBoard()[0].length).mapToObj(i -> new Coords(-1, -1).toClick(-1)).toList()));
+        }
+
+        solutions = onlyMinSolutions(solutions);
+        return solutions;
     }
 
     private static List<Solution> modifyExpectedProbabilityOfSolutionsAtIndex(List<Solution> differentAnimalSolutions,
