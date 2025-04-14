@@ -129,4 +129,33 @@ public class Game {
     public Tile getTile(Coords coords) {
         return board[coords.x()][coords.y()];
     }
+
+    public String hashString(Animal animalToSolve) {
+        final var wipedBoard = this.calcWipedBoard();
+        StringBuilder sb = new StringBuilder();
+        sb  .append("s=")
+                .append(animalToSolve.name())
+                .append(";");
+        sb.append("a=[");
+        sb.append(this.getContainedAnimals().stream().map(Animal::name).reduce((a, b) -> a + "," + b).orElse(""));
+        sb.append("];");
+        sb.append("b=[");
+        for (var x = 0; x < wipedBoard.length; x++) {
+            for (var y = 0; y < wipedBoard[0].length; y++) {
+                var tile = wipedBoard[x][y];
+                if (tile.isRevealed() && tile.isOccupied()) {
+                    sb.append(x).append(",").append(y).append("->");
+                    sb.append(tile.getAnimalBoardInstance().animal().name());
+                } else if(tile.isRevealed() && !tile.isOccupied()){
+                    sb.append("-");
+                } else {
+                    sb.append("?");
+                }
+            }
+            sb.append("/");
+        }
+        sb.append("];");
+
+        return sb.toString();
+    }
 }
