@@ -8,6 +8,9 @@ public class StatTracker {
     public int totalEmulateCalls = 0;
     public int initialPermutationSize = 0;
 
+    public int successfulCachedEmulationCalls = 0;
+    public int totalCachedEmulationCalls = 0;
+
     private long startTime = 0;
     private long endTime = 0;
 
@@ -42,6 +45,8 @@ public class StatTracker {
         if (endTime > startTime) {
             stats.append("Time taken: ").append(endTime - startTime).append(" ms\n");
         }
+        stats.append("Successful cached emulation calls: ").append(successfulCachedEmulationCalls).append(" of ")
+                .append(totalCachedEmulationCalls).append("(").append("%.4f".formatted((double) successfulCachedEmulationCalls / totalCachedEmulationCalls * 100)).append("%)\n");
         System.out.println(stats);
     }
 }
