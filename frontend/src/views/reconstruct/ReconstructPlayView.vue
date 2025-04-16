@@ -178,8 +178,9 @@ export default defineComponent({
       }
       this.game = game
       this.animals = game?.containedAnimals || []
-      this.animalForHeatmap = this.initialHeatMapAnimalName? this.animals.filter(animal => animal.name ===
-              this.initialHeatMapAnimalName)[0] || this.animals[this.animals.length - 1] : this.animals[this.animals.length - 1]
+      this.animalForHeatmap = this.initialHeatMapAnimalName? this.animals.filter(animal => animal.name.toLowerCase() ===
+              this.initialHeatMapAnimalName?.toLowerCase())[0] || this.animals[this.animals.length - 1] :
+          this.animals[this.animals.length - 1]
     })
     sortAnimalsByRarity(this.animals)
 
