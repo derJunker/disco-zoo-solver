@@ -207,18 +207,13 @@ public class DiscoZooSolver {
             return null;
         }
 
-        var potentialSolutions = singularBoardCalcTracker.getIfPresent(nextGame, animalToSolve, nextPreviousClicks, tracker);
-        if (potentialSolutions != null) {
-            ExpectedValueCalculator.mutateProbabilitiesForAnimal(animalToSolve, animalToPlace, overlaps, coords,
-                    probabilitiesForDifferentAnimals, nextProbabilitiesForDifferentAnimals, nextOverlaps,
-                    potentialSolutions, nextPreviousClicks.size());
-            return potentialSolutions;
+        var solutions = singularBoardCalcTracker.getIfPresent(nextGame, animalToSolve, nextPreviousClicks, tracker);
+        if (solutions == null) {
+            var nextHighestOverlapCoords = findHighestOverlapCoords(nextOverlaps, animalToSolve, false);
+
+            solutions = emulateClicks(nextOverlaps, animalToSolve, nextGame, nextPreviousClicks,
+                    nextHighestOverlapCoords, smallestSolutionLength, tracker, singularBoardCalcTracker);
         }
-
-        var nextHighestOverlapCoords = findHighestOverlapCoords(nextOverlaps, animalToSolve, false);
-
-        var solutions = emulateClicks(nextOverlaps, animalToSolve, nextGame, nextPreviousClicks,
-                nextHighestOverlapCoords, smallestSolutionLength, tracker, singularBoardCalcTracker);
 
         ExpectedValueCalculator.mutateProbabilitiesForAnimal(animalToSolve, animalToPlace, overlaps, coords,
                 probabilitiesForDifferentAnimals, nextProbabilitiesForDifferentAnimals, nextOverlaps,
