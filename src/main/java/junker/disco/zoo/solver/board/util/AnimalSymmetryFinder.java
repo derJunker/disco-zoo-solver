@@ -118,4 +118,23 @@ public class AnimalSymmetryFinder {
         result.put("horizontal", horizontalSymmetry);
         return result;
     }
+
+    public static Coords getSymmetryCoords(Coords coords, int gameWidth, int gameHeight, boolean verticalSymmetry,
+                                           boolean horizontalSymmetry) {
+        double centerX = (gameWidth - 1) / 2.0;
+        double centerY = (gameHeight - 1) / 2.0;
+
+        int x = coords.x();
+        int y = coords.y();
+
+        if (verticalSymmetry && x > centerX) {
+            x = (int) (2 * centerX - x);
+        }
+
+        if (horizontalSymmetry && y > centerY) {
+            y = (int) (2 * centerY - y);
+        }
+
+        return new Coords(x, y);
+    }
 }

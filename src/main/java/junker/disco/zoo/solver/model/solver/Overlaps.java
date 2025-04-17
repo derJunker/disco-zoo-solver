@@ -16,7 +16,9 @@ public record Overlaps(
         Set<Tile[][]> permutations,
         Map<Animal, Integer> animalMaxOverlapCounts,
         Map<Animal, Double> animalMinProbability,
-        Map<Animal, Integer> animalRevealedTileCounts
+        Map<Animal, Integer> animalRevealedTileCounts,
+        boolean verticalSymmetry,
+        boolean horizontalSymmetry
 ) {
     @Override
     public String toString() {

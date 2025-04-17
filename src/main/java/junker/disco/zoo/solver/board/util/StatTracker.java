@@ -11,8 +11,12 @@ public class StatTracker {
     public int successfulCachedEmulationCalls = 0;
     public int totalCachedEmulationCalls = 0;
 
+    public long symmetricPermutations = 0;
+    public long totalPermutations = 0;
+
     private long startTime = 0;
     private long endTime = 0;
+
 
     private Game game;
     private Animal animalToSearch;
@@ -47,6 +51,8 @@ public class StatTracker {
         }
         stats.append("Successful cached emulation calls: ").append(successfulCachedEmulationCalls).append(" of ")
                 .append(totalCachedEmulationCalls).append("(").append("%.4f".formatted((double) successfulCachedEmulationCalls / totalCachedEmulationCalls * 100)).append("%)\n");
+        stats.append("Symmetric permutations: ").append(symmetricPermutations).append(" of ")
+                .append(totalPermutations).append("(").append("%.4f".formatted((double) symmetricPermutations / totalPermutations * 100)).append("%)\n");
         System.out.println(stats);
     }
 }

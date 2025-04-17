@@ -9,6 +9,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import junker.disco.zoo.solver.board.AnimalBoardInstance;
+import junker.disco.zoo.solver.board.util.AnimalSymmetryFinder;
 import junker.disco.zoo.solver.board.util.BoardUtil;
 import junker.disco.zoo.solver.board.Coords;
 import junker.disco.zoo.solver.board.Game;
@@ -44,6 +45,11 @@ public class OverlapCalulator {
                 }
             }
         }
+        bestCandidates.sort((c1, c2) -> {
+            var c1Prob = overlaps.animalOverlapProbability().get(animalToSolve)[c1.x()][c1.y()];
+            var c2Prob = overlaps.animalOverlapProbability().get(animalToSolve)[c2.x()][c2.y()];
+            return Double.compare(c1Prob, c2Prob);
+        });
         return bestCandidates;
     }
 
@@ -70,6 +76,14 @@ public class OverlapCalulator {
         final var boardWidth = board.length;
         final var boardHeight = board[0].length;
 
+        var verticalSymmetry = game.getContainedAnimals().stream().allMatch(Animal::horizontalSymmetry);
+        var horizontalSymmetry = game.getContainedAnimals().stream().allMatch(Animal::verticalSymmetry);
+        if (verticalSymmetry || horizontalSymmetry) {
+            var map = AnimalSymmetryFinder.isSymmetric(game);
+            verticalSymmetry = map.get("vertical") && verticalSymmetry;
+            horizontalSymmetry = map.get("horizontal") && horizontalSymmetry;
+        }
+
         List<AnimalBoardInstance>[][] overallOverlap = new List[boardWidth][boardHeight];
         Map<Animal, Set<AnimalBoardInstance>[][]> animalOverlap = new java.util.HashMap<>();
         Map<Animal, Integer> animalRevealedTileCounts = new java.util.HashMap<>();
@@ -83,7 +97,7 @@ public class OverlapCalulator {
                 boardWidth, boardHeight, animalMinProbabilities);
 
         return new Overlaps(overallOverlap, animalOverlap, animalOverlapProbabilities, permutations,
-                animalMaxOverlaps, animalMinProbabilities, animalRevealedTileCounts);
+                animalMaxOverlaps, animalMinProbabilities, animalRevealedTileCounts, verticalSymmetry, horizontalSymmetry);
     }
 
     private static void setOverlaps(List<AnimalBoardInstance>[][] overallOverlap,
