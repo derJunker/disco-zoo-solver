@@ -11,6 +11,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import com.sun.jdi.ClassObjectReference;
 import junker.disco.zoo.solver.board.AnimalBoardInstance;
 import junker.disco.zoo.solver.board.Click;
 import junker.disco.zoo.solver.board.Coords;
@@ -208,6 +209,9 @@ public class DiscoZooSolver {
 
         var potentialSolutions = singularBoardCalcTracker.getIfPresent(nextGame, animalToSolve, nextPreviousClicks, tracker);
         if (potentialSolutions != null) {
+            ExpectedValueCalculator.mutateProbabilitiesForAnimal(animalToSolve, animalToPlace, overlaps, coords,
+                    probabilitiesForDifferentAnimals, nextProbabilitiesForDifferentAnimals, nextOverlaps,
+                    potentialSolutions, nextPreviousClicks.size());
             return potentialSolutions;
         }
 
