@@ -1,5 +1,6 @@
 package junker.disco.zoo.solver.board.util;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -7,6 +8,7 @@ import java.util.Map;
 import java.util.Set;
 
 import junker.disco.zoo.solver.board.Coords;
+import junker.disco.zoo.solver.board.Game;
 
 public class AnimalSymmetryFinder {
     public static Map<String, Boolean> isSymmetric(List<Coords> pattern) {
@@ -60,6 +62,54 @@ public class AnimalSymmetryFinder {
             if (allMatch) {
                 horizontalSymmetry = true;
                 break;
+            }
+        }
+
+        Map<String, Boolean> result = new HashMap<>();
+        result.put("vertical", verticalSymmetry);
+        result.put("horizontal", horizontalSymmetry);
+        return result;
+    }
+
+    public static Map<String, Boolean> isSymmetric(Game game) {
+        var arr = game.getBoard();
+        int width = arr.length;     if (width == 0) return Map.of("vertical", true, "horizontal", true);
+        int height = arr[0].length; if (height == 0) return Map.of("vertical", true, "horizontal", true);
+
+        double centerX = (width-1) / 2.0;
+        double centerY = (height-1) / 2.0;
+
+        boolean verticalSymmetry = true;
+        boolean horizontalSymmetry = true;
+
+        // Vertical symmetry: mirror around vertical center line (x = centerX)
+        outerV:
+        for (int x = 0; x < width; x++) {
+            int mirrorX = (int) (2 * centerX - x);
+            for (int y = 0; y < height; y++) {
+                var tile = arr[x][y];
+                if (tile.isRevealed() && tile.isOccupied())
+                    return Map.of("vertical", false, "horizontal", false);
+                if (tile.isRevealed() != arr[mirrorX][y].isRevealed()) {
+                    verticalSymmetry = false;
+                    break outerV;
+                }
+            }
+        }
+
+        // Horizontal symmetry: mirror around horizontal center line (y = centerY)
+        outerH:
+        for (int y = 0; y < height; y++) {
+            int mirrorY = (int) (2 * centerY - y);
+            if (mirrorY < 0 || mirrorY >= height) continue;
+            for (int x = 0; x < width; x++) {
+                var tile = arr[x][y];
+                if (tile.isRevealed() && tile.isOccupied())
+                    return Map.of("vertical", false, "horizontal", false);
+                if (tile.isRevealed() != arr[x][mirrorY].isRevealed()) {
+                    horizontalSymmetry = false;
+                    break outerH;
+                }
             }
         }
 
