@@ -144,13 +144,7 @@ public class DiscoZooSolver {
         Map<Coords, Double> expectedNextProbabilities = new HashMap<>();
         var results = new DifferentAnimalPlacementReturnObject();
         highestOverlapCoords.keySet().parallelStream()
-        .sorted((c1, c2) -> {
-            var c1Prob = overlaps.animalOverlapProbability().get(animalToSolve)[c1.x()][c1.y()];
-            var c2Prob = overlaps.animalOverlapProbability().get(animalToSolve)[c2.x()][c2.y()];
-            return Double.compare(c1Prob, c2Prob);
-        })
         .forEach(
-//        .forEachOrdered(
                 coords -> {
             var symmetryCoords = AnimalSymmetryFinder.getSymmetryCoords(coords,
                     game.getBoard().length, game.getBoard()[0].length,
@@ -269,10 +263,6 @@ public class DiscoZooSolver {
 
             solutions = emulateClicks(nextOverlaps, animalToSolve, nextGame, nextPreviousClicks,
                     nextHighestOverlapCoords, smallestSolutionLength, tracker, singularBoardCalcTracker);
-
-            if (previousClicks.size() == 1 && previousClicks.getFirst().coords().equals(new Coords(3, 2)) &&
-                    coords.x() == 2 && coords.y() == 3 && animalToPlace == null)
-                System.out.println("solutions for croc: " + solutions);
         }
 
         ExpectedValueCalculator.mutateProbabilitiesForAnimal(animalToSolve, animalToPlace, overlaps, coords,
