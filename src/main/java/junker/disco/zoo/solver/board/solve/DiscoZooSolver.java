@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -16,9 +17,8 @@ import junker.disco.zoo.solver.board.Click;
 import junker.disco.zoo.solver.board.Coords;
 import junker.disco.zoo.solver.board.Game;
 import junker.disco.zoo.solver.board.solve.return_objects.DifferentAnimalPlacementReturnObject;
-import junker.disco.zoo.solver.board.solve.speedup.SingularBoardCalcTracker;
+import junker.disco.zoo.solver.board.solve.singular_board_result_caching.SingularBoardCalcTracker;
 import junker.disco.zoo.solver.board.util.AnimalSymmetryFinder;
-import junker.disco.zoo.solver.board.util.DoubleArrayUtil;
 import junker.disco.zoo.solver.board.util.ListUtil;
 import junker.disco.zoo.solver.board.util.StatTracker;
 import junker.disco.zoo.solver.model.animals.Animal;
@@ -30,6 +30,7 @@ import static junker.disco.zoo.solver.board.solve.NoOverlapSolutionFinder.soluti
 import static junker.disco.zoo.solver.board.solve.OverlapCalulator.calculateOverlaps;
 import static junker.disco.zoo.solver.board.solve.OverlapCalulator.emulateOverlapClick;
 import static junker.disco.zoo.solver.board.solve.OverlapCalulator.findHighestOverlapCoords;
+import static junker.disco.zoo.solver.board.util.MapUtil.convertWithIteration;
 
 public class DiscoZooSolver {
 
@@ -138,15 +139,19 @@ public class DiscoZooSolver {
                                                                   Game game, List<Click> previousClicks,
                                                                   Animal animalToSolve, int smallestSolutionLength,
                                                                   StatTracker tracker, SingularBoardCalcTracker singularBoardCalcTracker) {
+        var atomicSmallestSolutionLength = new AtomicInteger(smallestSolutionLength);
         List<Solution> allSolutions = new ArrayList<>();
         Map<Coords, Double> expectedNextProbabilities = new HashMap<>();
         var results = new DifferentAnimalPlacementReturnObject();
-        var sortedHighestOverlapCoordKeys = highestOverlapCoords.keySet().stream().sorted((c1, c2) -> {
+        highestOverlapCoords.keySet().parallelStream()
+        .sorted((c1, c2) -> {
             var c1Prob = overlaps.animalOverlapProbability().get(animalToSolve)[c1.x()][c1.y()];
             var c2Prob = overlaps.animalOverlapProbability().get(animalToSolve)[c2.x()][c2.y()];
             return Double.compare(c1Prob, c2Prob);
-        }).toList();
-        for (var coords : sortedHighestOverlapCoordKeys) {
+        })
+        .forEach(
+//        .forEachOrdered(
+                coords -> {
             var symmetryCoords = AnimalSymmetryFinder.getSymmetryCoords(coords,
                     game.getBoard().length, game.getBoard()[0].length,
                     overlaps.verticalSymmetry(), overlaps.horizontalSymmetry());
@@ -157,7 +162,7 @@ public class DiscoZooSolver {
                     throw new IllegalStateException("Some assumption about symmetry is wrong, coords: " + coords + " " +
                             "symmetryCoords: " + symmetryCoords + "contained animals: " + game.getContainedAnimals());
                 if (!previousClicks.isEmpty()) {
-                    continue;
+                    return;
                 }
                 tracker.symmetricPermutations++;
                 coords = symmetryCoords;
@@ -171,7 +176,8 @@ public class DiscoZooSolver {
                     .map(animalBoardInstance -> animalBoardInstance != null? animalBoardInstance.animal() : null)
                     .collect(Collectors.toSet());
             placeAllPossibleAnimalsAtCoordsAndAddSolutionsToResult(placeableAnimals, animalToSolve,
-                    overlaps, animalInstances, coords, game, previousClicks, smallestSolutionLength, tracker, results
+                    overlaps, animalInstances, coords, game, previousClicks, atomicSmallestSolutionLength.get(), tracker,
+                    results
                     , singularBoardCalcTracker);
 
             var differentAnimalSolutions = results.differentAnimalSolutions;
@@ -181,12 +187,13 @@ public class DiscoZooSolver {
             expectedNextProbabilities.put(oldCoords, results.expectedNextProbability);
 
             if (differentAnimalSolutions.isEmpty())
-                continue;
-
-            smallestSolutionLength = ListUtil.resetAddIfBelowLimit(allSolutions, differentAnimalSolutions,
-                    differentAnimalSolutions.getFirst().clicks().size(),
-                    smallestSolutionLength);
-        }
+                return;
+            var finalDifferentAnimalSolutions = new ArrayList<>(differentAnimalSolutions);
+            atomicSmallestSolutionLength.updateAndGet(current -> ListUtil.resetAddIfBelowLimit(allSolutions,
+                    finalDifferentAnimalSolutions,
+                    finalDifferentAnimalSolutions.getFirst().clicks().size(),
+                    current));
+        });
 
         return filterSolutionsByOnlyBestExpectedProbabilities(allSolutions, expectedNextProbabilities,
                 previousClicks.size());
@@ -262,6 +269,10 @@ public class DiscoZooSolver {
 
             solutions = emulateClicks(nextOverlaps, animalToSolve, nextGame, nextPreviousClicks,
                     nextHighestOverlapCoords, smallestSolutionLength, tracker, singularBoardCalcTracker);
+
+            if (previousClicks.size() == 1 && previousClicks.getFirst().coords().equals(new Coords(3, 2)) &&
+                    coords.x() == 2 && coords.y() == 3 && animalToPlace == null)
+                System.out.println("solutions for croc: " + solutions);
         }
 
         ExpectedValueCalculator.mutateProbabilitiesForAnimal(animalToSolve, animalToPlace, overlaps, coords,
@@ -273,8 +284,9 @@ public class DiscoZooSolver {
             solutions = List.of(new Solution(IntStream.range(0,
                     game.getBoard().length * game.getBoard()[0].length).mapToObj(i -> new Coords(-1, -1).toClick(-1)).toList()));
         }
-
-        singularBoardCalcTracker.add(nextGame, solutions, animalToSolve, nextPreviousClicks);
+        else {
+            singularBoardCalcTracker.add(nextGame, solutions, animalToSolve, nextPreviousClicks);
+        }
 
         return solutions;
     }

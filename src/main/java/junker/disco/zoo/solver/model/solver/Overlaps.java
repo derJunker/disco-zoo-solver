@@ -40,13 +40,13 @@ public record Overlaps(
         }
         sb.append("overallOverlap=\n");
         sb.append(DoubleArrayUtil.aggregatedListArrayAsCoordinatesString(overallOverlap));
-        sb.append(",\npermutations=\n");
-        for (var perm : permutations) {
-            sb.append(DoubleArrayUtil.arrayAsCoordinatesString(perm));
-            sb.append("\n");
-        }
         sb.append(",\nanimalMaxOverlapCounts=");
         sb.append(animalMaxOverlapCounts);
+//        sb.append(",\npermutations=\n");
+//        for (var perm : permutations) {
+//            sb.append(DoubleArrayUtil.arrayAsCoordinatesString(perm));
+//            sb.append("\n");
+//        }
         sb.append("}");
         return sb.toString();
     }

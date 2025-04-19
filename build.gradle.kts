@@ -17,9 +17,9 @@ java {
     sourceCompatibility = JavaVersion.VERSION_21
 }
 
-tasks.processResources {
-    dependsOn("copyFrontend")
-}
+//tasks.processResources {
+//    dependsOn("copyFrontend")
+//}
 
 tasks.register<Copy>("copyFrontend") {
     dependsOn("npmBuild")
