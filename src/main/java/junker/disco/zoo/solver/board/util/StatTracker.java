@@ -12,7 +12,10 @@ public class StatTracker {
     public int totalCachedEmulationCalls = 0;
 
     public long symmetricPermutations = 0;
-    public long totalPermutations = 0;
+    public long asymmetricPermutations = 0;
+
+    public long earlyInterrupt = 0;
+    public long recursiveCalls = 0;
 
     private long startTime = 0;
     private long endTime = 0;
@@ -51,8 +54,10 @@ public class StatTracker {
         }
         stats.append("Successful cached emulation calls: ").append(successfulCachedEmulationCalls).append(" of ")
                 .append(totalCachedEmulationCalls).append("(").append("%.4f".formatted((double) successfulCachedEmulationCalls / totalCachedEmulationCalls * 100)).append("%)\n");
-        stats.append("Symmetric permutations: ").append(symmetricPermutations).append(" of ")
-                .append(totalPermutations).append("(").append("%.4f".formatted((double) symmetricPermutations / totalPermutations * 100)).append("%)\n");
+        stats.append("Symmetric permutations: ").append(symmetricPermutations).append(" of ").append((symmetricPermutations + asymmetricPermutations)).append(" (")
+                .append("%.4f".formatted((double) symmetricPermutations / (symmetricPermutations + asymmetricPermutations) * 100)).append("%)\n");
+        stats.append("Early interrupts: ").append(earlyInterrupt).append(" of ").append(totalEmulateCalls).append(" (")
+                .append("%.4f".formatted((double) earlyInterrupt / recursiveCalls * 100)).append("%)\n");
         System.out.println(stats);
     }
 }

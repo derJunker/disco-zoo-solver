@@ -1,7 +1,9 @@
 package junker.disco.zoo.solver.board.solve;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -19,37 +21,32 @@ import junker.disco.zoo.solver.model.animals.Animal;
 import junker.disco.zoo.solver.model.solver.Overlaps;
 
 public class OverlapCalulator {
-    public static List<Coords> findHighestOverlapCoords(Overlaps overlaps, Animal animalToSolve,
+    public static Map<Coords, List<AnimalBoardInstance>> findHighestOverlapCoords(Overlaps overlaps, Animal animalToSolve,
                                                         boolean includeSolved) {
         var overallOverlap = overlaps.overallOverlap();
         var animalMinProbability = overlaps.animalMinProbability().get(animalToSolve);
         if (animalMinProbability == null)
-            return List.of();
+            return Map.of();
         boolean isCompletelySolved = animalMinProbability> 0.9999;
-        var bestCandidates = new ArrayList<Coords>();
+        var bestCandidates = new HashMap<Coords, List<AnimalBoardInstance>>();
         int permutationSize = overlaps.permutations().size();
         var maxOverlap = 1;
         for (int x = 0; x < overallOverlap.length; x++) {
             for (int y = 0; y < overallOverlap[0].length; y++) {
                 var animalTileOverlap = overlaps.uniqueAnimalOverlapMap().get(animalToSolve)[x][y].size();
                 if (animalTileOverlap > 0 && isCompletelySolved) {
-                    bestCandidates.add(new Coords(x, y));
+                    bestCandidates.put(new Coords(x, y), overallOverlap[x][y]);
                     continue;
                 }
                 if (animalTileOverlap > maxOverlap && (animalTileOverlap < permutationSize || includeSolved)) {
                     bestCandidates.clear();
-                    bestCandidates.add(new Coords(x, y));
+                    bestCandidates.put(new Coords(x, y), overallOverlap[x][y]);
                     maxOverlap = (int) animalTileOverlap;
                 } else if (animalTileOverlap == maxOverlap && (animalTileOverlap < permutationSize || includeSolved)) {
-                    bestCandidates.add(new Coords(x, y));
+                    bestCandidates.put(new Coords(x, y), overallOverlap[x][y]);
                 }
             }
         }
-        bestCandidates.sort((c1, c2) -> {
-            var c1Prob = overlaps.animalOverlapProbability().get(animalToSolve)[c1.x()][c1.y()];
-            var c2Prob = overlaps.animalOverlapProbability().get(animalToSolve)[c2.x()][c2.y()];
-            return Double.compare(c1Prob, c2Prob);
-        });
         return bestCandidates;
     }
 

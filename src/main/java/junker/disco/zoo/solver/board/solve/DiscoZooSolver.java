@@ -18,6 +18,7 @@ import junker.disco.zoo.solver.board.Game;
 import junker.disco.zoo.solver.board.solve.return_objects.DifferentAnimalPlacementReturnObject;
 import junker.disco.zoo.solver.board.solve.speedup.SingularBoardCalcTracker;
 import junker.disco.zoo.solver.board.util.AnimalSymmetryFinder;
+import junker.disco.zoo.solver.board.util.DoubleArrayUtil;
 import junker.disco.zoo.solver.board.util.ListUtil;
 import junker.disco.zoo.solver.board.util.StatTracker;
 import junker.disco.zoo.solver.model.animals.Animal;
@@ -79,7 +80,7 @@ public class DiscoZooSolver {
         if (highestOverlapCoords.isEmpty())
             return List.of();
         else if (highestOverlapCoords.size() == 1) {
-            return List.of(new Solution(List.of(highestOverlapCoords.getFirst().toMaxProbabilityClick())));
+            return List.of(new Solution(List.of(highestOverlapCoords.keySet().iterator().next().toMaxProbabilityClick())));
         }
         return emulateClicks(overlaps, animalToSolve, clonedGame, List.of(), highestOverlapCoords, Integer.MAX_VALUE,
                 tracker, new SingularBoardCalcTracker());
@@ -87,7 +88,7 @@ public class DiscoZooSolver {
 
     private static List<Solution> emulateClicks(Overlaps overlaps, Animal animalToSolve, Game game,
                                                 List<Click> previousClicks,
-                                                List<Coords> highestOverlapCoords, int smallestSolutionLength,
+                                                Map<Coords, List<AnimalBoardInstance>> highestOverlapCoords, int smallestSolutionLength,
                                                 StatTracker tracker, SingularBoardCalcTracker singularBoardCalcTracker) {
         tracker.totalEmulateCalls++;
         var maxOverlapCount = overlaps.animalMaxOverlapCounts().get(animalToSolve);
@@ -108,17 +109,23 @@ public class DiscoZooSolver {
                         highestOverlapCoords);
         }
 
+        var nonNullHighestOverlapValues = new HashMap<Coords, List<AnimalBoardInstance>>();
+        highestOverlapCoords.forEach(((coords, animalBoardInstances) -> nonNullHighestOverlapValues.put(coords,
+                animalBoardInstances.stream().filter(Objects::nonNull).toList())));
+        var minClicksTilDiscovery = IndependentSetsCalculator.calculateMaxIndependentSubSets(nonNullHighestOverlapValues, AnimalBoardInstance::toString).stream().map(Set::size).mapToInt(val -> val).min().orElse(0);
+
         var minClicksNeeded =
                 (animalToSolve.pattern().size() - overlaps.animalRevealedTileCounts().getOrDefault(animalToSolve
-                , 0) - 1) + (1-(int)Math.floor(overlaps.animalMinProbability().get(animalToSolve)));
+                , 0) - 1) + minClicksTilDiscovery;
 
+        tracker.recursiveCalls++;
         if (minClicksNeeded + previousClicks.size() > smallestSolutionLength) {
+            tracker.earlyInterrupt++;
             return List.of(new Solution(IntStream.range(0, minClicksNeeded + previousClicks.size()).mapToObj(unused -> new Coords(-1, -1).toClick(-1)).toList()));
         }
-
         if (overlaps.animalMaxOverlapCounts().size() == 1) {
             var multipleClickSets = MultiClickEmulator.calculateMultiClickSets(overlaps,
-                    highestOverlapCoords, animalToSolve);
+                    highestOverlapCoords.keySet(), animalToSolve);
             return emulateClicksForSingleAnimal(multipleClickSets, overlaps, game, previousClicks, animalToSolve,
                     smallestSolutionLength, tracker); // This is recursive back to this main function
         } else {
@@ -127,21 +134,26 @@ public class DiscoZooSolver {
         }
     }
 
-    private static List<Solution> emulateClicksForMultipleAnimals(List<Coords> highestOverlapCoords, Overlaps overlaps,
+    private static List<Solution> emulateClicksForMultipleAnimals(Map<Coords, List<AnimalBoardInstance>> highestOverlapCoords, Overlaps overlaps,
                                                                   Game game, List<Click> previousClicks,
                                                                   Animal animalToSolve, int smallestSolutionLength,
                                                                   StatTracker tracker, SingularBoardCalcTracker singularBoardCalcTracker) {
         List<Solution> allSolutions = new ArrayList<>();
         Map<Coords, Double> expectedNextProbabilities = new HashMap<>();
         var results = new DifferentAnimalPlacementReturnObject();
-        for (var coords : highestOverlapCoords) {
+        var sortedHighestOverlapCoordKeys = highestOverlapCoords.keySet().stream().sorted((c1, c2) -> {
+            var c1Prob = overlaps.animalOverlapProbability().get(animalToSolve)[c1.x()][c1.y()];
+            var c2Prob = overlaps.animalOverlapProbability().get(animalToSolve)[c2.x()][c2.y()];
+            return Double.compare(c1Prob, c2Prob);
+        }).toList();
+        for (var coords : sortedHighestOverlapCoordKeys) {
             var symmetryCoords = AnimalSymmetryFinder.getSymmetryCoords(coords,
                     game.getBoard().length, game.getBoard()[0].length,
                     overlaps.verticalSymmetry(), overlaps.horizontalSymmetry());
             var oldCoords = coords;
             boolean mirroredCoords = !symmetryCoords.equals(oldCoords);
             if (mirroredCoords) {
-                if (!highestOverlapCoords.contains(symmetryCoords))
+                if (!highestOverlapCoords.containsKey(symmetryCoords))
                     throw new IllegalStateException("Some assumption about symmetry is wrong, coords: " + coords + " " +
                             "symmetryCoords: " + symmetryCoords + "contained animals: " + game.getContainedAnimals());
                 if (!previousClicks.isEmpty()) {
@@ -150,8 +162,8 @@ public class DiscoZooSolver {
                 tracker.symmetricPermutations++;
                 coords = symmetryCoords;
             }
-            if (previousClicks.isEmpty()) {
-                tracker.totalPermutations++;
+            else if (previousClicks.isEmpty()) {
+                tracker.asymmetricPermutations++;
             }
             Set<AnimalBoardInstance> animalInstances =
                     new HashSet<>(overlaps.overallOverlap()[coords.x()][coords.y()]);
