@@ -9,7 +9,7 @@ const scoreWeights = {
 
 export function calculateAccuracy(accuracy: number, percentageBestClicks: number): number {
     const accuracyWeight = 0.95;
-    return (accuracy * accuracyWeight) + (percentageBestClicks * (1-accuracyWeight));
+    return (Math.min(1, accuracy) * accuracyWeight) + (percentageBestClicks * (1-accuracyWeight));
 }
 
 export function calculateScore(clickHistory: AccuracyGameHistoryElement[], withTimeless: boolean): number {
