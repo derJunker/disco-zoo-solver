@@ -57,6 +57,9 @@ public class DiscoZooSolver {
                 pNullSum += pNull;
             }
         }
+        if (pNullSum == 0) {
+            return new BestMoveInformation(nullProbs, List.of());
+        }
         var coordsWithHighestProb = new ArrayList<Coords>();
         var highestProb = Double.NEGATIVE_INFINITY;
         var buxProb = new Double[game.getBoard().length][game.getBoard()[0].length];
