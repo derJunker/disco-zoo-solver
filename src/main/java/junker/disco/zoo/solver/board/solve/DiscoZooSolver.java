@@ -152,9 +152,6 @@ public class DiscoZooSolver {
             var oldCoords = coords;
             boolean mirroredCoords = !symmetryCoords.equals(oldCoords);
             if (mirroredCoords) {
-                if (!highestOverlapCoords.containsKey(symmetryCoords))
-                    throw new IllegalStateException("Some assumption about symmetry is wrong, coords: " + coords + " " +
-                            "symmetryCoords: " + symmetryCoords + "contained animals: " + game.getContainedAnimals());
                 if (!previousClicks.isEmpty()) {
                     return;
                 }
