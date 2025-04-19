@@ -97,7 +97,8 @@ export default defineComponent({
       return {
         'best-click': this.bestClicks && this.bestClicks.filter((click: Coords) => click.x === coords.x && click.y === coords.y).length > 0,
         'highlight-solved': this.highlightSolved && !this.game?.board[coords.x][coords.y].revealed &&
-            this.probabilities && Math.abs(this.probabilities[coords.x][coords.y] - 1) <= 0.0001
+            this.probabilities && Math.abs(this.probabilities[coords.x][coords.y] - 1) <= 0.0001,
+        'unrevealed': !this.game.board[coords.x][coords.y].revealed
       }
     },
 
@@ -154,7 +155,7 @@ export default defineComponent({
 </script>
 <style scoped>
 
-button:focus {
+button.unrevealed:focus {
   filter: brightness(200%);
   transition: filter .05s;
 }
