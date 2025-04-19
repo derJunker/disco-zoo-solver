@@ -229,7 +229,7 @@ public class DiscoZooSolver {
                         nextProbabilitiesForDifferentAnimals);
 
         if (previousClicks.isEmpty())
-            expectedNextProbability *= probabilitiesForDifferentAnimals.get(animalToSolve);
+            expectedNextProbability *= overlaps.animalOverlapProbability().get(animalToSolve)[coords.x()][coords.y()];
 
         differentAnimalSolutions = modifyExpectedProbabilityOfSolutionsAtIndex(differentAnimalSolutions,
                 previousClicks.size(), expectedNextProbability);
