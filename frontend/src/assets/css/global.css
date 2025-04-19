@@ -182,6 +182,10 @@ html, body, #app, #router-view {
     background-color: #A822CF;
 }
 
+.color-action-share {
+    background-color: #eb1d72;
+}
+
 .color-action-disabled {
     background-color: #818181;
 }

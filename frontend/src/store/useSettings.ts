@@ -10,7 +10,6 @@ export const useSettings = defineStore('settings', () => {
 
     function getSettingFromLocalStorage(settingName: string, defaultValue: any) {
         const storedValue = localStorage.getItem(`disco-zoo_settings_${settingName}`);
-        console.log(`disco_settings_${settingName}`, storedValue);
         return storedValue !== null ? JSON.parse(storedValue) : defaultValue;
     }
 
