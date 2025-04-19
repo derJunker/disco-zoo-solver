@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import junker.disco.zoo.solver.board.AnimalBoardInstance;
 import junker.disco.zoo.solver.board.util.AnimalSymmetryFinder;
@@ -34,6 +35,10 @@ public class OverlapCalulator {
         for (int x = 0; x < overallOverlap.length; x++) {
             for (int y = 0; y < overallOverlap[0].length; y++) {
                 var animalTileOverlap = overlaps.uniqueAnimalOverlapMap().get(animalToSolve)[x][y].size();
+                if (Stream.of("sasquatch", "sewer turtle").anyMatch(animal -> animal.equalsIgnoreCase(animalToSolve.name())))
+                    animalTileOverlap = (int) overallOverlap[x][y].stream()
+                            .filter(Objects::nonNull)
+                            .filter(animalBoardInstance -> animalBoardInstance.animal().equals(animalToSolve)).count();
                 if (animalTileOverlap > 0 && isCompletelySolved) {
                     bestCandidates.put(new Coords(x, y), overallOverlap[x][y]);
                     continue;
