@@ -86,8 +86,17 @@ public class DiscoZooSolver {
         else if (highestOverlapCoords.size() == 1) {
             return List.of(new Solution(List.of(highestOverlapCoords.keySet().iterator().next().toMaxProbabilityClick())));
         }
-        return emulateClicks(overlaps, animalToSolve, clonedGame, List.of(), highestOverlapCoords, Integer.MAX_VALUE,
+        var solutions = emulateClicks(overlaps, animalToSolve, clonedGame, List.of(), highestOverlapCoords,
+                Integer.MAX_VALUE,
                 tracker, new SingularBoardCalcTracker());
+        var maxProbability = Double.NEGATIVE_INFINITY;
+        var maxProbSolutions = new ArrayList<Solution>();
+        for (var solution : solutions) {
+            var firstClick = solution.clicks().getFirst();
+            var probability = overlaps.animalOverlapProbability().get(animalToSolve)[firstClick.x()][firstClick.y()];
+            maxProbability = ListUtil.resetAddIfAboveLimit(maxProbSolutions, List.of(solution), probability, maxProbability);
+        }
+        return maxProbSolutions;
     }
 
     private static List<Solution> emulateClicks(Overlaps overlaps, Animal animalToSolve, Game game,
@@ -230,9 +239,6 @@ public class DiscoZooSolver {
         var expectedNextProbability =
                 ExpectedValueCalculator.expectedNextProbability(probabilitiesForDifferentAnimals,
                         nextProbabilitiesForDifferentAnimals);
-
-        if (previousClicks.isEmpty())
-            expectedNextProbability *= overlaps.animalOverlapProbability().get(animalToSolve)[coords.x()][coords.y()];
 
         differentAnimalSolutions = modifyExpectedProbabilityOfSolutionsAtIndex(differentAnimalSolutions,
                 previousClicks.size(), expectedNextProbability);
