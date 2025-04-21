@@ -1,9 +1,7 @@
 package junker.disco.zoo.solver.controller.validation.body_validators;
 
-import junker.disco.zoo.solver.model.animals.Animal;
 import junker.disco.zoo.solver.model.animals.Rarity;
 import junker.disco.zoo.solver.requests.post_bodies.ReconstructClickBody;
-import junker.disco.zoo.solver.requests.post_bodies.ReconstructStartBody;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
