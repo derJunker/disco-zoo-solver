@@ -3,11 +3,12 @@ package junker.disco.zoo.solver.board.solve;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -59,7 +60,7 @@ public class OverlapCalulator {
         } else if (animalTileOverlap > maxOverlap && (animalTileOverlap < permutationSize || includeSolved)) {
             bestCandidates.clear();
             bestCandidates.put(new Coords(x, y), overallOverlap[x][y]);
-            maxOverlap = (int) animalTileOverlap;
+            maxOverlap = animalTileOverlap;
         } else if (animalTileOverlap == maxOverlap && (animalTileOverlap < permutationSize || includeSolved)) {
             bestCandidates.put(new Coords(x, y), overallOverlap[x][y]);
         }
@@ -100,23 +101,23 @@ public class OverlapCalulator {
         List<AnimalBoardInstance>[][] overallOverlap = new List[boardWidth][boardHeight];
         Map<Animal, Set<AnimalBoardInstance>[][]> animalOverlap = new java.util.HashMap<>();
         Map<Animal, Integer> animalRevealedTileCounts = new java.util.HashMap<>();
-        setOverlaps(overallOverlap, animalOverlap, permutations, boardWidth, boardHeight, board,
+        iterateOverBoardToCalcOverlapsAndOtherStuff(overallOverlap, animalOverlap, permutations, boardWidth, boardHeight, board,
                 animalRevealedTileCounts);
 
-        Map<Animal, Integer> animalMaxOverlaps = new java.util.HashMap<>();
-        Map<Animal, Double[][]> animalOverlapProbabilities = new java.util.HashMap<>();
-        Map<Animal, Double> animalMinProbabilities = new java.util.HashMap<>();
-        setMaxAnimalOverlaps(animalMaxOverlaps, animalOverlapProbabilities, overallOverlap, permutations,
+        Map<Animal, Integer> animalMaxOverlaps = new HashMap<>();
+        Map<Animal, Double[][]> animalOverlapProbabilities = new HashMap<>();
+        Map<Animal, Double> animalMinProbabilities = new HashMap<>();
+        iterateOverBoardAgainForMoreCalculations(animalMaxOverlaps, animalOverlapProbabilities, overallOverlap, permutations,
                 boardWidth, boardHeight, animalMinProbabilities);
 
         return new Overlaps(overallOverlap, animalOverlap, animalOverlapProbabilities, permutations,
                 animalMaxOverlaps, animalMinProbabilities, animalRevealedTileCounts, verticalSymmetry, horizontalSymmetry);
     }
 
-    private static void setOverlaps(List<AnimalBoardInstance>[][] overallOverlap,
-                                    Map<Animal, Set<AnimalBoardInstance>[][]> animalOverlap,
-                                    Set<Tile[][]> permutations, int boardWidth, int boardHeight,  Tile[][] board,
-                                    Map<Animal, Integer> animalRevealedTileCounts) {
+    private static void iterateOverBoardToCalcOverlapsAndOtherStuff(List<AnimalBoardInstance>[][] overallOverlap,
+                                                                    Map<Animal, Set<AnimalBoardInstance>[][]> animalOverlap,
+                                                                    Set<Tile[][]> permutations, int boardWidth, int boardHeight, Tile[][] board,
+                                                                    Map<Animal, Integer> animalRevealedTileCounts) {
         for (int x = 0; x < boardWidth; x++) {
             for (int y = 0; y < boardHeight; y++) {
                 var tileOverlaps = new ArrayList<AnimalBoardInstance>();
@@ -156,61 +157,96 @@ public class OverlapCalulator {
         }
     }
 
-    private static void setMaxAnimalOverlaps(Map<Animal, Integer> animalMaxOverlaps,
-                                             Map<Animal, Double[][]> animalOverlapProbabilities,
-                                             List<AnimalBoardInstance>[][] overallOverlap, Set<Tile[][]> permutations,
-                                             int boardWidth, int boardHeight,
-                                             Map<Animal, Double> animalMinProbabilities) {
+    private static void iterateOverBoardAgainForMoreCalculations(Map<Animal, Integer> animalMaxOverlaps,
+                                                                 Map<Animal, Double[][]> animalOverlapProbabilities,
+                                                                 List<AnimalBoardInstance>[][] overallOverlap, Set<Tile[][]> permutations,
+                                                                 int boardWidth, int boardHeight,
+                                                                 Map<Animal, Double> animalMinProbabilities) {
         for (int x = 0; x < boardWidth; x++) {
             for (int y = 0; y < boardHeight; y++) {
                 var tileOverlaps = overallOverlap[x][y];
-                var nullProbabilities =
-                        (double) tileOverlaps.stream().filter(Objects::isNull).count() / permutations.size();
                 var distinctAnimals = tileOverlaps.stream()
                         .filter(Objects::nonNull)
                         .map(AnimalBoardInstance::animal)
                         .collect(Collectors.toSet());
-                for (var animal : distinctAnimals) {
-                    if (!animalOverlapProbabilities.containsKey(animal)) {
-                        animalOverlapProbabilities.put(animal, new Double[boardWidth][boardHeight]);
-                        for (int i = 0; i < boardWidth; i++) {
-                            for (int j = 0; j < boardHeight; j++) {
-                                animalOverlapProbabilities.get(animal)[i][j] = 0.0;
-                            }
-                        }
-                    }
-                    var instancesAtTile =
-                            (double) overallOverlap[x][y].stream().filter(instance -> instance != null && instance.animal().equals(animal)).count();
-                    var probabilityAtTile = instancesAtTile / permutations.size();
-                    animalOverlapProbabilities.get(animal)[x][y] = probabilityAtTile;
-
-                    var minProbabilityForAnimal = animalMinProbabilities.getOrDefault(animal, 0d);
-                    animalMinProbabilities.put(animal, Math.min(minProbabilityForAnimal, probabilityAtTile));
-
-                    if(probabilityAtTile < 1){
-                        var animalOverlapCount = (int) tileOverlaps.stream()
-                                .filter(animalBoardInstance -> animalBoardInstance != null && animalBoardInstance.animal().equals(animal))
-                                .distinct()
-                                .count();
-                        animalMaxOverlaps.put(animal, Math.max(animalMaxOverlaps.getOrDefault(animal, 1),
-                                animalOverlapCount));
-                    } else {
-                        animalMaxOverlaps.putIfAbsent(animal, 1);
-                    }
-
-                }
-                if (!animalOverlapProbabilities.containsKey(null)) {
-                    animalOverlapProbabilities.put(null, new Double[boardWidth][boardHeight]);
-                    for (int i = 0; i < boardWidth; i++) {
-                        for (int j = 0; j < boardHeight; j++) {
-                            animalOverlapProbabilities.get(null)[i][j] = 0d;
-                        }
-                    }
-                }
-                animalOverlapProbabilities.get(null)[x][y] = nullProbabilities;
+                final var finalX = x;
+                final var finalY = y;
+                distinctAnimals.forEach(animal ->
+                        setAnimalSpecificValues(animalOverlapProbabilities, animal, overallOverlap, permutations,
+                                finalX, finalY, boardWidth, boardHeight, animalMinProbabilities,
+                                animalMaxOverlaps, tileOverlaps));
+                setNullOverlapProbabilities(animalOverlapProbabilities, tileOverlaps, permutations, x, y, boardWidth,
+                        boardHeight);
 
             }
         }
+    }
+
+    private static void setAnimalSpecificValues(Map<Animal, Double[][]> animalOverlapProbabilities, Animal animal,
+                                                List<AnimalBoardInstance>[][] overallOverlap,
+                                                Set<Tile[][]> permutations, int x, int y, int boardWidth, int boardHeight,
+                                                Map<Animal, Double> animalMinProbabilities,
+                                                Map<Animal, Integer> animalMaxOverlaps, List<AnimalBoardInstance> tileOverlaps) {
+        initAnimalOverlapProbabilitiesIfNotPresent(animalOverlapProbabilities, animal, boardWidth, boardHeight);
+
+        var probabilityAtTile = getProbabilityAtTile(overallOverlap, animal,
+                permutations.size(), x, y);
+        animalOverlapProbabilities.get(animal)[x][y] = probabilityAtTile;
+
+        var minProbabilityForAnimal = animalMinProbabilities.getOrDefault(animal, 0d);
+        animalMinProbabilities.put(animal, Math.min(minProbabilityForAnimal, probabilityAtTile));
+
+        var animalMaxOverlapValue = getAnimalMaxOverlapValue(probabilityAtTile, tileOverlaps,
+                animalMaxOverlaps, animal);
+        animalMaxOverlapValue.ifPresentOrElse(
+                value -> animalMaxOverlaps.put(animal, value),
+                () -> animalMaxOverlaps.putIfAbsent(animal, 1)
+        );
+    }
+
+    private static double getProbabilityAtTile(List<AnimalBoardInstance>[][] overallOverlap, Animal animal,
+                                               int permutationSize, int x, int y) {
+        var instancesAtTile =
+                (double) overallOverlap[x][y].stream().filter(instance -> instance != null && instance.animal().equals(animal)).count();
+        return instancesAtTile / permutationSize;
+    }
+
+    private static void initAnimalOverlapProbabilitiesIfNotPresent(Map<Animal, Double[][]> animalOverlapProbabilities, Animal animal, int boardWidth, int boardHeight) {
+        if (!animalOverlapProbabilities.containsKey(animal)) {
+            animalOverlapProbabilities.put(animal, new Double[boardWidth][boardHeight]);
+            for (int i = 0; i < boardWidth; i++) {
+                for (int j = 0; j < boardHeight; j++) {
+                    animalOverlapProbabilities.get(animal)[i][j] = 0.0;
+                }
+            }
+        }
+    }
+
+    private static Optional<Integer> getAnimalMaxOverlapValue(double probabilityAtTile, List<AnimalBoardInstance> tileOverlaps, Map<Animal, Integer> animalMaxOverlaps, Animal animal) {
+        if(probabilityAtTile < 1){
+            var animalOverlapCount = (int) tileOverlaps.stream()
+                    .filter(animalBoardInstance -> animalBoardInstance != null && animalBoardInstance.animal().equals(animal))
+                    .distinct()
+                    .count();
+            return Optional.of(Math.max(animalMaxOverlaps.getOrDefault(animal, 1),
+                    animalOverlapCount));
+        } else {
+            return Optional.empty();
+        }
+    }
+
+    private static void setNullOverlapProbabilities(Map<Animal, Double[][]> animalOverlapProbabilities, List<AnimalBoardInstance> tileOverlaps, Set<Tile[][]> permutations, int x, int y, int boardWidth, int boardHeight) {
+        if (!animalOverlapProbabilities.containsKey(null)) {
+            animalOverlapProbabilities.put(null, new Double[boardWidth][boardHeight]);
+            for (int i = 0; i < boardWidth; i++) {
+                for (int j = 0; j < boardHeight; j++) {
+                    animalOverlapProbabilities.get(null)[i][j] = 0d;
+                }
+            }
+        }
+        var nullProbabilities =
+                (double) tileOverlaps.stream().filter(Objects::isNull).count() / permutations.size();
+        animalOverlapProbabilities.get(null)[x][y] = nullProbabilities;
     }
 
 
