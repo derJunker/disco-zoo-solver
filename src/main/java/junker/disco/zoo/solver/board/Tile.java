@@ -1,7 +1,11 @@
 package junker.disco.zoo.solver.board;
 
 import junker.disco.zoo.solver.model.animals.Animal;
+import lombok.Getter;
+import lombok.Setter;
 
+@Setter
+@Getter
 public class Tile {
     private AnimalBoardInstance animalBoardInstance;
     boolean isRevealed;
@@ -48,19 +52,4 @@ public class Tile {
         }
     }
 
-    public AnimalBoardInstance getAnimalBoardInstance() {
-        return animalBoardInstance;
-    }
-
-    public boolean isRevealed() {
-        return isRevealed;
-    }
-
-    public void setRevealed(boolean revealed) {
-        isRevealed = revealed;
-    }
-
-    public void setAnimalBoardInstance(AnimalBoardInstance instance) {
-        this.animalBoardInstance = instance;
-    }
 }

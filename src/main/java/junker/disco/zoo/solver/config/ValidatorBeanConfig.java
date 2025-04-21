@@ -1,0 +1,19 @@
+package junker.disco.zoo.solver.config;
+
+import junker.disco.zoo.solver.controller.validation.body_validators.AccuracyClickBodyValidator;
+import junker.disco.zoo.solver.controller.validation.body_validators.ReconstructStartBodyValidator;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+@Configuration
+public class ValidatorBeanConfig {
+    @Bean
+    public AccuracyClickBodyValidator accuracyClickBodyValidator() {
+        return new AccuracyClickBodyValidator();
+    }
+
+    @Bean
+    public ReconstructStartBodyValidator reconstructStartBodyValidator() {
+        return new ReconstructStartBodyValidator();
+    }
+}
