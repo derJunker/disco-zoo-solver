@@ -34,25 +34,36 @@ public class OverlapCalulator {
         var maxOverlap = 1;
         for (int x = 0; x < overallOverlap.length; x++) {
             for (int y = 0; y < overallOverlap[0].length; y++) {
-                var animalTileOverlap = overlaps.uniqueAnimalOverlapMap().get(animalToSolve)[x][y].size();
-                if (Stream.of("sasquatch", "sewer turtle").anyMatch(animal -> animal.equalsIgnoreCase(animalToSolve.name())))
-                    animalTileOverlap = (int) overallOverlap[x][y].stream()
-                            .filter(Objects::nonNull)
-                            .filter(animalBoardInstance -> animalBoardInstance.animal().equals(animalToSolve)).count();
-                if (animalTileOverlap > 0 && isCompletelySolved) {
-                    bestCandidates.put(new Coords(x, y), overallOverlap[x][y]);
-                    continue;
-                }
-                if (animalTileOverlap > maxOverlap && (animalTileOverlap < permutationSize || includeSolved)) {
-                    bestCandidates.clear();
-                    bestCandidates.put(new Coords(x, y), overallOverlap[x][y]);
-                    maxOverlap = (int) animalTileOverlap;
-                } else if (animalTileOverlap == maxOverlap && (animalTileOverlap < permutationSize || includeSolved)) {
-                    bestCandidates.put(new Coords(x, y), overallOverlap[x][y]);
-                }
+                maxOverlap = findHighestOverlapTileAndMutateCandidatesForCoords(new Coords(x, y), bestCandidates, overlaps,
+                        animalToSolve, overallOverlap, isCompletelySolved, includeSolved, maxOverlap,
+                        permutationSize);
             }
         }
         return bestCandidates;
+    }
+
+    private static int findHighestOverlapTileAndMutateCandidatesForCoords(Coords coords, Map<Coords,
+            List<AnimalBoardInstance>> bestCandidates, Overlaps overlaps, Animal animalToSolve,
+                                                                   List<AnimalBoardInstance>[][] overallOverlap,
+                                                                   boolean isCompletelySolved, boolean includeSolved,
+                                                                   int maxOverlap, int permutationSize) {
+        var x = coords.x();
+        var y = coords.y();
+        var animalTileOverlap = overlaps.uniqueAnimalOverlapMap().get(animalToSolve)[x][y].size();
+        if (Stream.of("sasquatch", "sewer turtle").anyMatch(animal -> animal.equalsIgnoreCase(animalToSolve.name())))
+            animalTileOverlap = (int) overallOverlap[x][y].stream()
+                    .filter(Objects::nonNull)
+                    .filter(animalBoardInstance -> animalBoardInstance.animal().equals(animalToSolve)).count();
+        if (animalTileOverlap > 0 && isCompletelySolved) {
+            bestCandidates.put(coords, overallOverlap[x][y]);
+        } else if (animalTileOverlap > maxOverlap && (animalTileOverlap < permutationSize || includeSolved)) {
+            bestCandidates.clear();
+            bestCandidates.put(new Coords(x, y), overallOverlap[x][y]);
+            maxOverlap = (int) animalTileOverlap;
+        } else if (animalTileOverlap == maxOverlap && (animalTileOverlap < permutationSize || includeSolved)) {
+            bestCandidates.put(new Coords(x, y), overallOverlap[x][y]);
+        }
+        return maxOverlap;
     }
 
     public static Overlaps emulateOverlapClick(Overlaps current, Animal animalToPlace,

@@ -30,7 +30,6 @@ import static junker.disco.zoo.solver.board.solve.NoOverlapSolutionFinder.soluti
 import static junker.disco.zoo.solver.board.solve.OverlapCalulator.calculateOverlaps;
 import static junker.disco.zoo.solver.board.solve.OverlapCalulator.emulateOverlapClick;
 import static junker.disco.zoo.solver.board.solve.OverlapCalulator.findHighestOverlapCoords;
-import static junker.disco.zoo.solver.board.util.MapUtil.convertWithIteration;
 
 public class DiscoZooSolver {
 
