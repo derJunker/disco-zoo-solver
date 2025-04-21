@@ -16,7 +16,7 @@ public class AccuracyClickBodyValidator implements Validator {
         var accuracyClickBody = (AccuracyClickBody) target;
         var animalToFind = accuracyClickBody.animalToFind();
         var containedAnimals = accuracyClickBody.game().containedAnimals();
-        if (animalToFind.rarity() != Rarity.BUX && !containedAnimals.contains(animalToFind)) {
+        if (animalToFind.rarity() != Rarity.BUX && animalToFind.rarity() != Rarity.PET  && !containedAnimals.contains(animalToFind)) {
             errors.rejectValue("animalToFind", "animal.not.contained", "Animal to find must be contained in the game");
         }
     }
