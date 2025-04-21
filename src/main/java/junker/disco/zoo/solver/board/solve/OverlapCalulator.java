@@ -104,14 +104,30 @@ public class OverlapCalulator {
         iterateOverBoardToCalcOverlapsAndOtherStuff(overallOverlap, animalOverlap, permutations, boardWidth, boardHeight, board,
                 animalRevealedTileCounts);
 
-        Map<Animal, Integer> animalMaxOverlaps = new HashMap<>();
-        Map<Animal, Double[][]> animalOverlapProbabilities = new HashMap<>();
-        Map<Animal, Double> animalMinProbabilities = new HashMap<>();
+        Map<Animal, Integer> animalMaxOverlaps = new ConcurrentHashMap<>();
+        Map<Animal, Double[][]> animalOverlapProbabilities = new ConcurrentHashMap<>();
+        Map<Animal, Double> animalMinProbabilities = new ConcurrentHashMap<>();
+        final var nullAnimal = new Animal("null", null, null, null, true, true);
         iterateOverBoardAgainForMoreCalculations(animalMaxOverlaps, animalOverlapProbabilities, overallOverlap, permutations,
-                boardWidth, boardHeight, animalMinProbabilities);
+                boardWidth, boardHeight, animalMinProbabilities, nullAnimal);
+        var nonConcurrentAnimalOverlapProbabilities = concurrentMapToNonConcurrentMapWithNullKey(animalOverlapProbabilities,
+                nullAnimal);
 
-        return new Overlaps(overallOverlap, animalOverlap, animalOverlapProbabilities, permutations,
+        return new Overlaps(overallOverlap, animalOverlap, nonConcurrentAnimalOverlapProbabilities, permutations,
                 animalMaxOverlaps, animalMinProbabilities, animalRevealedTileCounts, verticalSymmetry, horizontalSymmetry);
+    }
+
+    // Concurrent Maps don't support null keys, so i have to change it to "null" after multithreading
+    private static Map<Animal, Double[][]> concurrentMapToNonConcurrentMapWithNullKey(Map<Animal, Double[][]> animalOverlapProbabilities, Animal nullAnimal) {
+        var nonConcurrentAnimalOverlapProbabilities = new HashMap<Animal, Double[][]>();
+        for (var entry : animalOverlapProbabilities.entrySet()) {
+            var animal = entry.getKey();
+            var probabilities = entry.getValue();
+            if (animal.equals(nullAnimal))
+                animal = null;
+            nonConcurrentAnimalOverlapProbabilities.put(animal, probabilities);
+        }
+        return nonConcurrentAnimalOverlapProbabilities;
     }
 
     private static void iterateOverBoardToCalcOverlapsAndOtherStuff(List<AnimalBoardInstance>[][] overallOverlap,
@@ -161,7 +177,7 @@ public class OverlapCalulator {
                                                                  Map<Animal, Double[][]> animalOverlapProbabilities,
                                                                  List<AnimalBoardInstance>[][] overallOverlap, Set<Tile[][]> permutations,
                                                                  int boardWidth, int boardHeight,
-                                                                 Map<Animal, Double> animalMinProbabilities) {
+                                                                 Map<Animal, Double> animalMinProbabilities, Animal nullAnimal) {
         for (int x = 0; x < boardWidth; x++) {
             for (int y = 0; y < boardHeight; y++) {
                 var tileOverlaps = overallOverlap[x][y];
@@ -171,12 +187,14 @@ public class OverlapCalulator {
                         .collect(Collectors.toSet());
                 final var finalX = x;
                 final var finalY = y;
-                distinctAnimals.forEach(animal ->
-                        setAnimalSpecificValues(animalOverlapProbabilities, animal, overallOverlap, permutations,
-                                finalX, finalY, boardWidth, boardHeight, animalMinProbabilities,
-                                animalMaxOverlaps, tileOverlaps));
+                distinctAnimals.parallelStream().forEach(animal -> {
+                    setAnimalSpecificValues(animalOverlapProbabilities, animal == null ? nullAnimal : animal,
+                            overallOverlap, permutations,
+                            finalX, finalY, boardWidth, boardHeight, animalMinProbabilities,
+                            animalMaxOverlaps, tileOverlaps);
+                });
                 setNullOverlapProbabilities(animalOverlapProbabilities, tileOverlaps, permutations, x, y, boardWidth,
-                        boardHeight);
+                        boardHeight, nullAnimal);
 
             }
         }
@@ -235,18 +253,20 @@ public class OverlapCalulator {
         }
     }
 
-    private static void setNullOverlapProbabilities(Map<Animal, Double[][]> animalOverlapProbabilities, List<AnimalBoardInstance> tileOverlaps, Set<Tile[][]> permutations, int x, int y, int boardWidth, int boardHeight) {
-        if (!animalOverlapProbabilities.containsKey(null)) {
-            animalOverlapProbabilities.put(null, new Double[boardWidth][boardHeight]);
+    private static void setNullOverlapProbabilities(Map<Animal, Double[][]> animalOverlapProbabilities,
+                                                    List<AnimalBoardInstance> tileOverlaps, Set<Tile[][]> permutations,
+                                                    int x, int y, int boardWidth, int boardHeight, Animal nullAnimal) {
+        if (!animalOverlapProbabilities.containsKey(nullAnimal)) {
+            animalOverlapProbabilities.put(nullAnimal, new Double[boardWidth][boardHeight]);
             for (int i = 0; i < boardWidth; i++) {
                 for (int j = 0; j < boardHeight; j++) {
-                    animalOverlapProbabilities.get(null)[i][j] = 0d;
+                    animalOverlapProbabilities.get(nullAnimal)[i][j] = 0d;
                 }
             }
         }
         var nullProbabilities =
                 (double) tileOverlaps.stream().filter(Objects::isNull).count() / permutations.size();
-        animalOverlapProbabilities.get(null)[x][y] = nullProbabilities;
+        animalOverlapProbabilities.get(nullAnimal)[x][y] = nullProbabilities;
     }
 
 
