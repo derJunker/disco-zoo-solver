@@ -10,6 +10,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import junker.disco.zoo.solver.board.AnimalBoardInstance;
@@ -99,8 +100,8 @@ public class OverlapCalulator {
         }
 
         List<AnimalBoardInstance>[][] overallOverlap = new List[boardWidth][boardHeight];
-        Map<Animal, Set<AnimalBoardInstance>[][]> animalOverlap = new java.util.HashMap<>();
-        Map<Animal, Integer> animalRevealedTileCounts = new java.util.HashMap<>();
+        Map<Animal, Set<AnimalBoardInstance>[][]> animalOverlap = new HashMap<>();
+        Map<Animal, Integer> animalRevealedTileCounts = new HashMap<>();
         iterateOverBoardToCalcOverlapsAndOtherStuff(overallOverlap, animalOverlap, permutations, boardWidth, boardHeight, board,
                 animalRevealedTileCounts);
 
@@ -163,13 +164,13 @@ public class OverlapCalulator {
                                                    Map<Animal, Set<AnimalBoardInstance>[][]> animalOverlap,
                                                        int boardWidth, int boardHeight) {
         if (!animalOverlap.containsKey(animal)) {
-            animalOverlap.put(animal, new Set[boardWidth][boardHeight]);
-            var animalOverlapForAnimal = animalOverlap.get(animal);
+            var animalOverlapForAnimal = new Set[boardWidth][boardHeight];
             for (int i = 0; i < boardWidth; i++) {
                 for (int j = 0; j < boardHeight; j++) {
                     animalOverlapForAnimal[i][j] = new HashSet<>();
                 }
             }
+            animalOverlap.put(animal, animalOverlapForAnimal);
         }
     }
 
