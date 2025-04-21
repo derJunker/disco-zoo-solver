@@ -23,5 +23,11 @@ public class ReconstructStartBodyValidator implements Validator {
         if (!regionsMatchGivenRegion) {
             errors.rejectValue("region", "region.not.contained", "Region must be contained in the animals");
         }
+
+        var animalCount = (reconstructStartBody.petName() != null ? 1 : 0) + reconstructStartBody.animals().size();
+        if (animalCount > 3) {
+            errors.rejectValue("animals", "animal.count.too.high", "Animal + Pet count must be less than or equal to " +
+                    "3");
+        }
     }
 }
