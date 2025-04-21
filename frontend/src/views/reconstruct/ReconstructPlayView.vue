@@ -243,7 +243,7 @@ export default defineComponent({
         this.minProb = 0
       } else {
         this.maxProb = Math.max(...info.probabilities.flat())
-        this.minProb = Math.min(...info.probabilities.flat())
+        this.minProb = Math.min(...info.probabilities.flat().filter(value => value > 0))
       }
     },
 
