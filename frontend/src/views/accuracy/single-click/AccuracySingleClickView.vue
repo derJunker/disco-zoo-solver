@@ -3,7 +3,7 @@
     {{setRouteValuesToVars($route.params.seed, $route.params.region, $route.params.difficulty,  $route.query.timeless)}}
     <div class="accuracy-single-click-content footer-view-content">
       <div class="acc-container" v-if="game && animalToFind">
-        <top-info-bar :region-colors="displayRegionColors">
+        <top-info-bar :region-colors="displayRegionColors" :region="region">
           <span>
             Game: {{limitedGameRound() + 1}}
           </span>

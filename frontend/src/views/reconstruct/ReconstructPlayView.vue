@@ -2,7 +2,7 @@
   <div class="reconstruct-play-view footer-view" :style="getBackgroundStyle()">
     {{loadPathVariables($route.params.region, $route.query.animals, $route.query.pet, $route.query.heatmap)}}
     <div class="reconstruct-content footer-view-content">
-      <top-info-bar :region-colors="regionColors">
+      <top-info-bar :region-colors="regionColors" :region="region">
         <div id="attempts">
           <span id="attemptNum">
             {{ attempts }}
