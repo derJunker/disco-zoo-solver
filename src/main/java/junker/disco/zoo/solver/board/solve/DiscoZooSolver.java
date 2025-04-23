@@ -39,10 +39,16 @@ public class DiscoZooSolver {
         var tracker = StatTracker.ofGame(game, animalToSolve);
         tracker.initialPermutationSize = overlaps.permutations().size();
         tracker.startTimer();
-        var solutions = getBestSolutions(animalToSolve, wipedGame, overlaps, tracker);
+        var solutions = getBestSolutions(animalToSolve, wipedGame, overlaps, tracker, false);
         tracker.endTimer();
         tracker.printStats();
         return new BestMoveInformation(overlaps.animalOverlapProbability().get(animalToSolve), solutions);
+    }
+
+    public static int getSolutionSize(Animal animal) {
+        var game = new Game(new Game(List.of(animal), animal.region()), true);
+        var overlaps = calculateOverlaps(game);
+        return getBestSolutions(animal, game, overlaps, StatTracker.ofGame(game, animal), true).getFirst().clicks().size();
     }
 
     public static BestMoveInformation getBuxProbability(Game game) {
@@ -77,12 +83,13 @@ public class DiscoZooSolver {
                 coordsWithHighestProb.stream().map(coords -> new Solution(List.of(coords.toClick(highestProbValue)))).toList());
     }
 
-    private static List<Solution> getBestSolutions(Animal animalToSolve, Game game, Overlaps overlaps, StatTracker tracker) {
+    private static List<Solution> getBestSolutions(Animal animalToSolve, Game game, Overlaps overlaps,
+                                                   StatTracker tracker, boolean forceSolutions) {
         var clonedGame = new Game(game, true);
         var highestOverlapCoords = findHighestOverlapCoords(overlaps, animalToSolve, true);
         if (highestOverlapCoords.isEmpty())
             return List.of();
-        else if (highestOverlapCoords.size() == 1) {
+        else if (highestOverlapCoords.size() == 1 && !forceSolutions) {
             return List.of(new Solution(List.of(highestOverlapCoords.keySet().iterator().next().toMaxProbabilityClick())));
         }
         var solutions = emulateClicks(overlaps, animalToSolve, clonedGame, List.of(), highestOverlapCoords,
