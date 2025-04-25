@@ -131,7 +131,9 @@ public class DiscoZooSolver {
         var nonNullHighestOverlapValues = new HashMap<Coords, List<AnimalBoardInstance>>();
         highestOverlapCoords.forEach(((coords, animalBoardInstances) -> nonNullHighestOverlapValues.put(coords,
                 animalBoardInstances.stream().filter(Objects::nonNull).toList())));
-        var minClicksTilDiscovery = IndependentSetsCalculator.calculateMaxIndependentSubSets(nonNullHighestOverlapValues, AnimalBoardInstance::toString).stream().map(Set::size).mapToInt(val -> val).min().orElse(0);
+        var minClicksTilDiscovery =
+                IndependentSetsCalculator.calculateMaxIndependentSubSets(nonNullHighestOverlapValues,
+                        AnimalBoardInstance::toString).stream().mapToInt(Set::size).min().orElse(0);
 
         var minClicksNeeded =
                 (animalToSolve.pattern().size() - overlaps.animalRevealedTileCounts().getOrDefault(animalToSolve
@@ -160,14 +162,14 @@ public class DiscoZooSolver {
         var atomicSmallestSolutionLength = new AtomicInteger(smallestSolutionLength);
         List<Solution> allSolutions = new ArrayList<>();
         Map<Coords, Double> expectedNextProbabilities = new HashMap<>();
-        var results = new DifferentAnimalPlacementReturnObject();
         highestOverlapCoords.keySet().parallelStream()
         .forEach(
                 coords -> {
+            var results = new DifferentAnimalPlacementReturnObject();
             var symmetryCoords = AnimalSymmetryFinder.getSymmetryCoords(coords,
                     game.getBoard().length, game.getBoard()[0].length,
                     overlaps.verticalSymmetry(), overlaps.horizontalSymmetry());
-            var oldCoords = coords;
+                    var oldCoords = coords;
             boolean mirroredCoords = !symmetryCoords.equals(oldCoords);
             if (mirroredCoords) {
                 if (!previousClicks.isEmpty()) {

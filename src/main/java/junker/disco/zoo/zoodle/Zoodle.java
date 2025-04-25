@@ -7,6 +7,7 @@ import junker.disco.zoo.solver.model.animals.Animal;
 
 public class Zoodle {
     public static void main(String[] args) {
+        AnimalFacts.initAnimalFacts();
         var random = new java.util.Random();
         var randomAnimal = Animal.ALL_ANIMALS.get(random.nextInt(Animal.ALL_ANIMALS.size()));
         var randomAnimalFacts = AnimalFacts.of(randomAnimal);

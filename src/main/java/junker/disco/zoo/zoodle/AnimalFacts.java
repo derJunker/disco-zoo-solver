@@ -39,13 +39,13 @@ public class AnimalFacts implements Serializable {
         }
         StringBuilder sb = new StringBuilder();
 
-        val regionList = Arrays.stream(Region.values()).toList();
-        var thisRegionIndex = regionList.indexOf(this.region);
-        var otherRegionIndex = regionList.indexOf(other.region);
-        sb.append("Region: ")
-                .append(getCompareString(thisRegionIndex, otherRegionIndex));
+//        val regionList = Arrays.stream(Region.values()).toList();
+//        var thisRegionIndex = regionList.indexOf(this.region);
+//        var otherRegionIndex = regionList.indexOf(other.region);
+//        sb.append("Region: ")
+//                .append(getCompareString(thisRegionIndex, otherRegionIndex));
 
-        sb.append(", clicksToSolve: ");
+        sb.append("clicksToSolve: ");
         sb.append(getCompareString(this.solutionLength, other.solutionLength));
 
         sb.append(", rarity: ");
@@ -56,20 +56,24 @@ public class AnimalFacts implements Serializable {
 
         sb.append(", hopSize: ");
         sb.append(getCompareString(this.hopSize.ordinal(), other.hopSize.ordinal()));
+
+        sb.append(", coinsPerMin: ");
+        sb.append(getCompareString((int) this.coinsPerMin, (int) other.coinsPerMin));
+
         return sb.toString();
     }
 
-    private static void initAnimalFacts() {
+    public static void initAnimalFacts() {
         ALL_ANIMAL_FACTS.addAll(AnimalFactsLoader.loadAnimalFacts());
     }
 
     private String getCompareString(int thisValue, int otherValue) {
         if (thisValue < otherValue) {
-            return "lower";
+            return "v";
         } else if (thisValue > otherValue) {
-            return "higher";
+            return "^";
         } else {
-            return "same";
+            return "=";
         }
     }
 
@@ -78,6 +82,9 @@ public class AnimalFacts implements Serializable {
         return "AnimalFacts: " +
                 "region=" + region +
                 ", solutionLength=" + solutionLength +
-                ", rarity=" + rarity;
+                ", rarity=" + rarity
+                + ", legs=" + legs +
+                ", hopSize=" + hopSize +
+                ", coinsPerMin=" + coinsPerMin;
     }
 }
