@@ -98,8 +98,14 @@ public class DiscoZooSolver {
         else if (highestOverlapCoords.size() == 1 && !forceSolutions) {
             return List.of(new Solution(List.of(highestOverlapCoords.keySet().iterator().next().toMaxProbabilityClick())));
         }
+        var maximumSolutionLength = Integer.MAX_VALUE; // only for multiple animals
+        if (game.getContainedAnimals().size() > 1) { // TODO only for the first 5 clicks
+            maximumSolutionLength = getSolutionSize(animalToSolve);
+        }
+
+
         var solutions = emulateClicks(overlaps, animalToSolve, clonedGame, List.of(), highestOverlapCoords,
-                Integer.MAX_VALUE,
+                maximumSolutionLength,
                 tracker, new SingularBoardCalcTracker());
         var maxProbability = Double.NEGATIVE_INFINITY;
         var maxProbSolutions = new ArrayList<Solution>();
