@@ -1,6 +1,6 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="DiscoZooSolverSpringApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
-    <option name="ALTERNATIVE_JRE_PATH" value="$PROJECT_DIR$/../../.jdks/jdk-21.0.5.11-hotspot" />
+    <option name="ALTERNATIVE_JRE_PATH" value="temurin-21" />
     <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
     <module name="disco-zoo-solver.main" />
     <option name="SPRING_BOOT_MAIN_CLASS" value="junker.disco.zoo.solver.DiscoZooSolverSpringApplication" />
