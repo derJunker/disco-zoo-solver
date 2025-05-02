@@ -305,6 +305,7 @@ export default defineComponent({
         this.updateAttemptCounter(clickInfo, coords)
         if (this.attempts < 0) {
           this.attempts = 0
+          errorState.addError("You have 0 Attempts, If you want to click more, get some more in the menu!")
           return
         }
         this.game.board[coords.x][coords.y] = clickInfo.updatedTile
