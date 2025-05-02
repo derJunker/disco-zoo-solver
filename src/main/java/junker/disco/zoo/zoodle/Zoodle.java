@@ -5,6 +5,7 @@ import java.util.List;
 import junker.disco.zoo.solver.board.solve.DiscoZooSolver;
 import junker.disco.zoo.solver.model.animals.Animal;
 
+// I have a web version in a different project for this. but this remains as an artifact here :D why not.
 public class Zoodle {
     public static void main(String[] args) {
         AnimalFacts.initAnimalFacts();
