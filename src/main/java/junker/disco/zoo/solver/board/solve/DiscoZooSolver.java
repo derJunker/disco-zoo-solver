@@ -45,6 +45,12 @@ public class DiscoZooSolver {
         return new BestMoveInformation(overlaps.animalOverlapProbability().get(animalToSolve), solutions);
     }
 
+    public static List<Solution> getBestSolutionsForSingleAnimal(Animal animal) {
+        var game = new Game(new Game(List.of(animal), animal.region()), true);
+        var overlaps = calculateOverlaps(game);
+        return getBestSolutions(animal, game, overlaps, StatTracker.ofGame(game, animal), true);
+    }
+
     public static int getSolutionSize(Animal animal) {
         var game = new Game(new Game(List.of(animal), animal.region()), true);
         var overlaps = calculateOverlaps(game);
