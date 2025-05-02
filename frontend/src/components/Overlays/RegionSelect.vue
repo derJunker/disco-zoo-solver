@@ -62,15 +62,32 @@ export default defineComponent({
 <style scoped>
 .regions {
   display: grid;
-  place-items: center;
-  gap: .3rem;
-  grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
+  grid-auto-flow: column;
+  grid-template-rows: repeat(7, auto);  /* You can tweak this number */
+  grid-auto-columns: 1fr;
+
+  gap: 0.3rem;
   user-select: none;
+  place-items: center;
 }
 
 .regions > button {
   text-align: center;
   padding: .5rem;
-  min-width: 75%;
+  min-width: 100%;
 }
+
+@media (max-aspect-ratio: 3/5) {
+  .regions {
+    grid-auto-flow: row;
+    grid-template-columns: 1fr;
+    grid-template-rows: none;
+  }
+
+  .regions > button {
+    min-width: 90%;
+  }
+}
+
+
 </style>
