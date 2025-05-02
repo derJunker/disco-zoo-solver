@@ -3,7 +3,7 @@
     {{setRouteValuesToVars($route.params.seed, $route.params.region, $route.params.difficulty,  $route.query.timeless)}}
     <div class="accuracy-streak-content footer-view-content">
       <div class="acc-container" v-if="game && animalToFind">
-        <top-info-bar :region="displayRegionColors">
+        <top-info-bar :region-colors="displayRegionColors" :region="region">
           <span>
             Game: {{gameRound}}
           </span>

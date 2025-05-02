@@ -1,9 +1,9 @@
-package junker.disco.zoo.solver.board.solve.speedup;
+package junker.disco.zoo.solver.board.solve.singular_board_result_caching;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import junker.disco.zoo.solver.board.Click;
 import junker.disco.zoo.solver.board.Game;
@@ -13,9 +13,10 @@ import junker.disco.zoo.solver.model.solver.Solution;
 
 
 public class SingularBoardCalcTracker {
-    private final Map<String, PartialGameResult> partialGameResults = new HashMap<>();
+    private final Map<String, PartialGameResult> partialGameResults = new ConcurrentHashMap<>();
 
-    public List<Solution> getIfPresent(Game game, Animal animalToSolve, List<Click> previousClicks, StatTracker tracker) {
+    synchronized public List<Solution> getIfPresent(Game game, Animal animalToSolve, List<Click> previousClicks,
+                                        StatTracker tracker) {
         var gameHash = game.hashString(animalToSolve);
         tracker.totalCachedEmulationCalls++;
         if (partialGameResults.containsKey(gameHash)) {
@@ -32,13 +33,13 @@ public class SingularBoardCalcTracker {
     }
 
 
-    public void add(Game game, List<Solution> fullSolutions, Animal animalToSolve, List<Click> previousClicks) {
+    synchronized public void add(Game game, List<Solution> fullSolutions, Animal animalToSolve, List<Click> previousClicks) {
         var gameHash = game.hashString(animalToSolve);
         var partialSolutions =
                 fullSolutions.parallelStream().map(fullSolution -> new Solution(fullSolution.clicks().subList(previousClicks.size(),
                         fullSolution.clicks().size()))).distinct().toList();
         var partialGameResult = new PartialGameResult(partialSolutions);
-        partialGameResults.put(gameHash, partialGameResult);
+        var prev = partialGameResults.put(gameHash, partialGameResult);
     }
 }
 

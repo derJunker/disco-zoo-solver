@@ -1,5 +1,6 @@
 package junker.disco.zoo.solver.controller;
 
+import jakarta.validation.Valid;
 import junker.disco.zoo.solver.requests.post_bodies.SolveRequestBody;
 import junker.disco.zoo.solver.requests.return_objects.SolveResult;
 import junker.disco.zoo.solver.service.SolveService;
@@ -24,7 +25,7 @@ public class SolveController {
 
 
     @PostMapping
-    public ResponseEntity<SolveResult> solve(@RequestBody SolveRequestBody body) {
+    public ResponseEntity<SolveResult> solve(@RequestBody @Valid SolveRequestBody body) {
         final var game = body.game().toGame();
         final var animalToSolverFor = body.animalToSolveFor();
         if (animalToSolverFor == null) {

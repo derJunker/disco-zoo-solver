@@ -3,6 +3,7 @@ package junker.disco.zoo.solver.controller;
 import java.util.List;
 import java.util.Optional;
 
+import jakarta.validation.Valid;
 import junker.disco.zoo.solver.model.accuracy.AccuracyDifficulty;
 import junker.disco.zoo.solver.model.animals.Region;
 import junker.disco.zoo.solver.requests.post_bodies.AccuracyClickBody;
@@ -50,7 +51,7 @@ public class AccuracyController {
     }
 
     @PostMapping
-    public ResponseEntity<AccuracySingleClickPerformanceResponse> clicked(@RequestBody AccuracyClickBody body) {
+    public ResponseEntity<AccuracySingleClickPerformanceResponse> clicked(@RequestBody @Valid AccuracyClickBody body) {
         var game = body.game().toGame();
         var click = body.click();
         var animalToFind = body.animalToFind();

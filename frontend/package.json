@@ -13,7 +13,8 @@
     "html2canvas": "^1.4.1",
     "pinia": "^3.0.1",
     "vue": "^3.2.13",
-    "vue-router": "^4.0.3"
+    "vue-router": "^4.0.3",
+    "webpack": "^5.99.6"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^5.4.0",

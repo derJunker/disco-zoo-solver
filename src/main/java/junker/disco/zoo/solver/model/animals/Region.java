@@ -46,4 +46,9 @@ public enum Region {
         list.remove(ANY);
         return list;
     }
+
+    @Override
+    public String toString() {
+        return this.repr;
+    }
 }

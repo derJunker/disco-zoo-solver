@@ -23,7 +23,7 @@ public class NoOverlapSolutionFinder {
      */
     public static List<Solution> solutionsForNoOverlap(Overlaps overlaps, Animal animalToSolve, Game game,
                                                        List<Click> previousClicks, int smallestSolutionLength,
-                                                       List<Coords> highestOverlapCoords) {
+                                                       Map<Coords, List<AnimalBoardInstance>> highestOverlapCoords) {
         int boardWidth = game.getBoard().length;
         int boardHeight = game.getBoard()[0].length;
 
@@ -58,7 +58,7 @@ public class NoOverlapSolutionFinder {
 
     private static List<Solution> allSolutionsForDifferentClickPermutations(Map<AnimalBoardInstance, Set<Coords>> animalBoardInstancesClickableCoordsMap,
                                                                             List<Click> previousClicks,
-                                                                            List<Coords> highestOverlapCoords) {
+                                                                            Map<Coords, List<AnimalBoardInstance>> highestOverlapCoords) {
         List<Solution> solutions = new ArrayList<>();
         for (var lastClickedInstanceToClickableCoords : animalBoardInstancesClickableCoordsMap.entrySet()) {
             var lastClickedInstance = lastClickedInstanceToClickableCoords.getKey();
@@ -80,7 +80,7 @@ public class NoOverlapSolutionFinder {
 
             for (int i = 0; i < instancesToEliminateBefore.size(); i++) {
                 var firstClickableCoordAnimalInstance = (AnimalBoardInstance) instancesToEliminateBefore.keySet().toArray()[i];
-                if (instancesToEliminateBefore.get(firstClickableCoordAnimalInstance).stream().noneMatch(highestOverlapCoords::contains)) {
+                if (instancesToEliminateBefore.get(firstClickableCoordAnimalInstance).stream().noneMatch(highestOverlapCoords::containsKey)) {
                     continue;
                 }
                 var instancesToEliminateInBetween = new HashMap<>(instancesToEliminateBefore);

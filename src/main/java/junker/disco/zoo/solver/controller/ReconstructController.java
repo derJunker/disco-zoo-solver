@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+import jakarta.validation.Valid;
 import junker.disco.zoo.solver.model.animals.Animal;
 import junker.disco.zoo.solver.board.Game;
 import junker.disco.zoo.solver.model.animals.Region;
@@ -24,7 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 @CrossOrigin
 public class ReconstructController {
     @PostMapping("/start")
-    public ResponseEntity<Object> start(@RequestBody ReconstructStartBody body) {
+    public ResponseEntity<Object> start(@RequestBody @Valid ReconstructStartBody body) {
         var validateReconstructStartBody = validateReconstructStartBody(body);
         if (validateReconstructStartBody != null) {
             return validateReconstructStartBody;

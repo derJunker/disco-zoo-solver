@@ -53,7 +53,13 @@ export default defineComponent({
       type: Object as () => RegionColors,
       required: false,
       default: null
-    }
+    },
+
+    region: {
+      type: String,
+      required: false,
+      default: null
+    },
   },
 })
 </script>

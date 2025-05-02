@@ -42,7 +42,7 @@ public class ExpectedValueCalculator {
         var expectedValue = 0d;
         for (var animal : probabilitiesForDifferentAnimals.keySet()) {
             var probability = probabilitiesForDifferentAnimals.get(animal);
-            expectedValue += probability * nextProbabilitiesForDifferentAnimals.get(animal);
+            expectedValue += probability  * nextProbabilitiesForDifferentAnimals.get(animal);
         }
         return expectedValue;
     }

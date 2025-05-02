@@ -17,9 +17,9 @@ java {
     sourceCompatibility = JavaVersion.VERSION_21
 }
 
-tasks.processResources {
-    dependsOn("copyFrontend")
-}
+//tasks.processResources {
+//    dependsOn("copyFrontend")
+//}
 
 tasks.register<Copy>("copyFrontend") {
     dependsOn("npmBuild")
@@ -42,8 +42,10 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter")
 
     implementation("org.springframework.boot:spring-boot-starter")
+    implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+    // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-validation
 
 
     compileOnly("org.projectlombok:lombok")

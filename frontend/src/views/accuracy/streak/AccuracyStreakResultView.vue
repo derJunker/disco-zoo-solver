@@ -16,7 +16,7 @@
             <div>Difficulty: {{ difficulty }}</div>
           </div>
           <div class="nav-buttons">
-            <button class="btn btn-gradient color-action-info" @click="onShare">
+            <button class="btn btn-gradient color-action-share" @click="onShare">
               Share
             </button>
             <button class="btn btn-gradient color-action-neutral-2" @click="onDetailsClick">

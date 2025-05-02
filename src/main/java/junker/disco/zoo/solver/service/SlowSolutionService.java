@@ -6,6 +6,8 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import junker.disco.zoo.solver.board.Game;
+import junker.disco.zoo.solver.board.Tile;
+import junker.disco.zoo.solver.board.util.DoubleArrayUtil;
 import junker.disco.zoo.solver.db.entities.CoordsEntity;
 import junker.disco.zoo.solver.db.entities.SlowSolutionEntry;
 import junker.disco.zoo.solver.db.repos.SlowSolutionEntryRepository;
@@ -49,15 +51,12 @@ public class SlowSolutionService implements ApplicationListener<ApplicationReady
         if (end - start > saveThresholdMs) {
             final var hash = game.hashString(animalToSolveFor);
             sharedSlowResultsMap.put(hash, result);
-            if (useDb) {
+            if (useDb && DoubleArrayUtil.filter(game.getBoard(), Tile::isRevealed).size() < 7) {
                 slowSolutionEntryRepository.save(SlowSolutionEntry.builder()
                         .hash(hash)
                         .bestClicks(result.bestClicks().stream().map(CoordsEntity::fromCoords).collect(Collectors.toSet()))
                         .probabilities(result.probabilities())
                         .build());
-//                log.info("Saved solution to db, took {}ms, hash: {}", end - start, hash);
-            } else {
-//                log.info("Saved solution for this uptime, took {}ms, hash: {}", end - start, hash);
             }
         }
         return result;

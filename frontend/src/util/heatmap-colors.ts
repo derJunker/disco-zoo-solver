@@ -1,25 +1,42 @@
-export function getHeatmapColor(value: number, minVal: number, maxVal: number): string {
+export function getHeatmapColor(
+    value: number,
+    minVal: number,
+    maxVal: number,
+    absoluteThreshold = 0.4
+): string {
+    if (value == 0)
+        return `rgb(0,255,0)`; // green
+    let normalized: number;
 
-    const adjustValue = 0.15
+    const isFlat = maxVal === minVal;
 
-    const lowerBound = minVal > 0 ? Math.min(adjustValue, minVal) : 0
-    const upperBound = maxVal < 1 ? Math.max(1-adjustValue, maxVal): 1
-    // Ensure value is within range
-    const normalized = Math.max(lowerBound, Math.min(upperBound, (value - minVal) / (maxVal - minVal)));
+    if (isFlat) {
+        normalized = 1;
+    } else {
+        // Case 1: Small data range – stretch color scale to fit full range
+        if (maxVal < absoluteThreshold) {
+            normalized = (value - minVal) / (maxVal - minVal); // full range from 0 to 1
+        } else {
+            // Case 2: Normal behavior – only highest value hits red
+            const domainMax = Math.max(maxVal, absoluteThreshold);
+            normalized = (value - minVal) / (domainMax - minVal);
+        }
 
-    // Define color stops
+        normalized = Math.max(0, Math.min(1, normalized)); // clamp
+    }
+
+    // Same colors — full gradient
     const colors = [
-        { stop: 0, color: [0, 255, 0] },   // Bright Green
-        { stop: 0.33, color: [255, 255, 0] }, // Bright Yellow
-        { stop: 0.66, color: [255, 128, 0] }, // Bright Orange
-        { stop: 1, color: [255, 0, 0] }    // Bright Red
+        { stop: 0,    color: [180, 255, 0  ] }, // green
+        { stop: 0.33, color: [255, 255, 0  ] }, // yellow
+        { stop: 0.66, color: [255, 128, 0  ] }, // orange
+        { stop: 1,    color: [255, 0,   0  ] }  // red
     ];
 
-    // Find the two nearest color stops
     for (let i = 0; i < colors.length - 1; i++) {
         const c1 = colors[i], c2 = colors[i + 1];
         if (normalized >= c1.stop && normalized <= c2.stop) {
-            const t = (normalized - c1.stop) / (c2.stop - c1.stop); // Interpolation factor
+            const t = (normalized - c1.stop) / (c2.stop - c1.stop);
             const r = Math.round(c1.color[0] + t * (c2.color[0] - c1.color[0]));
             const g = Math.round(c1.color[1] + t * (c2.color[1] - c1.color[1]));
             const b = Math.round(c1.color[2] + t * (c2.color[2] - c1.color[2]));
@@ -27,5 +44,5 @@ export function getHeatmapColor(value: number, minVal: number, maxVal: number): 
         }
     }
 
-    return "rgb(0,255,0)"; // Fallback bright green
+    return `rgb(0,255,0)`; // fallback
 }

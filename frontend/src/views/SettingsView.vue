@@ -94,7 +94,7 @@ export default defineComponent({
   watch: {
     showMenuOverlay: {
       handler(newVal) {
-        if (!newVal && !this.showPlayOverlay) {
+        if (!newVal && !this.showPlayOverlay && this.showSettings) {
           this.showSettings = true;
         } else if (newVal) {
           this.showSettings = false;
@@ -104,7 +104,7 @@ export default defineComponent({
     },
     showPlayOverlay: {
       handler(newVal) {
-        if (!newVal && !this.showMenuOverlay) {
+        if (!newVal && !this.showMenuOverlay && this.showSettings) {
           this.showSettings = true;
         } else if (newVal) {
           this.showSettings = false;
