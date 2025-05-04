@@ -2,25 +2,18 @@ package junker.disco.zoo.best_strat_printer;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.IntStream;
 
-import junker.disco.zoo.solver.board.Click;
 import junker.disco.zoo.solver.board.Coords;
-import junker.disco.zoo.solver.board.Game;
 import junker.disco.zoo.solver.board.solve.DiscoZooSolver;
-import junker.disco.zoo.solver.board.util.StatTracker;
 import junker.disco.zoo.solver.model.animals.Animal;
 import junker.disco.zoo.solver.model.animals.Rarity;
-
-import static junker.disco.zoo.solver.board.solve.OverlapCalulator.calculateOverlaps;
 
 public class Main {
     public static void main(String[] args) throws IOException {
         Animal.initAnimals();
         Animal.initPets();
 
-        Animal.ALL_ANIMALS.parallelStream().forEach(animal -> {
+        Animal.ALL_PETS.parallelStream().forEach(animal -> {
             if (animal.rarity().equals(Rarity.BUX))
                 return;
             var sols = DiscoZooSolver.getBestSolutionsForSingleAnimal(animal);
