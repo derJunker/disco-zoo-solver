@@ -293,7 +293,7 @@ export default defineComponent({
       if (!this.game)
         return
 
-      var animal: Animal|null = null
+      let animal: Animal|null = null
       const tile = this.game!.board[coords.x][coords.y]
       if (tile.revealed)
         animal = tile.animalBoardInstance?.animal
