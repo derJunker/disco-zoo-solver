@@ -290,8 +290,16 @@ export default defineComponent({
     },
 
     async rightClickedCoords(coords: Coords) {
+      if (!this.game)
+        return
+
+      var animal: Animal|null = null
+      const tile = this.game!.board[coords.x][coords.y]
+      if (tile.revealed)
+        animal = tile.animalBoardInstance?.animal
+
       this.loadingData = true
-      let clickInfo = await gameStore.clickReconstruct(this.game!, null, coords)
+      let clickInfo = await gameStore.clickReconstruct(this.game!, animal, coords)
       if (!clickInfo)
         return
       await this.updateGame(clickInfo, coords)
