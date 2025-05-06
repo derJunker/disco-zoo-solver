@@ -134,7 +134,7 @@ export default defineComponent({
         await router.push({name: 'accuracy'})
         return
       }
-      let response = await gameApi.accuracySingleClick(this.seed!, this.region!,
+      let response = await gameApi.accuracyStreakGetGame(this.seed!, this.region!,
           this.timeless, this.gameRound, this.difficulty!)
       if (!response) {
         await router.push({name: 'accuracy'})

@@ -34,7 +34,24 @@ public class AccuracyController {
 
 
     @GetMapping("/single-click/{seed}")
-    public ResponseEntity<AccuracySingleClickGameResponse> getGame(@PathVariable Long seed,
+    public ResponseEntity<AccuracySingleClickGameResponse> getSingleClickGame(@PathVariable Long seed,
+                                                                   @RequestParam(required = true, name = "region") String regionStr,
+                                                                   @RequestParam(required = true) boolean timeless,
+                                                                   @RequestParam(defaultValue = "0",
+                                                                           required = false) int gameNumber,
+                                                                   @RequestParam(required = false, name="difficulty",
+                                                                           defaultValue = "easy") String difficultyStr) {
+        var regionOpt = Region.byRepr(regionStr);
+        var resp = handleInvalidParams(seed, gameNumber, regionOpt, difficultyStr);
+        if (resp != null) return resp;
+        final var difficulty = AccuracyDifficulty.byRepr(difficultyStr);
+
+        var game = accuracyService.getSingleClickGame(seed, gameNumber, regionOpt.get(), timeless, difficulty);
+        return new ResponseEntity<>(game, HttpStatus.OK);
+    }
+
+    @GetMapping("/streak/{seed}")
+    public ResponseEntity<AccuracySingleClickGameResponse> getStreakGame(@PathVariable Long seed,
                                                                    @RequestParam(required = true, name = "region") String regionStr,
                                                                    @RequestParam(required = true) boolean timeless,
                                                                    @RequestParam(defaultValue = "0",

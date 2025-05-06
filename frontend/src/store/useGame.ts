@@ -62,6 +62,24 @@ export const useGame = defineStore('game', () => {
         return resp.json();
     }
 
+
+    async function accuracyStreakGetGame(seed: number, region: string, timeless: boolean, gameNumber: number, difficulty: string): Promise<AccuracySingleClickGameResponse | null> {
+        const resp = await api.fetchUrl(`/accuracy/streak/${seed}`, {
+            region: region,
+            difficulty: difficulty,
+            timeless: timeless,
+            gameNumber: gameNumber
+        }).catch(
+            (e) => errorStore.addError("Error fetching game: " + e)
+        )
+        if(!resp || !resp.ok) {
+            if(resp)
+                errorStore.addError("Error fetching game: " + resp?.status);
+            return null
+        }
+        return resp.json();
+    }
+
     async function accuracyPerformance(game: Game, animalToFind: Animal, click: Coords): Promise<AccuracySingleClickPerformanceResponse | null> {
         const resp = await api.postUrl("/accuracy", {
             "game": game,
@@ -78,5 +96,5 @@ export const useGame = defineStore('game', () => {
         return resp.json()
     }
 
-    return {startReconstruct, clickReconstruct, accuracySingleClick: accuracySingleClickGetGame, accuracyPerformance}
+    return {startReconstruct, clickReconstruct, accuracySingleClickGetGame, accuracyStreakGetGame, accuracyPerformance}
 })
