@@ -31,6 +31,8 @@ public class AccuracyController {
 
     @Value("${accuracy.single-click.games.max}")
     private int maxSingleClickGames;
+    @Value("${accuracy.streak.games.max}")
+    private int maxStreakGames;
 
     public AccuracyController(AccuracyService accuracyService) {
         this.accuracyService = accuracyService;
@@ -71,8 +73,12 @@ public class AccuracyController {
         if (resp != null) return resp;
         final var difficulty = AccuracyDifficulty.byRepr(difficultyStr);
 
-        var game = accuracyService.getSingleClickGame(seed, gameNumber, regionOpt.get(), timeless, difficulty);
-        return new ResponseEntity<>(game, HttpStatus.OK);
+        AccuracySingleClickGameResponse gameResp;
+        if (gameNumber%(maxStreakGames+1) == 0)
+            gameResp = accuracyService.precomputeGameResults(seed, gameNumber, maxStreakGames+1, regionOpt.get(), timeless, difficulty);
+        else
+            gameResp = accuracyService.getSingleClickGame(seed, gameNumber, regionOpt.get(), timeless, difficulty);
+        return new ResponseEntity<>(gameResp, HttpStatus.OK);
     }
 
     @PostMapping
