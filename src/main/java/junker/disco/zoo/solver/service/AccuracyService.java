@@ -40,7 +40,7 @@ public class AccuracyService {
         new Thread(() -> {
             IntStream.range(1, gamePreComputeAmnt).parallel().forEach( i -> {
                 var gameResp = getSingleClickGame(seed, gameNumber+i, region, timeless, difficulty);
-                DiscoZooSolver.getBestMoveInformation(gameResp.animalToFind(), gameResp.game());
+                solveService.solve(gameResp.game(), gameResp.animalToFind());
                 System.out.println("Precomputed: " + (i+gameNumber));
             });
         }).start();
