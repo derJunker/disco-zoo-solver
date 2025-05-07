@@ -19,7 +19,7 @@ public class ReconstructStartBodyValidator implements Validator {
         var regionsMatchGivenRegion =
                 reconstructStartBody.animals().stream()
                         .map(Animal::region)
-                        .allMatch(region -> region.name().equalsIgnoreCase(reconstructStartBody.region()));
+                        .allMatch(region -> region.toString().equalsIgnoreCase(reconstructStartBody.region()));
         if (!regionsMatchGivenRegion) {
             errors.rejectValue("region", "region.not.contained", "Region must be contained in the animals");
         }
