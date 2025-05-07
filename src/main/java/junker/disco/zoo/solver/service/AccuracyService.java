@@ -32,12 +32,12 @@ public class AccuracyService {
     }
 
     public AccuracySingleClickGameResponse precomputeGameResults(Long seed, int gameNumber,
-                                                                  int gamePreComputeAmnt, Region region,
+                                                                  int gamePreComputeAmnt, int offset, Region region,
                                                                   boolean timeless, AccuracyDifficulty difficulty) {
         var firstGameResp = getSingleClickGame(seed, gameNumber, region, timeless, difficulty);
 
         new Thread(() -> {
-            IntStream.range(0, gamePreComputeAmnt).parallel().forEach( i -> {
+            IntStream.range(offset, offset+gamePreComputeAmnt).parallel().forEach( i -> {
                 var gameResp = getSingleClickGame(seed, gameNumber+i, region, timeless, difficulty);
                 solveService.solve(gameResp.game(), gameResp.animalToFind());
                 System.out.println("Precomputed: " + (i+gameNumber));

@@ -54,7 +54,7 @@ public class AccuracyController {
 
         AccuracySingleClickGameResponse gameResp = null;
         if (gameNumber == 0)
-            gameResp = accuracyService.precomputeGameResults(seed, gameNumber, maxSingleClickGames, regionOpt.get(), timeless, difficulty);
+            gameResp = accuracyService.precomputeGameResults(seed, gameNumber, maxSingleClickGames, 0, regionOpt.get(), timeless, difficulty);
         else
             gameResp = accuracyService.getSingleClickGame(seed, gameNumber, regionOpt.get(), timeless, difficulty);
         return new ResponseEntity<>(gameResp, HttpStatus.OK);
@@ -74,10 +74,12 @@ public class AccuracyController {
         final var difficulty = AccuracyDifficulty.byRepr(difficultyStr);
 
         AccuracySingleClickGameResponse gameResp;
-        if (gameNumber%(maxStreakGames+1) == 0)
-            gameResp = accuracyService.precomputeGameResults(seed, gameNumber, maxStreakGames+1, regionOpt.get(), timeless, difficulty);
-        else
+        if (gameNumber == 0)
+            gameResp = accuracyService.precomputeGameResults(seed, gameNumber, maxStreakGames+1, 0, regionOpt.get(), timeless, difficulty);
+        else {
+            accuracyService.precomputeGameResults(seed, gameNumber, 1, maxStreakGames, regionOpt.get(), timeless, difficulty);
             gameResp = accuracyService.getSingleClickGame(seed, gameNumber, regionOpt.get(), timeless, difficulty);
+        }
         return new ResponseEntity<>(gameResp, HttpStatus.OK);
     }
 
