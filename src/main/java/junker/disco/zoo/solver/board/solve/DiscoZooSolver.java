@@ -1,17 +1,5 @@
 package junker.disco.zoo.solver.board.solve;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-
 import junker.disco.zoo.solver.board.AnimalBoardInstance;
 import junker.disco.zoo.solver.board.Click;
 import junker.disco.zoo.solver.board.Coords;
@@ -26,10 +14,13 @@ import junker.disco.zoo.solver.model.solver.BestMoveInformation;
 import junker.disco.zoo.solver.model.solver.Overlaps;
 import junker.disco.zoo.solver.model.solver.Solution;
 
+import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
 import static junker.disco.zoo.solver.board.solve.NoOverlapSolutionFinder.solutionsForNoOverlap;
-import static junker.disco.zoo.solver.board.solve.OverlapCalulator.calculateOverlaps;
-import static junker.disco.zoo.solver.board.solve.OverlapCalulator.emulateOverlapClick;
-import static junker.disco.zoo.solver.board.solve.OverlapCalulator.findHighestOverlapCoords;
+import static junker.disco.zoo.solver.board.solve.OverlapCalulator.*;
 
 public class DiscoZooSolver {
 
@@ -41,7 +32,7 @@ public class DiscoZooSolver {
         tracker.startTimer();
         var solutions = getBestSolutions(animalToSolve, wipedGame, overlaps, tracker, false);
         tracker.endTimer();
-        tracker.printStats();
+//        tracker.printStats();
         return new BestMoveInformation(overlaps.animalOverlapProbability().get(animalToSolve), solutions);
     }
 

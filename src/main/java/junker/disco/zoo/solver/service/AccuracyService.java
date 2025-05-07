@@ -40,7 +40,6 @@ public class AccuracyService {
             IntStream.range(offset, offset+gamePreComputeAmnt).parallel().forEach( i -> {
                 var gameResp = getSingleClickGame(seed, gameNumber+i, region, timeless, difficulty);
                 solveService.solve(gameResp.game(), gameResp.animalToFind());
-                System.out.println("Precomputed: " + (i+gameNumber));
             });
         }).start();
         return firstGameResp;
