@@ -10,6 +10,7 @@ import junker.disco.zoo.solver.requests.post_bodies.AccuracyClickBody;
 import junker.disco.zoo.solver.requests.return_objects.AccuracySingleClickGameResponse;
 import junker.disco.zoo.solver.requests.return_objects.AccuracySingleClickPerformanceResponse;
 import junker.disco.zoo.solver.service.AccuracyService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -27,6 +28,9 @@ import org.springframework.web.bind.annotation.RestController;
 public class AccuracyController {
 
     private final AccuracyService accuracyService;
+
+    @Value("${accuracy.single-click.games.max}")
+    private int maxSingleClickGames;
 
     public AccuracyController(AccuracyService accuracyService) {
         this.accuracyService = accuracyService;
@@ -46,8 +50,12 @@ public class AccuracyController {
         if (resp != null) return resp;
         final var difficulty = AccuracyDifficulty.byRepr(difficultyStr);
 
-        var game = accuracyService.getSingleClickGame(seed, gameNumber, regionOpt.get(), timeless, difficulty);
-        return new ResponseEntity<>(game, HttpStatus.OK);
+        AccuracySingleClickGameResponse gameResp = null;
+        if (gameNumber == 0)
+            gameResp = accuracyService.precomputeGameResults(seed, gameNumber, maxSingleClickGames, regionOpt.get(), timeless, difficulty);
+        else
+            gameResp = accuracyService.getSingleClickGame(seed, gameNumber, regionOpt.get(), timeless, difficulty);
+        return new ResponseEntity<>(gameResp, HttpStatus.OK);
     }
 
     @GetMapping("/streak/{seed}")

@@ -4,9 +4,11 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
+import java.util.stream.IntStream;
 
 import junker.disco.zoo.solver.board.Coords;
 import junker.disco.zoo.solver.board.Game;
+import junker.disco.zoo.solver.board.solve.DiscoZooSolver;
 import junker.disco.zoo.solver.model.accuracy.AccuracyDifficulty;
 import junker.disco.zoo.solver.model.animals.Animal;
 import junker.disco.zoo.solver.model.animals.Region;
@@ -27,6 +29,22 @@ public class AccuracyService {
                                                                int gameNumber, Region region, boolean timeless,
                                                                AccuracyDifficulty difficulty) {
         return getSingleClickGame(seed, gameNumber, region, timeless, difficulty, null);
+    }
+
+    public AccuracySingleClickGameResponse precomputeGameResults(Long seed, int gameNumber,
+                                                                  int gamePreComputeAmnt, Region region,
+                                                                  boolean timeless, AccuracyDifficulty difficulty) {
+        var firstGameResp = getSingleClickGame(seed, gameNumber, region, timeless, difficulty);
+        DiscoZooSolver.getBestMoveInformation(firstGameResp.animalToFind(), firstGameResp.game());
+
+        new Thread(() -> {
+            IntStream.range(1, gamePreComputeAmnt).parallel().forEach( i -> {
+                var gameResp = getSingleClickGame(seed, gameNumber+i, region, timeless, difficulty);
+                DiscoZooSolver.getBestMoveInformation(gameResp.animalToFind(), gameResp.game());
+                System.out.println("Precomputed: " + (i+gameNumber));
+            });
+        }).start();
+        return firstGameResp;
     }
 
     private AccuracySingleClickGameResponse getSingleClickGame(Long seed,
