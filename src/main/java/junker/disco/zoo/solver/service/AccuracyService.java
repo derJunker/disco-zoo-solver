@@ -35,10 +35,9 @@ public class AccuracyService {
                                                                   int gamePreComputeAmnt, Region region,
                                                                   boolean timeless, AccuracyDifficulty difficulty) {
         var firstGameResp = getSingleClickGame(seed, gameNumber, region, timeless, difficulty);
-        DiscoZooSolver.getBestMoveInformation(firstGameResp.animalToFind(), firstGameResp.game());
 
         new Thread(() -> {
-            IntStream.range(1, gamePreComputeAmnt).parallel().forEach( i -> {
+            IntStream.range(0, gamePreComputeAmnt).parallel().forEach( i -> {
                 var gameResp = getSingleClickGame(seed, gameNumber+i, region, timeless, difficulty);
                 solveService.solve(gameResp.game(), gameResp.animalToFind());
                 System.out.println("Precomputed: " + (i+gameNumber));
