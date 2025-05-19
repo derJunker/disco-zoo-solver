@@ -338,6 +338,31 @@ export default defineComponent({
         await this.updateProbabilityInfo()
         this.updateTracker()
 
+      } else {
+        let msg = "";
+        const placeableAnimals = clickInfo.placeableAnimals
+        if (placeableAnimals.length == 1 && placeableAnimals[0] !== null)
+          msg = "You can only place a " + placeableAnimals[0].name + " here"
+        else if (placeableAnimals.length == 1)
+          msg = "You can't place an animal here! Only nothing."
+        else if (placeableAnimals.length >= 2) {
+          let placeableAnimalNames = placeableAnimals.filter(anim => anim !== null).map(anim => anim.name)
+          if (placeableAnimals.filter(anim => anim == null).length >= 1)
+            placeableAnimalNames.push("nothing")
+
+          msg = "You can only place a"
+          for (let i = 0; i < placeableAnimalNames.length; i++) {
+            if (i == placeableAnimalNames.length-1)
+              msg += " or"
+            else if (i != 0)
+              msg += ","
+            msg += " " + placeableAnimalNames[i]
+          }
+          msg += " here."
+        } else {
+          msg = "Apparently you can't place anything there? not even nothing?! This is most likely a bug."
+        }
+        errorState.addError(msg)
       }
     },
 

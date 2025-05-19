@@ -11,6 +11,7 @@ export interface Game {
 export interface ClickChangeInfo {
     updatedTile: Tile;
     wasValidClick: boolean;
+    placeableAnimals: Animal[]
     completelyRevealedAnimals: Animal[];
     notCompletelyRevealedAnimalsWithoutBux: Animal[];
 }

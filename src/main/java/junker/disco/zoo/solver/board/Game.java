@@ -12,7 +12,6 @@ import lombok.Getter;
 
 import static junker.disco.zoo.solver.board.util.BoardUtil.cloneBoard;
 import static junker.disco.zoo.solver.board.util.DoubleArrayUtil.arrayAsCoordinatesString;
-import static junker.disco.zoo.solver.board.util.PermutationUtil.canClickAndPlace;
 
 @Getter
 public class Game {
@@ -78,17 +77,6 @@ public class Game {
         tile.setAnimalBoardInstance(null);
         if (animal != null)
             tile.setAnimalBoardInstance(AnimalBoardInstance.of(animal, new Coords(-1, -1)));
-    }
-
-    public boolean setTileIfValid(int x, int y, boolean shouldReveal, Animal animal) {
-        if(shouldReveal) {
-            boolean isValid = canClickAndPlace(this, x, y, animal);
-            if (!isValid) {
-                return false;
-            }
-        }
-        setTile(x, y, shouldReveal, animal);
-        return true;
     }
 
     @Override

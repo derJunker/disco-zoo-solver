@@ -6,6 +6,8 @@ import java.util.Objects;
 import java.util.Optional;
 
 import jakarta.validation.Valid;
+import junker.disco.zoo.solver.board.util.PermutationUtil;
+import junker.disco.zoo.solver.controller.validation.body_validators.ReconstructStartBodyValidator;
 import junker.disco.zoo.solver.model.animals.Animal;
 import junker.disco.zoo.solver.board.Game;
 import junker.disco.zoo.solver.model.animals.Region;
@@ -24,6 +26,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/reconstruct")
 @CrossOrigin
 public class ReconstructController {
+    private final ReconstructStartBodyValidator reconstructStartBodyValidator;
+
+    public ReconstructController(ReconstructStartBodyValidator reconstructStartBodyValidator) {
+        this.reconstructStartBodyValidator = reconstructStartBodyValidator;
+    }
+
     @PostMapping("/start")
     public ResponseEntity<Object> start(@RequestBody @Valid ReconstructStartBody body) {
         var validateReconstructStartBody = validateReconstructStartBody(body);
@@ -76,16 +84,25 @@ public class ReconstructController {
         if (clickWithSameAnimal && !shouldReveal) {
             animal = null;
         }
-        var isValid = game.setTileIfValid(coords.x(), coords.y(), shouldReveal, animal);
+        var placeableAnimals = PermutationUtil.getPlaceableAnimals(game, coords.x(), coords.y());
+        final var animalToPlace = animal;
+        var isValid = placeableAnimals.stream().anyMatch(animal1 -> {
+            boolean eitherAnimalIsNull = (animal1 == null || animalToPlace == null);
+            boolean bothAnimalsAreNull = eitherAnimalIsNull && animal1 == animalToPlace;
+            boolean animalsAreEqual = bothAnimalsAreNull || (!eitherAnimalIsNull && Objects.equals(animal1.name(), animalToPlace.name()));
+            return !(eitherAnimalIsNull && !bothAnimalsAreNull) && (bothAnimalsAreNull || animalsAreEqual);
+        });
         List<Animal> completelyRevealedAnimals = null;
         List<Animal> notCompletelyRevealedAnimalsWithoutBux = null;
         if (isValid) {
+            game.setTile(coords.x(), coords.y(), shouldReveal, animalToPlace);
             completelyRevealedAnimals = game.getCompletelyRevealedAnimals();
             notCompletelyRevealedAnimalsWithoutBux = game.getNotCompletelyRevealedAnimalsWithoutBux();
         }
         return new ResponseEntity<>(new ClickChangeInfo(
                 currentTile,
                 isValid,
+                placeableAnimals,
                 completelyRevealedAnimals,
                 notCompletelyRevealedAnimalsWithoutBux
         ), HttpStatus.OK);

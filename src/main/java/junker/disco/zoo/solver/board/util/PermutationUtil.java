@@ -5,19 +5,22 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import junker.disco.zoo.solver.board.Coords;
 import junker.disco.zoo.solver.board.Game;
 import junker.disco.zoo.solver.board.Tile;
+import junker.disco.zoo.solver.board.solve.OverlapCalulator;
 import junker.disco.zoo.solver.model.animals.Animal;
 
 public class PermutationUtil {
 
-    public static boolean canClickAndPlace(Game game, int x, int y, Animal animal) {
-        var wipedGame = new Game(game, true);
-        wipedGame.setTile(x, y, true, animal);
-        var permutations = calculateBoardPermutations(wipedGame.getBoard(), game.getContainedAnimals());
-        return !permutations.isEmpty();
+    public static Set<Animal> getPlaceableAnimals(Game game, int x, int y) {
+        var potentialAnimals = new ArrayList<Animal>(game.getContainedAnimals());
+        potentialAnimals.add(null);
+        return potentialAnimals.stream()
+                .filter(anim -> canClickAndPlace(game, x, y, anim))
+                .collect(Collectors.toSet());
     }
 
     public static Set<Tile[][]> calculateBoardPermutations(Tile[][] board, List<Animal> animals) {
@@ -40,6 +43,13 @@ public class PermutationUtil {
             }
         }
         return permutations;
+    }
+
+    private static boolean canClickAndPlace(Game game, int x, int y, Animal animal) {
+        var wipedGame = new Game(game, true);
+        wipedGame.setTile(x, y, true, animal);
+        var permutations = calculateBoardPermutations(wipedGame.getBoard(), game.getContainedAnimals());
+        return !permutations.isEmpty();
     }
 
     private static List<Coords> getPossiblePlacements(Tile[][] board, Animal animalToPlace) {
