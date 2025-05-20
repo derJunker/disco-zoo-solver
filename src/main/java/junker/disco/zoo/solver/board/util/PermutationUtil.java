@@ -16,7 +16,7 @@ import junker.disco.zoo.solver.model.animals.Animal;
 public class PermutationUtil {
 
     public static Set<Animal> getPlaceableAnimals(Game game, int x, int y) {
-        var potentialAnimals = new ArrayList<Animal>(game.getContainedAnimals());
+        var potentialAnimals = new ArrayList<>(game.getContainedAnimals());
         potentialAnimals.add(null);
         return potentialAnimals.stream()
                 .filter(anim -> canClickAndPlace(game, x, y, anim))

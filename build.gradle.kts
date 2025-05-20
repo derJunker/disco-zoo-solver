@@ -47,6 +47,8 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-validation
 
+    implementation("com.bucket4j:bucket4j_jdk17-core:8.14.0")
+
 
     compileOnly("org.projectlombok:lombok")
     annotationProcessor("org.projectlombok:lombok:1.18.30")
