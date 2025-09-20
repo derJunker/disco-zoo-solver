@@ -4,11 +4,11 @@ A Heatmap Solver for the Game *Disco Zoo* by *Milkbag Games*.
 
 <div id="gameplay">
 <div class="gameplay-option">
-<h2> Learn the best clicks for your animals </h2>
-<div class="img-theme-display">
-    <img alt="5x5 Heatmap of a game of Disco Zoo" src="readme-img/reconstruct.png" height="400px"/>
-    <img alt="5x5 Heatmap of a game of Disco Zoo with menu opened" src="readme-img/reconstruct-menu.png" height="400px"/>
-</div>
+    <h2> Learn the best clicks for your animals </h2>
+    <div class="img-theme-display">
+        <img alt="5x5 Heatmap of a game of Disco Zoo" src="readme-img/reconstruct.png" height="400px"/>
+        <img alt="5x5 Heatmap of a game of Disco Zoo with menu opened" src="readme-img/reconstruct-menu.png" height="400px"/>
+    </div>
 </div>
 
 
@@ -48,5 +48,6 @@ img {
 #gameplay {
     display: flex;
     justify-content: space-evenly;
+flex-warp: wrap;
 }
 </style>
